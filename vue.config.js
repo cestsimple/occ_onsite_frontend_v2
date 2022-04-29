@@ -36,6 +36,12 @@ module.exports = {
       warnings: false,
       errors: true
     }
+    // proxy: {
+    //   '/api': {
+    //     target: '127.0.0.1:8000', // 我们要代理的地址
+    //     changeOrigin: true // 是否跨域 需要设置此值为true 才可以让本地服务代理我们发出请求
+    //   }
+    // }
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
