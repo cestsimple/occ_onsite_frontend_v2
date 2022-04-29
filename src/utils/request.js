@@ -15,6 +15,7 @@ service.interceptors.request.use(config => {
   if (store.getters.token) {
     // 检查超时
     if (IsTimeOut()) {
+      Message.error('登陆超时，请重新登录')
       store.dispatch('user/logout')
       router.push('/login/')
       return Promise.reject(new Error())
@@ -32,8 +33,15 @@ service.interceptors.response.use(response => {
   //   要根据success的成功与否决定下面的操作
   return data
 }, error => {
-  Message.error(error.msg) // 提示错误信息
-  return Promise.reject(error) // 返回执行错误 让当前的执行链跳出成功 直接进入 catch
+  if (error.response.status === 401) {
+    Message.error('登陆超时，请重新登录')
+    store.dispatch('user/logout')
+    router.push('/login/')
+    return
+  } else {
+    Message.error(error.msg) // 提示错误信息
+    return Promise.reject(error) // 返回执行错误 让当前的执行链跳出成功 直接进入 catch
+  }
 })
 
 // 检查超时
