@@ -121,5 +121,7 @@ export default {
 </script>
 
 <style>
-
+.el-dialog{
+    margin-top: 7vh !important;
+}
 </style>

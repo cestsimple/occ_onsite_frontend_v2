@@ -129,6 +129,8 @@ export default {
       this.query.name = query.name
       this.query.start = query.start
       this.query.end = query.end
+      this.query.region = query.region
+      this.query.group = query.group
       this.query.page = 1
       this.getFilling()
     },
@@ -138,11 +140,11 @@ export default {
     },
     // 分页器方法
     handleSizeChange(newSize) {
-      this.page.pagesize = newSize
+      this.query.pagesize = newSize
       this.getFilling()
     },
     handleCurrentChange(newPage) {
-      this.page.page = newPage
+      this.query.page = newPage
       this.getFilling()
     },
     // Filling增删改查

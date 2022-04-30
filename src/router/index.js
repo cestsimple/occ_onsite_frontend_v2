@@ -5,10 +5,11 @@ import apsaRouter from './modules/apsa'
 import bulkRouter from './modules/bulk'
 import userRouter from './modules/user'
 import permissionRouter from './modules/permission'
-import dailyRouter from './modules/daily'
 import fillingRouter from './modules/filling'
 import malfunctionRouter from './modules/malfunction'
 import settingRouter from './modules/setting'
+import dailySimplegRouter from './modules/daily'
+import dailyDetailgRouter from './modules/daily_detail'
 Vue.use(Router)
 
 /* Layout */
@@ -16,7 +17,8 @@ import Layout from '@/layout'
 
 // 定义动态路由变量
 export const asyncRouter = [
-  fillingRouter, dailyRouter, malfunctionRouter, apsaRouter, bulkRouter, userRouter, permissionRouter, settingRouter
+  fillingRouter, dailySimplegRouter, dailyDetailgRouter, malfunctionRouter, apsaRouter, bulkRouter,
+  userRouter, permissionRouter, settingRouter
 ]
 
 // 静态路由（无需权限）
