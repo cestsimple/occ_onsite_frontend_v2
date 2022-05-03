@@ -140,8 +140,10 @@
         />
       </el-card>
     </div>
+    <!-- 编辑，新增弹层 -->
     <add-malfunction :show-dialog.sync="showAddDialog" />
-    <edit-malfunction :show-dialog.sync="showEditOcc" :edit-item="editItem" />
+    <edit-occ ref="editOcc" :show-dialog.sync="showEditOcc" />
+    <edit-maint ref="editMaint" :show-dialog.sync="showEditMaint" />
   </div>
 </template>
 
@@ -149,9 +151,10 @@
 import { getMalfunction, deleteMalfunction } from '@/api/malfunction'
 import { Message } from 'element-ui'
 import AddMalfunction from './add-malfunction'
-import EditMalfunction from './edit-malfunction'
+import EditOcc from './edit-occ'
+import EditMaint from './edit-maint'
 export default {
-  components: { AddMalfunction, EditMalfunction },
+  components: { AddMalfunction, EditOcc, EditMaint },
   data() {
     return {
       list: [],
@@ -167,7 +170,6 @@ export default {
       showAddDialog: false,
       showEditOcc: false,
       showEditMaint: false,
-      editItem: null,
       buttonColWidth: '180px'
     }
   },
@@ -218,11 +220,11 @@ export default {
       }
     },
     editMalfunctionOcc(item) {
-      this.editItem = item
+      this.$refs.editOcc.getData(item)
       this.showEditOcc = true
     },
     editMalfunctionMaint(item) {
-      this.editItem = item
+      this.$refs.editMaint.getData(item)
       this.showEditMaint = true
     }
   }
@@ -231,6 +233,7 @@ export default {
 
 <style scoped>
   /deep/.demo-table-expand {
+      width: 80%;
       font-size: 0px;
   }
   /deep/.demo-table-expand label {
@@ -240,7 +243,7 @@ export default {
   /deep/.demo-table-expand .el-form-item {
     margin-right: 0;
     margin-bottom: 0;
-    width: 33%;
+    width: 30%;
     height: 32px;
   }
 </style>
