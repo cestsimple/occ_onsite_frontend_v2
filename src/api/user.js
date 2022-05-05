@@ -9,8 +9,11 @@ export function login(data) {
   })
 }
 
-export function getInfo(token) {
-}
-
-export function logout() {
+export function getUser(params) {
+  // 返回promise对象
+  return request({
+    url: '/user/',
+    method: 'get',
+    params
+  })
 }

@@ -3,8 +3,8 @@
     <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
 
     <div class="app-breadcrumb">
-      IMOCC在线网站
-      <span class="breadBtn">V2</span>
+      IMOCC在线平台
+      <span class="breadBtn">V2 开发中</span>
     </div>
     <!-- <breadcrumb class="breadcrumb-container" /> -->
 
