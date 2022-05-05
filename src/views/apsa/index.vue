@@ -200,7 +200,7 @@
                 <el-input v-model="editInfo.apsa.vap_max" />
               </el-form-item>
               <el-form-item label="备注" prop="comment">
-                <el-input v-model="editInfo.comment" />
+                <el-input v-model="editInfo.comment" type="textarea" />
               </el-form-item>
               <el-form-item label="计算daily" prop="daily_js">
                 <el-select
@@ -248,7 +248,7 @@
         <!-- 底部按钮区 -->
         <span slot="footer" class="dialog-footer">
           <el-button @click="editVisible = false">取 消</el-button>
-          <el-button type="primary" @click="editApsa">确 定</el-button>
+          <el-button type="primary" @click="updateAsset">确 定</el-button>
         </span>
       </el-dialog>
 
@@ -274,12 +274,12 @@
           </div>
           <div v-else>
             <el-form-item label="IOT平台变量名" prop="name">
-              <el-select v-model="editVariable.name" filterable clearable placeholder="从IOT变量中选择">
+              <el-select v-model="editVariable.id" filterable clearable placeholder="从IOT变量中选择">
                 <el-option
                   v-for="item in variableList"
                   :key="item.id"
                   :label="item.name"
-                  :value="item.id"
+                  :value="item.name"
                 />
               </el-select>
             </el-form-item>
@@ -290,7 +290,7 @@
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button @click="innerVisible = false">取 消</el-button>
-          <el-button type="primary">确 定</el-button>
+          <el-button type="primary" @click="updateVariable">确 定</el-button>
         </span>
       </el-dialog>
     </div>
@@ -546,6 +546,8 @@ export default {
     editDialogClosed() {
       this.editVisible = false
       this.innerVisible = false
+      this.variableList = []
+      this.variableMarkedList = []
       this.editInfo = {
         id: 0,
         site: {
@@ -580,7 +582,6 @@ export default {
       }
       this.activeIndex = '1'
       this.editInnerDialogClosed()
-      this.getApsaList()
     },
     editInnerDialogClosed() {
       this.editVariable = {
@@ -623,24 +624,38 @@ export default {
         await this.$confirm('是否删除该配对')
         await updateVariable({ ...varibaleInfo, daily_mark: '' })
         Message.success('删除成功')
-        this.getFilling()
+        this.getVariableList(this.editInfo.id)
       } catch (error) {
         Message.error('删除失败：' + error)
       }
     },
-    async editApsa() {
-      if (this.editInfo.site.engineer.id === '' || this.editInfo.site.engineer.id === 0 ||
-        this.editInfo.apsa.rtu_name === '' || this.editInfo.apsa.daily_js === 0 ||
-        this.editInfo.apsa.norminal_flow === 0
-      ) {
-        return Message.error('信息不齐全，请确认')
+    async updateVariable() {
+      if (this.editVariable.id === undefined) {
+        console.log(this.editVariable)
+        const v = this.variableList.filter(x => x.name === this.editVariable.name)[0]
+        console.log(v)
+        this.editVariable.id = v.id
+        console.log(this.editVariable)
+      }
+      try {
+        await updateVariable({ ...this.editVariable, 'confirm': 1 })
+        Message.success('提交成功')
+        this.editInnerDialogClosed()
+        this.getVariableList(this.editInfo.id)
+      } catch (error) {
+        console.log(error)
+        Message.error('提交失败：' + error)
+      }
+    },
+    async updateAsset() {
+      if (this.editInfo.site.engineer.id === '' || this.editInfo.site.engineer.id === 0) {
+        return Message.error('缺少工程师信息')
       }
       try {
         await this.$confirm('是否提交修改')
         await updateAsset(this.editInfo)
         Message.success('提交成功')
         this.editDialogClosed()
-        this.getApsaList()
       } catch (error) {
         Message.error('提交失败：' + error)
       }
@@ -649,18 +664,18 @@ export default {
 }
 </script>
 <style scoped>
-  /deep/.demo-table-expand {
+  ::v-deep .demo-table-expand {
       font-size: 0px;
   }
-  /deep/.demo-table-expand label {
+  ::v-deep .demo-table-expand label {
     color: #99a9bf;
   }
-  /deep/.demo-table-expand .el-form-item {
+  ::v-deep .demo-table-expand .el-form-item {
     margin-right: 20px;
     margin-bottom: 0;
     height: 32px;
   }
-  /deep/.el-step__title {
+  ::v-deep .el-step__title {
     font-size: 10px;
     margin-bottom: 12px;
   }

@@ -8,7 +8,7 @@ export default {
     path: '',
     component: () => import('@/views/apsa'),
     meta: {
-      title: '气站管理',
+      title: '产气设备管理',
       icon: 'component'
     }
   }]
