@@ -481,10 +481,10 @@ export default {
     font-size: 10px;
     margin-bottom: 12px;
   }
-  ::v-deep .el-input__inner {
+  ::v-deep .el-dialog .el-input__inner {
     width: 230px;
   }
-  ::v-deep .el-textarea__inner {
+  ::v-deep .el-dialog .el-textarea__inner {
     width: 230px;
   }
 </style>

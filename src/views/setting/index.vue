@@ -7,42 +7,78 @@
         <el-breadcrumb-item>配置管理 Settings</el-breadcrumb-item>
       </el-breadcrumb>
       <el-card>
-        <el-button type="primary" @click="getRecord"> 抓取数据 </el-button>
-        <el-button type="primary" @click="calculateFilling">
+        <el-button type="primary" :disabled="jobList.some(x => x.name === 'IOT_RECORD')" @click="getRecord"> 抓取数据 </el-button>
+        <el-button type="primary" :disabled="jobList.some(x => x.name === 'ONSITE_FILLING')" @click="calculateFilling">
           计算filling
         </el-button>
-        <el-button type="primary" @click="calculateDaily">
+        <el-button type="primary" :disabled="jobList.some(x => x.name === 'ONSITE_DAILY')" @click="calculateDaily">
           计算daily和malfunction
         </el-button>
+        <el-row>
+          <el-col :span="2">
+            进行中任务:
+          </el-col>
+          <el-col v-for="job in jobList" :key="job.id" :span="4">
+            <el-tag>{{ job.name }}</el-tag>
+          </el-col>
+        </el-row>
       </el-card>
-
     </div>
   </div>
 </template>
 
 <script>
+import { getJobs } from '@/api/job'
 import { getRecord, calculateFilling, calculateDaily } from '@/api/manuel'
+import { Message } from 'element-ui'
 export default {
+  data() {
+    return {
+      jobList: [],
+      intervalJob: null
+    }
+  },
+  created() {
+    this.getJobs()
+    this.intervalJob = setInterval(this.getJobs, 5000)
+  },
+  beforeDestroy() {
+    clearInterval(this.intervalJob)
+  },
   methods: {
     async getRecord() {
       await getRecord().catch(() => {
-        this.$message.error('刷新失败')
+        Message.error('刷新失败')
       })
+      Message.success('刷新成功，请等待完成')
+      this.getJobs()
     },
     async calculateFilling() {
       await calculateFilling().catch(() => {
-        this.$message.error('刷新失败')
+        Message.error('刷新失败')
       })
+      Message.success('刷新成功，请等待完成')
+      this.getJobs()
     },
     async calculateDaily() {
       await calculateDaily().catch(() => {
-        this.$message.error('刷新失败')
+        Message.error('刷新失败')
       })
+      Message.success('刷新成功，请等待完成')
+      this.getJobs()
+    },
+    async getJobs() {
+      const res = await getJobs().catch(() => {
+        Message.error('获取Job失败')
+      })
+      this.jobList = res.res
     }
   }
 }
 </script>
 
-<style>
-
+<style scoped>
+  ::v-deep .el-row {
+    margin: 10px 10px;
+  }
 </style>

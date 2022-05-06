@@ -74,7 +74,11 @@
             label="Ave Consume"
             prop="avg_consume"
             width="105"
-          />
+          >
+            <template slot-scope="scope">
+              <div :style="scope.row.avg_consume > scope.row.vap_max ? {'color': 'red'} : ''">{{ scope.row.avg_consume }}</div>
+            </template>
+          </el-table-column>
           <el-table-column
             label="Vpeak"
             prop="v_peak"
@@ -91,12 +95,20 @@
             prop="cooling"
             width="100"
             sortable
-          />
+          >
+            <template slot-scope="scope">
+              <div :style="scope.row.cooling > 5 ? {'color': 'red'} : ''">{{ scope.row.cooling }}</div>
+            </template>
+          </el-table-column>
           <el-table-column
             label="Vpeak-Peak"
             prop="dif_peak"
             width="92"
-          />
+          >
+            <template slot-scope="scope">
+              <div :style="scope.row.dif_peak < 0 ? {'color': 'red'} : ''">{{ scope.row.dif_peak }}</div>
+            </template>
+          </el-table-column>
           <el-table-column
             label="H Stop"
             prop="h_stop"

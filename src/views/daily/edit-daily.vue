@@ -1,6 +1,13 @@
 <template>
-  <el-dialog :title="`修改Daily - ${editForm.rtu_name}`" :visible="showDialog" width="35%" @close="btnCancel">
+  <el-dialog :title="`${editForm.rtu_name} - 当前编辑者:${userInfo.username}`" :visible="showDialog" width="35%" @close="btnCancel">
     <!-- 表单 -->
+    <el-alert
+      :title="`上次编辑者:${modForm.user}`"
+      type="info"
+      center
+      show-icon
+      :closable="false"
+    />
     <table class="modTable" width="90%" style="font-size:75%">
       <thead>
         <tr>
@@ -41,14 +48,14 @@
           <td><el-input v-model="modForm.m3_tot_mod" /></td>
         </tr>
         <tr>
-          <td>m3_q1</td>
-          <td>{{ originDaily['m3_q1'] }}</td>
-          <td><el-input v-model="modForm.m3_q1_mod" /></td>
-        </tr>
-        <tr>
           <td>m3_peak</td>
           <td>{{ originDaily['m3_peak'] }}</td>
           <td><el-input v-model="modForm.m3_peak_mod" /></td>
+        </tr>
+        <tr>
+          <td>m3_q1</td>
+          <td>{{ originDaily['m3_q1'] }}</td>
+          <td><el-input v-model="modForm.m3_q1_mod" /></td>
         </tr>
         <tr>
           <td>m3_q5</td>
@@ -81,7 +88,7 @@
       v-model="modForm.comment"
       :style="{'width': '90%', 'margin-left': '5%'}"
       type="textarea"
-      :rows="3"
+      :rows="2"
       placeholder="请输入备注信息"
     />
     <!-- 底部按钮 -->
@@ -106,6 +113,7 @@
 <script>
 import { getModify, getOrigin, updateModify, updateDaily } from '@/api/daily'
 import { Message } from 'element-ui'
+import { mapGetters } from 'vuex'
 export default {
   props: {
     showDialog: {
@@ -128,6 +136,11 @@ export default {
       originDaily: {}
     }
   },
+  computed: {
+    ...mapGetters([
+      'userInfo'
+    ])
+  },
   watch: {
     editItem: function() {
       if (this.editItem.rtu_name === '') {
@@ -143,9 +156,6 @@ export default {
       this.editForm = {}
       this.modForm = {}
       this.originDaily = {}
-      this.editItem = {
-        'rtu_name': ''
-      }
       this.$emit('update:showDialog', false)
     },
     async getModify(pk) {
@@ -162,17 +172,11 @@ export default {
     },
     async updateDaily() {
       try {
-        await updateModify(this.modForm)
+        await updateModify({ ...this.modForm, 'user': this.userInfo.username })
         await updateDaily(this.editForm)
         // 通知父组件刷新数据
         this.$parent.getDaily()
-        this.editForm = {}
-        this.modForm = {}
-        this.originDaily = {}
-        this.editItem = {
-          'rtu_name': ''
-        }
-        this.$parent.showEditDialog = false
+        this.btnCancel()
       } catch (error) {
         console.log(error.response)
         Message.error('更新失败')
@@ -189,9 +193,23 @@ export default {
 tr {
   text-align: center;
 }
-
-/deep/.el-input__inner{
+::v-deep .el-alert{
+  margin-bottom: 5px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+::v-deep .el-alert__title {
+    font-size: 8px;
+}
+::v-deep .el-input__inner{
   width: 65%;
   height: 25px !important;
+}
+::v-deep .el-dialog__body {
+  padding-top: 5px;
+}
+
+::v-deep .el-dialog{
+    margin-top: 7vh !important;
 }
 </style>
