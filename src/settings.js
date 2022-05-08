@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: 'OCC在线系统v2',
+  title: 'IM-OCC 在线平台 v2',
 
   /**
    * @type {boolean} true | false

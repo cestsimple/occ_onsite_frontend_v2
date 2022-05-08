@@ -10,6 +10,7 @@ import malfunctionRouter from './modules/malfunction'
 import settingRouter from './modules/setting'
 import dailySimplegRouter from './modules/daily'
 import dailyDetailgRouter from './modules/daily_detail'
+import monthlyRouter from './modules/monthly'
 Vue.use(Router)
 
 /* Layout */
@@ -17,7 +18,7 @@ import Layout from '@/layout'
 
 // 定义动态路由变量
 export const asyncRouter = [
-  fillingRouter, dailySimplegRouter, dailyDetailgRouter, malfunctionRouter, apsaRouter, bulkRouter,
+  fillingRouter, dailySimplegRouter, dailyDetailgRouter, malfunctionRouter, monthlyRouter, apsaRouter, bulkRouter,
   userRouter, permissionRouter, settingRouter
 ]
 

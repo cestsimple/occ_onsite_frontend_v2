@@ -1,6 +1,12 @@
 <template>
   <div class="dashboard-container">
     <div class="app-container">
+      <!-- 面包屑导航 -->
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+        <el-breadcrumb-item>储罐管理</el-breadcrumb-item>
+      </el-breadcrumb>
+
       <el-card>
         <!-- 搜索栏 -->
         <filter-bar @queryChanged="queryChanged" />
@@ -261,7 +267,6 @@ export default {
         return '补峰'
       }
     }
-
   },
   data() {
     return {
@@ -455,7 +460,6 @@ export default {
       this.variableMarkedList = res.filter(x => x.daily_mark !== '')
     },
     showEditDialog(assetInfo) {
-      console.log(assetInfo)
       this.editInfo = assetInfo
       this.getVariableList(assetInfo.id)
       this.editVisible = true
