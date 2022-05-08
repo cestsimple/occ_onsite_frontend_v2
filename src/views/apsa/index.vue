@@ -1,4 +1,3 @@
-
 <template>
   <div class="dashboard-container">
     <div class="app-container">
@@ -8,6 +7,8 @@
         <el-breadcrumb-item>设备资产管理</el-breadcrumb-item>
       </el-breadcrumb>
       <el-card class="box-card">
+        <!-- 搜索栏 -->
+        <filter-bar @queryChanged="queryChanged" />
 
         <!-- 资产表区 -->
         <el-table :data="apsaList" border stripe size="mini">
@@ -309,7 +310,6 @@ export default {
       total: 0,
       // 查询集合
       querryInfo: {
-        query: '',
         // 当前页数
         page: 1,
         // 页容量
@@ -522,9 +522,6 @@ export default {
       }
     }
   },
-  created() {
-    this.getApsaList()
-  },
   methods: {
     handleSizeChange(newSize) {
       this.querryInfo.pagesize = newSize
@@ -533,6 +530,14 @@ export default {
     // 监听 页码 变化的函数
     handleCurrentChange(newPage) {
       this.querryInfo.page = newPage
+      this.getApsaList()
+    },
+    queryChanged(query) {
+      this.querryInfo.name = query.name
+      this.querryInfo.region = query.region
+      this.querryInfo.confirm = query.confirm
+      this.querryInfo.cal = query.cal
+      this.querryInfo.page = 1
       this.getApsaList()
     },
     async getApsaList() {

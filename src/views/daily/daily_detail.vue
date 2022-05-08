@@ -26,7 +26,7 @@
           <el-table-column
             label="Date"
             prop="date"
-            width="90"
+            width="85"
             :show-overflow-tooltip="true"
           />
           <el-table-column
@@ -39,91 +39,149 @@
             label="RTU"
             prop="rtu_name"
             :show-overflow-tooltip="true"
+            :min-width="100"
           />
           <el-table-column
             label="Nornimal"
             prop="norminal"
-            width="78"
+            width="75"
+            align="right"
           />
           <el-table-column
             label="H Prod"
             prop="h_prod"
-            width="75"
-          />
+            width="67"
+            align="right"
+          >
+            <template slot-scope="scope">
+              {{ scope.row.h_prod | twoDigits }}
+            </template>
+          </el-table-column>
           <el-table-column
             label="H Missing"
             prop="h_missing"
-            width="83"
-          />
+            width="80"
+            align="right"
+          >
+            <template slot-scope="scope">
+              {{ scope.row.h_missing | twoDigits }}
+            </template>
+          </el-table-column>
           <el-table-column
             label="Generator Prod"
             prop="m3_prod"
-            width="115"
-          />
+            width="110"
+            align="right"
+          >
+            <template slot-scope="scope">
+              {{ scope.row.m3_prod | twoDigits }}
+            </template>
+          </el-table-column>
           <el-table-column
             label="Ave Prod"
             prop="avg_prod"
-            width="80"
-          />
+            width="75"
+            align="right"
+          >
+            <template slot-scope="scope">
+              {{ scope.row.avg_prod | twoDigits }}
+            </template>
+          </el-table-column>
           <el-table-column
             label="Cust Consume"
             prop="cus_consume"
-            width="110"
-          />
+            width="106"
+            align="right"
+          >
+            <template slot-scope="scope">
+              {{ scope.row.cus_consume | twoDigits }}
+            </template>
+          </el-table-column>
           <el-table-column
             label="Ave Consume"
             prop="avg_consume"
-            width="105"
+            width="102"
+            align="right"
           >
             <template slot-scope="scope">
-              <div :style="scope.row.avg_consume > scope.row.vap_max ? {'color': 'red'} : ''">{{ scope.row.avg_consume }}</div>
+              <div :style="scope.row.avg_consume > scope.row.vap_max ? {'color': 'red'} : ''">{{ scope.row.avg_consume | twoDigits }}</div>
             </template>
           </el-table-column>
           <el-table-column
             label="Vpeak"
             prop="v_peak"
             width="65"
-          />
-          <el-table-column label="Peak" prop="peak" width="70" />
+            align="right"
+          >
+            <template slot-scope="scope">
+              {{ scope.row.v_peak | twoDigits }}
+            </template>
+          </el-table-column>
+          <el-table-column label="Peak" prop="peak" width="70" align="right">
+            <template slot-scope="scope">
+              {{ scope.row.peak | twoDigits }}
+            </template>
+          </el-table-column>
           <el-table-column
             label="lin_tot"
             prop="lin_tot"
             width="70"
-          />
+            align="right"
+          >
+            <template slot-scope="scope">
+              {{ scope.row.lin_tot | twoDigits }}
+            </template>
+          </el-table-column>
           <el-table-column
             label="Cooling"
             prop="cooling"
-            width="100"
-            sortable
+            width="66"
+            align="right"
           >
             <template slot-scope="scope">
-              <div :style="scope.row.cooling > 5 ? {'color': 'red'} : ''">{{ scope.row.cooling }}</div>
+              <div :style="scope.row.cooling > 5 ? {'color': 'red'} : ''">{{ scope.row.cooling | twoDigits }}</div>
             </template>
           </el-table-column>
           <el-table-column
             label="Vpeak-Peak"
             prop="dif_peak"
             width="92"
+            align="right"
           >
             <template slot-scope="scope">
-              <div :style="scope.row.dif_peak < 0 ? {'color': 'red'} : ''">{{ scope.row.dif_peak }}</div>
+              <div :style="scope.row.dif_peak < 0 ? {'color': 'red'} : ''">{{ scope.row.dif_peak | twoDigits }}</div>
             </template>
           </el-table-column>
           <el-table-column
             label="H Stop"
             prop="h_stop"
             width="65"
-          />
+            align="right"
+          >
+            <template slot-scope="scope">
+              {{ scope.row.h_stop | twoDigits }}
+            </template>
+          </el-table-column>
           <el-table-column
             label="Lin Consume"
             prop="lin_consume"
-            width="100"
-          />
+            width="97"
+            align="right"
+          >
+            <template slot-scope="scope">
+              {{ scope.row.lin_consume | twoDigits }}
+            </template>
+          </el-table-column>
           <el-table-column
             label="Filling"
             prop="filling"
             width="70"
-          />
+            align="right"
+          >
+            <template slot-scope="scope">
+              {{ scope.row.filling | twoDigits }}
+            </template>
+          </el-table-column>
           <el-table-column label="操作" width="60" fixed="right">
             <template slot-scope="scope">
               <!-- 修改按钮 -->
@@ -168,6 +226,11 @@ import { getDaily } from '@/api/daily'
 import EditDaily from './edit-daily'
 export default {
   components: { EditDaily },
+  filters: {
+    twoDigits(value) {
+      return value.toFixed(2)
+    }
+  },
   data() {
     return {
       list: [],
@@ -190,6 +253,8 @@ export default {
       this.query.name = query.name
       this.query.start = query.start
       this.query.end = query.end
+      this.query.region = query.region
+      this.query.group = query.group
       this.query.page = 1
       this.getDaily()
     },

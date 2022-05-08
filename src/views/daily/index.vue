@@ -62,7 +62,7 @@
             width="85"
           >
             <template slot-scope="scope">
-              <div :style="scope.row.avg_consume > scope.row.vap_max ? {'color': 'red'} : ''">{{ scope.row.avg_consume }}</div>
+              {{ scope.row.avg_consume | toInt }}
             </template>
           </el-table-column>
           <el-table-column
@@ -98,7 +98,11 @@
             label="汽化器能力"
             prop="vap_max"
             width="85"
-          />
+          >
+            <template slot-scope="scope">
+              <div :style="scope.row.avg_consume > scope.row.vap_max ? {'color': 'red'} : ''">{{ scope.row.vap_max }}</div>
+            </template>
+          </el-table-column>
           <el-table-column
             label="备注"
             prop="comment"
@@ -125,6 +129,11 @@
 <script>
 import { getDaily } from '@/api/daily'
 export default {
+  filters: {
+    toInt(value) {
+      return Math.round(value)
+    }
+  },
   data() {
     return {
       list: [],
@@ -134,7 +143,9 @@ export default {
         pagesize: 15,
         name: '',
         start: '',
-        end: ''
+        end: '',
+        region: '',
+        group: ''
       },
       loading: false
     }

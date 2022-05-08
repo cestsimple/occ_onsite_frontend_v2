@@ -115,7 +115,9 @@ export default {
         pagesize: 10,
         name: '',
         start: '',
-        end: ''
+        end: '',
+        region: '',
+        group: ''
       },
       loading: false,
       showAddDialog: false,

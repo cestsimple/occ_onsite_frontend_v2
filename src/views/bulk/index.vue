@@ -2,6 +2,9 @@
   <div class="dashboard-container">
     <div class="app-container">
       <el-card>
+        <!-- 搜索栏 -->
+        <filter-bar @queryChanged="queryChanged" />
+
         <!-- 资产表区 -->
         <el-table :data="bulkList" border stripe size="mini">
           <el-table-column type="index" label="#" />
@@ -15,12 +18,12 @@
           />
           <el-table-column label="储罐功能" prop="bulk.tank_func" width="85px">
             <template slot-scope="scope">
-              {{ scope.row.bulk.tank_func === 'peak'? '补峰' : scope.row.bulk.tank_func === 'cooling' ? '补冷' : '补峰+冷' }}
+              {{ scope.row.bulk.tank_func | tankFuncFilter }}
             </template></el-table-column>
           <el-table-column
             label="区域"
             prop="site.engineer.region"
-            width="70px"
+            width="90px"
           />
           <el-table-column
             label="维修组别"
@@ -246,6 +249,20 @@ import { getAsset, updateAsset } from '@/api/asset'
 import { getVariable, updateVariable } from '@/api/variable'
 import { Message } from 'element-ui'
 export default {
+  filters: {
+    tankFuncFilter(value) {
+      if (value === 'both') {
+        return '补峰+冷'
+      }
+      if (value === 'cooling') {
+        return '补冷'
+      }
+      if (value === 'peak') {
+        return '补峰'
+      }
+    }
+
+  },
   data() {
     return {
       // 查询结果总数
@@ -366,6 +383,14 @@ export default {
       this.querryInfo.page = newPage
       this.getBulkList()
     },
+    queryChanged(query) {
+      this.querryInfo.name = query.name
+      this.querryInfo.region = query.region
+      this.querryInfo.confirm = query.confirm
+      this.querryInfo.cal = query.cal
+      this.querryInfo.page = 1
+      this.getBulkList()
+    },
     async getBulkList() {
       const res = await getAsset(this.querryInfo)
         .catch((error) => {
@@ -430,6 +455,7 @@ export default {
       this.variableMarkedList = res.filter(x => x.daily_mark !== '')
     },
     showEditDialog(assetInfo) {
+      console.log(assetInfo)
       this.editInfo = assetInfo
       this.getVariableList(assetInfo.id)
       this.editVisible = true

@@ -136,6 +136,7 @@ export default {
         this.groupOptions = []
         this.groupFilterWidth = 0
         this.query.group = ''
+        this.getItemList()
         return
       }
       const res = await getEngineer(this.query.region).catch(error => {

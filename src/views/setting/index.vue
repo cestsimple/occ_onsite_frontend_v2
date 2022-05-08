@@ -23,6 +23,18 @@
           </el-col>
         </el-row>
       </el-card>
+      <el-card>
+        <div class="block">
+          <span class="demonstration">月</span>
+          <el-date-picker
+            v-model="value2"
+            type="month"
+            placeholder="选择月"
+            value-format="yyyy-MM"
+          />
+        </div>
+        {{ value2 }}
+      </el-card>
     </div>
   </div>
 </template>
@@ -35,12 +47,13 @@ export default {
   data() {
     return {
       jobList: [],
-      intervalJob: null
+      intervalJob: null,
+      value2: ''
     }
   },
   created() {
     this.getJobs()
-    this.intervalJob = setInterval(this.getJobs, 5000)
+    this.intervalJob = setInterval(this.getJobs, 10000)
   },
   beforeDestroy() {
     clearInterval(this.intervalJob)
