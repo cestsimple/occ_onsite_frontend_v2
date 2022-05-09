@@ -217,9 +217,42 @@
                   />
                 </el-select>
               </el-form-item>
+              <div v-if="editInfo.apsa.daily_js === 2">
+                <el-form-item label="固定补冷值" prop="cooling_fixed">
+                  <el-input v-model="editInfo.apsa.cooling_fixed" />
+                </el-form-item>
+                <el-form-item label="关联设备" prop="daily_bind">
+                  <el-select
+                    v-model="editInfo.apsa.daily_bind"
+                    filterable
+                    remote
+                    placeholder="输入气站中文或RTU名"
+                    :remote-method="getSeatchItem"
+                    :loading="loading"
+                    size="mini"
+                    clearable
+                  >
+                    <el-option
+                      v-for="item in serchItemList"
+                      :key="item.id"
+                      :label="item.site_name + '-' + item.asset_name"
+                      :value="item.id"
+                    />
+                  </el-select>
+                </el-form-item>
+              </div>
             </el-tab-pane>
             <el-tab-pane label="变量登记" name="3">
-              <el-button size="mini" type="primary" @click="showEditInnerDialog({})">新增变量配对</el-button>
+              <el-row>
+                <el-col :span="4">
+                  <el-button size="mini" type="primary" @click="showEditInnerDialog({})">新增变量配对</el-button>
+                </el-col>
+                <el-col :span="3">
+                  <el-tooltip class="item" effect="dark" :content="dailyMarkTip" placement="top-start">
+                    <i class="el-icon-warning-outline" />
+                  </el-tooltip>
+                </el-col>
+              </el-row>
               <el-table :data="variableMarkedList" border stripe size="mini">
                 <el-table-column type="index" label="#" />
                 <el-table-column label="IOT平台变量名" prop="name" />
@@ -256,7 +289,7 @@
       <!-- 内嵌修改变量dialog -->
       <el-dialog
         width="40%"
-        :title="editVariable.id != null ? '修改变量daily标识' : '新增变量配对'"
+        :title="innerCreate === 0 ? '修改DailyMark' : '创建变量配对'"
         :visible.sync="innerVisible"
         top="50px"
         append-to-body
@@ -268,7 +301,7 @@
           :rules="editVariableRules"
           label-width="120px"
         >
-          <div v-if="editVariable.id != null">
+          <div v-if="innerCreate===0">
             <el-form-item label="IOT平台变量名" prop="name">
               <el-input v-model="editVariable.name" disabled />
             </el-form-item>
@@ -280,7 +313,7 @@
                   v-for="item in variableList"
                   :key="item.id"
                   :label="item.name"
-                  :value="item.name"
+                  :value="item.id"
                 />
               </el-select>
             </el-form-item>
@@ -302,6 +335,7 @@ import { getAsset, updateAsset } from '@/api/asset'
 import { getVariable, updateVariable } from '@/api/variable'
 import { Message } from 'element-ui'
 import { getUser } from '@/api/user'
+import { getApsa } from '@/api/apsa'
 
 export default {
   data() {
@@ -482,6 +516,7 @@ export default {
       variableMarkedList: [],
       editVisible: false,
       innerVisible: false,
+      innerCreate: 0,
       editApsaFormRules: {
         rtu_name: [
           { required: true, message: '请填写RTU名称', trigger: 'blur' }
@@ -505,7 +540,12 @@ export default {
         ],
         name: [{ required: true, message: '填写变量名', trigger: 'blur' }]
       },
-      activeIndex: '1'
+      activeIndex: '1',
+      // 搜索框内容
+      loading: false,
+      serchItemList: [],
+      // tooltip
+      dailyMarkTip: '11个变量:H_PROD,STP400V,STPAL,STPDFT. M3_PEAK,PROD,Q1,Q5,Q6,Q7,TOT. 可选流量计'
     }
   },
   watch: {
@@ -614,13 +654,17 @@ export default {
       this.engineerList = res
     },
     showEditDialog(assetInfo) {
-      console.log(assetInfo)
       this.editInfo = assetInfo
       this.getVariableList(assetInfo.id)
       this.getEngineer()
       this.editVisible = true
     },
     showEditInnerDialog(variableInfo) {
+      if (variableInfo.id) {
+        this.innerCreate = 0
+      } else {
+        this.innerCreate = 1
+      }
       this.editVariable = variableInfo
       this.innerVisible = true
     },
@@ -653,8 +697,17 @@ export default {
       }
     },
     async updateAsset() {
+      // 验证工程师
       if (this.editInfo.site.engineer.id === '' || this.editInfo.site.engineer.id === 0) {
         return Message.error('缺少工程师信息')
+      }
+      // 验证变量总数
+      if (this.variableMarkedList.length < 11) {
+        return Message.error('变量绑定数量错误，请确认')
+      }
+      // 验证两个400V
+      if (this.variableMarkedList.filter(x => x.daily_mark === 'H_STP400V').length !== 1) {
+        return Message.error('H_STP400V变量重复，请修改')
       }
       try {
         await this.$confirm('是否提交修改')
@@ -664,6 +717,19 @@ export default {
       } catch (error) {
         Message.error('提交失败：' + error)
       }
+    },
+    async getSeatchItem(query) {
+      if (query === null || query === '') {
+        return
+      }
+      this.loading = true
+      const res = await getApsa({ 'name': query }).catch((error) => {
+        console.log(error)
+        this.loading = false
+        this.$message.error('无法获取资产列表')
+      })
+      this.serchItemList = res
+      this.loading = false
     }
   }
 }

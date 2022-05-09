@@ -158,6 +158,7 @@ export default {
     'query.cal': function() {
       if (this.query.cal === '1' || this.query.cal === '0') {
         this.query.confirm = '1'
+        this.getItemList()
       } else {
         this.getItemList()
       }
