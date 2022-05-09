@@ -23,3 +23,21 @@ export function calculateDaily() {
     method: 'get'
   })
 }
+
+export function calculateFillingMonthly(params) {
+  // 返回promise对象
+  return request({
+    url: '/filling/monthly/calculate/',
+    method: 'get',
+    params
+  })
+}
+
+export function calculateInvoiceDiff(params) {
+  // 返回promise对象
+  return request({
+    url: '/monthly/invoice/calculate/',
+    method: 'get',
+    params
+  })
+}

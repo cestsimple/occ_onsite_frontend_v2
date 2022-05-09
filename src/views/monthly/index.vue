@@ -9,7 +9,7 @@
 
       <el-card>
         <!-- 标签页 -->
-        <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tabs v-model="activeName">
           <el-tab-pane label="充液月报" name="1">
             <filling />
           </el-tab-pane>
