@@ -30,6 +30,9 @@
         <el-col :span="5">
           <el-button size="mini" type="primary" @click="getItemList">搜索</el-button>
         </el-col>
+        <el-col :span="4">
+          <el-button size="mini" type="primary" @click="exportData">导出Excel</el-button>
+        </el-col>
       </el-row>
 
       <!-- 报表区 -->
@@ -278,6 +281,43 @@ export default {
       Message.success('更新成功')
       this.getItemList()
       this.showDialog = false
+    },
+    exportData() {
+      // 验证有无数据
+      if (this.total === 0) {
+        return Message.error('请先刷新数据后再下载')
+      }
+      // 定义表头对应json key
+      const headers = {
+        '日期': 'date',
+        'RTU名': 'rtu_name',
+        '变量名': 'variable_name',
+        '上月数值': 'start',
+        '本月数值': 'end',
+        '差值': 'diff'
+      }
+
+      import('@/vendor/Export2Excel').then(async excel => {
+        // 获取全部数据
+        const res = await getInvoiceDiff({ ...this.query, pagesize: this.total })
+        // 转化Json数据至[[]]格式
+        const data = this.formatJson(headers, res.list)
+        // 导出
+        excel.export_json_to_excel({
+          header: Object.keys(headers),
+          data: data,
+          filename: `开票变量_${this.query.date}_${this.query.region === '' ? '全部区域' : this.query.region}`,
+          bookType: 'xlsx'
+        })
+      })
+    },
+    formatJson(headers, rows) {
+      return rows.map(item => {
+        // item是对象
+        return Object.keys(headers).map(key => {
+          return item[headers[key]]
+        })
+      })
     }
   }
 }
