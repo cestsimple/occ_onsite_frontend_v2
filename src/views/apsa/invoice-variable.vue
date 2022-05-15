@@ -7,40 +7,57 @@
         <el-breadcrumb-item :to="{ path: '/apsa' }">设备资产管理</el-breadcrumb-item>
         <el-breadcrumb-item>设备资产Invoice变量管理</el-breadcrumb-item>
       </el-breadcrumb>
-      <el-card />
 
-      <!-- 表格区 -->
-      <el-table :data="itemList" border stripe size="mini">
-        <el-table-column label="RTU名 (点击添加变量)" prop="rtu_name">
-          <template slot-scope="scope">
-            <a @click="showAdd(scope.row)">{{ scope.row.rtu_name }}</a>
-          </template>
-        </el-table-column>
-        <el-table-column label="变量名" prop="variable" />
-        <el-table-column label="用途" prop="usage" />
-        <el-table-column label="操作" width="65px" fixed="right">
-          <template slot-scope="scope">
-            <!-- 修改按钮 -->
-            <el-button
-              type="danger"
-              icon="el-icon-delete"
-              size="mini"
-              @click="deleteVariable(scope.row)"
-            />
-          </template>
-        </el-table-column>
-      </el-table>
+      <el-card>
+        <!-- 区域过滤 -->
+        <el-row :gutter="20" :style="{'margin-bottom': '15px'}">
+          <el-col :span="5">
+            <span>区域过滤：</span>
+            <el-select v-model="querryInfo.region" placeholder="请选择" size="mini">
+              <el-option
+                v-for="item in regionOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-col>
+        </el-row>
 
-      <!-- 分页器 -->
-      <el-pagination
-        :current-page="querryInfo.page"
-        :page-sizes="[10, 15, 20, 50]"
-        :page-size="querryInfo.pagesize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-      />
+        <!-- 表格区 -->
+        <el-table :data="itemList" border stripe size="mini">
+          <el-table-column label="RTU名 (点击添加变量)" prop="rtu_name">
+            <template slot-scope="scope">
+              <a @click="showAdd(scope.row)">{{ scope.row.rtu_name }}</a>
+            </template>
+          </el-table-column>
+          <el-table-column label="变量名" prop="variable" />
+          <el-table-column label="用途" prop="usage" />
+          <el-table-column label="操作" width="65px" fixed="right">
+            <template slot-scope="scope">
+              <!-- 修改按钮 -->
+              <el-button
+                type="danger"
+                icon="el-icon-delete"
+                size="mini"
+                @click="deleteVariable(scope.row)"
+              />
+            </template>
+          </el-table-column>
+        </el-table>
+
+        <!-- 分页器 -->
+        <el-pagination
+          :current-page="querryInfo.page"
+          :page-sizes="[15, 20, 50, 999]"
+          :page-size="querryInfo.pagesize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
+      </el-card>
+
     </div>
     <!-- 弹层区 -->
     <el-dialog :title="`添加INVOICE计算变量 - ${addForm.rtu_name}`" :visible="showAddDialog" width="35%" @close="btnCancel">
@@ -85,6 +102,48 @@ export default {
         usage: 'invoice'
       },
       itemList: [],
+      regionOptions: [
+        {
+          value: '',
+          label: '所有区域'
+        },
+        {
+          value: 'ALEC_S_A',
+          label: '华东A'
+        },
+        {
+          value: 'ALEC_S_B',
+          label: '华东B'
+        },
+        {
+          value: 'ALJY',
+          label: '江阴'
+        },
+        {
+          value: 'ALYZ',
+          label: '扬州'
+        },
+        {
+          value: 'ALWH',
+          label: '武汉'
+        },
+        {
+          value: 'ALTJ',
+          label: '天津'
+        },
+        {
+          value: 'ALSD',
+          label: '山东'
+        },
+        {
+          value: 'ALCD',
+          label: '成都'
+        },
+        {
+          value: 'ALGD',
+          label: '广东'
+        }
+      ],
       showAddDialog: false,
       addForm: {
         rtu_name: '',
@@ -93,6 +152,11 @@ export default {
         usage: 'INVOICE'
       },
       variableList: []
+    }
+  },
+  watch: {
+    'querryInfo.region': function() {
+      this.getItemList()
     }
   },
   created() {
@@ -157,5 +221,7 @@ export default {
 </script>
 
 <style scoped>
-
+    ::v-deep span {
+        font-size: small;
+    }
 </style>

@@ -1,19 +1,46 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">欢迎登录IMOCC在线平台</div>
+    <div class="dashboard-text">
+      <h2>欢迎登录IMOCC在线平台</h2>
+      <el-timeline>
+        <el-timeline-item
+          v-for="(activity, index) in activities"
+          :key="index"
+          :timestamp="activity.timestamp"
+        >
+          {{ activity.content }}
+        </el-timeline-item>
+      </el-timeline>
+
+    </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 
 export default {
-  name: 'Dashboard',
-  computed: {
-    ...mapGetters([
-      'name'
-    ])
+  data() {
+    return {
+      reverse: true,
+      activities: [{
+        content: '新增APSA界面INVOICE变量页面和相应功能',
+        timestamp: '2022-5-14'
+      },
+      {
+        content: '移植功能',
+        timestamp: '2022-4-28'
+      },
+      {
+        content: 'OCC在线平台全新底层框架V2版上线',
+        timestamp: '2022-4-27'
+      },
+      {
+        content: 'OCC在线平台V1版上线',
+        timestamp: '2022-4-02'
+      }]
+    }
   }
+
 }
 </script>
 
