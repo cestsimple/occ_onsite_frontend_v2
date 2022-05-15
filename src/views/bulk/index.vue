@@ -166,7 +166,7 @@
                 <el-input v-model="editInfo.bulk.level_d" />
               </el-form-item>
               <el-form-item label="备注" prop="comment">
-                <el-input v-model="editInfo.bulk.comment" type="textarea" />
+                <el-input v-model="editInfo.comment" type="textarea" />
               </el-form-item>
             </el-tab-pane>
             <el-tab-pane label="变量登记" name="3">
@@ -181,12 +181,6 @@
                 <el-table-column label="修改配对信息">
                   <template slot-scope="scope">
                     <!-- 修改按钮 -->
-                    <el-button
-                      type="primary"
-                      icon="el-icon-edit"
-                      size="mini"
-                      @click="showEditInnerDialog(scope.row)"
-                    />
                     <el-button
                       type="danger"
                       icon="el-icon-delete"

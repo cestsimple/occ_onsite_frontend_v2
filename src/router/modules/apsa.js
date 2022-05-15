@@ -11,5 +11,14 @@ export default {
       title: '产气设备管理',
       icon: 'component'
     }
-  }]
+  }, {
+    path: 'invoice',
+    hidden: true,
+    component: () => import('@/views/apsa/invoice-variable'),
+    meta: {
+      title: '产气设备开票变量管理',
+      icon: 'component'
+    }
+  }
+  ]
 }

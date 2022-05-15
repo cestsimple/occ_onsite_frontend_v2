@@ -8,7 +8,9 @@
       </el-breadcrumb>
       <el-card class="box-card">
         <!-- 搜索栏 -->
-        <filter-bar @queryChanged="queryChanged" />
+        <filter-bar @queryChanged="queryChanged">
+          <el-button slot="before" type="primary" size="mini" @click="goInvoice">开票变量</el-button>
+        </filter-bar>
 
         <!-- 资产表区 -->
         <el-table :data="apsaList" border stripe size="mini">
@@ -67,7 +69,7 @@
             {{ scope.row.apsa.daily_js === 0 ? '不' : scope.row.apsa.daily_js === 1 ? '是' : '特殊' }}
           </template></el-table-column>
           <el-table-column label="备注" :show-overflow-tooltip="true" prop="comment" width="70" />
-          <el-table-column label="操作" width="62px" fixed="right">
+          <el-table-column label="操作" width="65px" fixed="right">
             <template slot-scope="scope">
               <!-- 修改按钮 -->
               <el-button
@@ -263,12 +265,6 @@
                 <el-table-column label="修改配对信息" width="120px">
                   <template slot-scope="scope">
                     <!-- 修改按钮 -->
-                    <el-button
-                      type="primary"
-                      icon="el-icon-edit"
-                      size="mini"
-                      @click="showEditInnerDialog(scope.row)"
-                    />
                     <el-button
                       type="danger"
                       icon="el-icon-delete"
@@ -730,6 +726,9 @@ export default {
       })
       this.serchItemList = res
       this.loading = false
+    },
+    goInvoice() {
+      this.$router.push('/apsa/invoice')
     }
   }
 }

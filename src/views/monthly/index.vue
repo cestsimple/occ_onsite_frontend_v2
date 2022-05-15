@@ -13,7 +13,7 @@
           <el-tab-pane label="充液月报" name="1">
             <filling />
           </el-tab-pane>
-          <el-tab-pane label="开票变量" name="2">
+          <el-tab-pane label="开票数据" name="2">
             <invoice-diff />
           </el-tab-pane>
           <el-tab-pane label="数据生成" name="3">

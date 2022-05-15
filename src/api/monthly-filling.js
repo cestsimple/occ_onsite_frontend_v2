@@ -17,3 +17,12 @@ export function updateFilling(data) {
     data
   })
 }
+
+export function getDetail(params) {
+  // 返回promise对象
+  return request({
+    url: '/monthly/filling/detail/',
+    method: 'get',
+    params
+  })
+}

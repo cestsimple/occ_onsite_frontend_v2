@@ -30,9 +30,14 @@
         <el-col :span="5">
           <el-button size="mini" type="primary" @click="getItemList">搜索</el-button>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="2">
           <el-button size="mini" type="primary" @click="exportData">导出Excel</el-button>
         </el-col>
+        <div v-show="total">
+          <el-col :span="2">
+            <el-button size="mini" type="primary" @click="showDetail">充液详情</el-button>
+          </el-col>
+        </div>
       </el-row>
 
       <!-- 报表区 -->
@@ -148,11 +153,49 @@
         </el-col>
       </el-row>
     </el-dialog>
+    <el-dialog title="详情" :visible="showDialogDetail" width="85%" @close="btnCancelDetail">
+      <el-table :data="detailList" border stripe size="mini">
+        <el-table-column type="index" label="#" width="35" />
+        <el-table-column label="RTU Name" prop="rtu_name" />
+        <el-table-column
+          label="资产名"
+          prop="asset_name"
+        />
+        <el-table-column
+          label="开始时间"
+          prop="time_1"
+          align="right"
+        />
+        <el-table-column
+          label="开始液位"
+          prop="level_1"
+          align="right"
+          width="80px"
+        />
+        <el-table-column
+          label="结束时间"
+          prop="time_2"
+          align="right"
+        />
+        <el-table-column
+          label="结束液位"
+          prop="level_2"
+          align="right"
+          width="80px"
+        />
+        <el-table-column
+          label="充液量(M3)"
+          prop="quatity"
+          align="right"
+          width="100px"
+        />
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getFilling, updateFilling } from '@/api/monthly-filling'
+import { getFilling, updateFilling, getDetail } from '@/api/monthly-filling'
 import { Message } from 'element-ui'
 export default {
   filters: {
@@ -229,7 +272,9 @@ export default {
         start: 0,
         end: 0
       },
-      exportDataList: []
+      exportDataList: [],
+      detailList: [],
+      showDialogDetail: false
     }
   },
   methods: {
@@ -328,6 +373,23 @@ export default {
           return item[headers[key]]
         })
       })
+    },
+    async getDetail() {
+      if (this.total === 0) {
+        return Message.error('请先完成查询')
+      }
+      const res = await getDetail(this.query).catch(() => {
+        Message.error('获取数据失败')
+      })
+      this.detailList = res
+    },
+    async showDetail() {
+      await this.getDetail()
+      this.showDialogDetail = true
+    },
+    btnCancelDetail() {
+      this.showDialogDetail = false
+      this.detailList = []
     }
   }
 }
@@ -336,5 +398,16 @@ export default {
 <style scoped>
   ::v-deep .el-row {
     margin-bottom: 15px;
+  }
+
+  ::v-deep .el-dialog{
+    margin-top: 1vh !important;
+  }
+
+  ::v-deep .el-dialog__header {
+    padding : 5px 20px 5px;
+  }
+  ::v-deep .el-dialog__title {
+    font-size: 15px;
   }
 </style>
