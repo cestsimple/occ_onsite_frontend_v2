@@ -15,7 +15,7 @@
             <iot-data />
           </el-tab-pane>
           <el-tab-pane label="手动报表计算" name="2">
-            手动报表计算
+            <onsite-calculate />
           </el-tab-pane>
           <el-tab-pane label="开发中。。。" name="4">开发中。。。</el-tab-pane>
         </el-tabs>
@@ -26,8 +26,9 @@
 
 <script>
 import IotData from './iot-data'
+import OnsiteCalculate from './onsite-calculate'
 export default {
-  components: { IotData },
+  components: { IotData, OnsiteCalculate },
   data() {
     return {
       activeName: '1'

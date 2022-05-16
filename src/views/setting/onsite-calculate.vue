@@ -1,16 +1,18 @@
 <template>
   <div>
-    <el-card v-loading="loading">
+    <el-card>
       <el-row>
         <el-col :span="24">
-          刷新数据： 抓取数据->抓取过去一天的所有数据，可以更新计算每日的报表； 刷新气站信息->从IOT抓取并更新/删除所有site,asset,variable,tag等信息
+          刷新所有数据执行顺序： 抓取数据 ==> 计算filling ==> 计算daily和malfunction
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-button type="primary" :disabled="jobList.some(x => x.name === 'IOT_RECORD')" size="mini" @click="getRecord"> 抓取数据 </el-button>
-          <el-button type="primary" :disabled="jobList.some(x => x.name === 'ONSITE_FILLING')" size="mini" @click="getIotAll">
-            刷新气站信息
+          <el-button type="primary" :disabled="jobList.some(x => x.name === 'ONSITE_FILLING' || x.name === 'IOT_RECORD')" size="mini" @click="calculateFilling">
+            计算filling
+          </el-button>
+          <el-button type="primary" :disabled="jobList.some(x => x.name === 'ONSITE_DAILY' || x.name === 'IOT_RECORD')" size="mini" @click="calculateDaily">
+            计算daily和malfunction
           </el-button>
         </el-col>
       </el-row>
@@ -34,14 +36,14 @@
 
 <script>
 import { getJobs } from '@/api/job'
-import { getRecord, getIotAll } from '@/api/manuel'
+import { calculateFilling, calculateDaily } from '@/api/manuel'
 import { Message } from 'element-ui'
 export default {
   data() {
     return {
       jobList: [],
       intervalJob: null,
-      loading: false
+      value2: ''
     }
   },
   created() {
@@ -52,34 +54,25 @@ export default {
     clearInterval(this.intervalJob)
   },
   methods: {
-    async getRecord() {
-      this.loading = true
-      await getRecord().catch(() => {
+    async calculateFilling() {
+      await calculateFilling().catch(() => {
         Message.error('刷新失败')
-        this.loading = false
       })
       Message.success('刷新成功，请等待完成')
       this.getJobs()
-      this.loading = false
     },
-    async getIotAll() {
-      this.loading = true
-      await getIotAll().catch(() => {
+    async calculateDaily() {
+      await calculateDaily().catch(() => {
         Message.error('刷新失败')
-        this.loading = false
       })
       Message.success('刷新成功，请等待完成')
       this.getJobs()
-      this.loading = false
     },
     async getJobs() {
-      this.loading = true
       const res = await getJobs().catch(() => {
         Message.error('获取Job失败')
-        this.loading = false
       })
       this.jobList = res.res
-      this.loading = false
     }
   }
 }

@@ -220,11 +220,11 @@ export default {
         },
         {
           value: 'invoice',
-          label: 'INVOICE'
+          label: '开票'
         },
         {
-          value: 'test',
-          label: 'TEST'
+          value: 'MONTHLY',
+          label: '月报'
         }
       ],
       showAddDialog: false,
