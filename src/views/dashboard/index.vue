@@ -23,19 +23,19 @@ export default {
     return {
       reverse: true,
       activities: [{
-        content: '新增APSA界面INVOICE变量页面和相应功能',
+        content: '新增APSA界面中Invoice变量页面和相应功能',
         timestamp: '2022-5-14'
       },
       {
-        content: '移植功能',
+        content: '移植已有功能，新增其他功能',
         timestamp: '2022-4-28'
       },
       {
-        content: 'OCC在线平台全新底层框架V2版上线',
+        content: '新底层框架V2版上线',
         timestamp: '2022-4-27'
       },
       {
-        content: 'OCC在线平台V1版上线',
+        content: 'OCC在线平台V1版部署',
         timestamp: '2022-4-02'
       }]
     }

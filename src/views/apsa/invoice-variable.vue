@@ -9,9 +9,9 @@
       </el-breadcrumb>
 
       <el-card>
-        <!-- 区域过滤 -->
+        <!-- 区域过滤 新增变量-->
         <el-row :gutter="20" :style="{'margin-bottom': '15px'}">
-          <el-col :span="5">
+          <el-col :span="19">
             <span>区域过滤：</span>
             <el-select v-model="querryInfo.region" placeholder="请选择" size="mini">
               <el-option
@@ -22,16 +22,21 @@
               />
             </el-select>
           </el-col>
+          <el-col :span="5">
+            <el-button type="primary" size="mini" @click="showAddNew">
+              添加变量
+            </el-button>
+          </el-col>
         </el-row>
 
         <!-- 表格区 -->
         <el-table :data="itemList" border stripe size="mini">
-          <el-table-column label="RTU名 (点击添加变量)" prop="rtu_name">
+          <el-table-column label="RTU名 (点击添加该气站变量)" prop="rtu_name">
             <template slot-scope="scope">
               <a @click="showAdd(scope.row)">{{ scope.row.rtu_name }}</a>
             </template>
           </el-table-column>
-          <el-table-column label="变量名" prop="variable" />
+          <el-table-column label="变量名" prop="variable_name" />
           <el-table-column label="用途" prop="usage" />
           <el-table-column label="操作" width="65px" fixed="right">
             <template slot-scope="scope">
@@ -67,10 +72,53 @@
         size="mini"
       >
         <el-form-item label="RTU_NAME" prop="rtu_name">
-          <el-input v-model="addForm.rtu_name" disabled />
+          <el-input v-model="addForm.rtu_name" size="mini" disabled />
         </el-form-item>
-        <el-form-item label="IOT平台变量" prop="name">
-          <el-select v-model="addForm.id" filterable clearable placeholder="从IOT变量中选择">
+        <el-form-item label="IOT平台变量" prop="variable_name">
+          <el-select v-model="addForm.variable" filterable size="mini" clearable placeholder="从IOT变量中选择">
+            <el-option
+              v-for="item in variableList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span class="dialog-footer">
+        <el-button @click="btnCancel">取 消</el-button>
+        <el-button type="primary" @click="addVariable">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="添加INVOICE计算变量" :visible="showAddNewDialog" width="35%" @close="btnCancel">
+      <el-form>
+        <el-form-item label="搜索选择APSA" prop="apsa" size="mini">
+          <el-select
+            v-model="addForm.apsa"
+            filterable
+            remote
+            placeholder="输入气站中文或RTU名"
+            :remote-method="getApsaList"
+            :loading="loading"
+            size="mini"
+            clearable
+          >
+            <el-option
+              v-for="item in apsaList"
+              :key="item.id"
+              :label="item.site_name + '-' + item.asset_name"
+              :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="IOT平台变量" prop="variable_name">
+          <el-select
+            v-model="addForm.variable"
+            filterable
+            clearable
+            size="mini"
+            placeholder="从IOT变量中选择"
+          >
             <el-option
               v-for="item in variableList"
               :key="item.id"
@@ -91,6 +139,8 @@
 <script>
 import { getInvoiceVariable, deleteInvoiceVariable, addInvoiceVariable } from '@/api/invoice-diff'
 import { Message } from 'element-ui'
+import { getApsa } from '@/api/apsa'
+import { getVariable } from '@/api/variable'
 export default {
   data() {
     return {
@@ -147,16 +197,24 @@ export default {
       showAddDialog: false,
       addForm: {
         rtu_name: '',
-        apsa: 0,
-        variable: 10,
+        apsa: null,
+        variable: null,
         usage: 'INVOICE'
       },
-      variableList: []
+      variableList: [],
+      apsaList: [],
+      showAddNewDialog: false,
+      loading: false
     }
   },
   watch: {
     'querryInfo.region': function() {
       this.getItemList()
+    },
+    'addForm.apsa': function() {
+      if (this.showAddNewDialog === true || this.showAddDialog === true) {
+        this.getVariableList(this.addForm.apsa)
+      }
     }
   },
   created() {
@@ -180,22 +238,28 @@ export default {
       this.itemList = res.list
       this.total = res.total
     },
+    // 弹层控制
     showAdd(apsa) {
-      console.log(apsa)
       this.addForm.apsa = apsa.apsa
       this.addForm.rtu_name = apsa.rtu_name
       this.showAddDialog = true
     },
     btnCancel() {
       this.showAddDialog = false
+      this.showAddNewDialog = false
       this.addForm = {
         rtu_name: '',
-        apsa: 0,
-        variable: 0,
+        apsa: null,
+        variable: null,
         usage: 'INVOICE'
       }
       this.variableList = []
+      this.apsaList = []
     },
+    showAddNew() {
+      this.showAddNewDialog = true
+    },
+    // 删除功能
     async deleteVariable(item) {
       try {
         await this.$confirm('是否删除该变量')
@@ -206,7 +270,12 @@ export default {
         Message.error('删除失败：' + error)
       }
     },
+    // 添加功能
     async addVariable() {
+      // 检查是否重复
+      if (this.addBeforeCheck()) {
+        return Message.error('该变量已存在')
+      }
       try {
         await addInvoiceVariable(this.addForm)
         Message.success('新增成功')
@@ -215,6 +284,36 @@ export default {
       } catch (error) {
         Message.error('新增失败：' + error)
       }
+    },
+    // 添加前查询功能
+    async addBeforeCheck() {
+      const res = await getInvoiceVariable({ ...this.querryInfo, pagesize: 999 }).catch(error => {
+        console.log(error)
+        return this.$message.error('网络不佳，请稍后重试')
+      })
+      return res.list.some(x => x.apsa === this.addForm.apsa && x.variable === this.addForm.variable)
+    },
+    // 弹层搜索功能
+    async getApsaList(query) {
+      if (query === null || query === '') {
+        return
+      }
+      this.loading = true
+      const res = await getApsa({ 'name': query }).catch((error) => {
+        console.log(error)
+        this.loading = false
+        this.$message.error('无法获取资产列表')
+      })
+      this.apsaList = res
+      this.loading = false
+    },
+    async getVariableList(id) {
+      const res = await getVariable({ 'apsa': id }).catch(error => {
+        console.log(error)
+        this.$message.error('获取Variables信息失败')
+      })
+      this.variableList = res
+      this.variableMarkedList = res.filter(x => x.daily_mark !== '')
     }
   }
 }
