@@ -17,3 +17,29 @@ export function getUser(params) {
     params
   })
 }
+
+export function updateUser(data) {
+  // 返回promise对象
+  return request({
+    url: `/user/${data.id}/`,
+    method: 'put',
+    data
+  })
+}
+
+export function deleteUser(id) {
+  // 返回promise对象
+  return request({
+    url: `/user/${id}/`,
+    method: 'delete'
+  })
+}
+
+export function createUser(data) {
+  // 返回promise对象
+  return request({
+    url: '/user/',
+    method: 'post',
+    data
+  })
+}

@@ -1,16 +1,25 @@
 <template>
   <div class="dashboard-container">
     <div class="dashboard-text">
-      <h2>欢迎登录IMOCC在线平台</h2>
-      <el-timeline>
-        <el-timeline-item
-          v-for="(activity, index) in activities"
-          :key="index"
-          :timestamp="activity.timestamp"
-        >
-          {{ activity.content }}
-        </el-timeline-item>
-      </el-timeline>
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+        <el-breadcrumb-item>信息展示</el-breadcrumb-item>
+      </el-breadcrumb>
+      <el-card>
+        <div class="header">
+          <span>欢迎登录OCC在线平台</span>
+        </div>
+
+        <el-timeline>
+          <el-timeline-item
+            v-for="(activity, index) in activities"
+            :key="index"
+            :timestamp="activity.timestamp"
+          >
+            {{ activity.content }}
+          </el-timeline-item>
+        </el-timeline>
+      </el-card>
 
     </div>
   </div>
@@ -21,22 +30,17 @@
 export default {
   data() {
     return {
-      reverse: true,
       activities: [{
-        content: '新增APSA界面中Invoice变量页面和相应功能',
+        content: '新增用户页面，可以对用户进行增删改',
+        timestamp: '2022-5-16'
+      },
+      {
+        content: '新增Invoice变量页面和相应功能 (入口: APSA设置页面->左上角开票变量按钮)',
         timestamp: '2022-5-14'
       },
       {
-        content: '移植已有功能，新增其他功能',
-        timestamp: '2022-4-28'
-      },
-      {
-        content: '新底层框架V2版上线',
-        timestamp: '2022-4-27'
-      },
-      {
-        content: 'OCC在线平台V1版部署',
-        timestamp: '2022-4-02'
+        content: '....',
+        timestamp: '2021-2022'
       }]
     }
   }
@@ -53,5 +57,12 @@ export default {
     font-size: 30px;
     line-height: 46px;
   }
+}
+::v-deep .header {
+  font-size: x-large;
+  margin-bottom: 25px;
+}
+::v-deep .el-timeline {
+  padding-left: 20px;
 }
 </style>

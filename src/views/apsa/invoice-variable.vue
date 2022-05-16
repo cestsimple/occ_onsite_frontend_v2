@@ -86,8 +86,8 @@
         </el-form-item>
       </el-form>
       <span class="dialog-footer">
-        <el-button @click="btnCancel">取 消</el-button>
-        <el-button type="primary" @click="addVariable">确 定</el-button>
+        <el-button size="mini" @click="btnCancel">取 消</el-button>
+        <el-button type="primary" size="mini" @click="addVariable">确 定</el-button>
       </span>
     </el-dialog>
     <el-dialog title="添加INVOICE计算变量" :visible="showAddNewDialog" width="35%" @close="btnCancel">
@@ -272,8 +272,13 @@ export default {
     },
     // 添加功能
     async addVariable() {
+      // 是否为空
+      if (this.addForm.apsa === null || this.addForm.variable === null) {
+        return Message.error('apsa和变量不能为空')
+      }
       // 检查是否重复
-      if (this.addBeforeCheck()) {
+      const p = await this.addBeforeCheck()
+      if (p) {
         return Message.error('该变量已存在')
       }
       try {
