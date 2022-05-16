@@ -11,7 +11,12 @@
       <el-card>
         <!-- 区域过滤 新增变量-->
         <el-row :gutter="20" :style="{'margin-bottom': '15px'}">
-          <el-col :span="19">
+          <el-col :span="2">
+            <el-button type="primary" size="mini" @click="showAddNew">
+              添加变量
+            </el-button>
+          </el-col>
+          <el-col :span="22">
             <span>区域过滤：</span>
             <el-select v-model="querryInfo.region" placeholder="请选择" size="mini">
               <el-option
@@ -21,11 +26,15 @@
                 :value="item.value"
               />
             </el-select>
-          </el-col>
-          <el-col :span="5">
-            <el-button type="primary" size="mini" @click="showAddNew">
-              添加变量
-            </el-button>
+            <span :style="{'margin-left': '20px'}">用途过滤：</span>
+            <el-select v-model="querryInfo.usage" placeholder="请选择" size="mini">
+              <el-option
+                v-for="item in usageOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
           </el-col>
         </el-row>
 
@@ -84,6 +93,11 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item label="变量用途">
+          <el-checkbox-group v-model="addForm.usage">
+            <el-checkbox v-for="item in usageOptions.slice(1)" :key="item.value" :label="item.label" />
+          </el-checkbox-group>
+        </el-form-item>
       </el-form>
       <span class="dialog-footer">
         <el-button size="mini" @click="btnCancel">取 消</el-button>
@@ -127,10 +141,15 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item label="变量用途">
+          <el-checkbox-group v-model="addForm.usage">
+            <el-checkbox v-for="item in usageOptions.slice(1)" :key="item.value" :label="item.label" />
+          </el-checkbox-group>
+        </el-form-item>
       </el-form>
       <span class="dialog-footer">
-        <el-button @click="btnCancel">取 消</el-button>
-        <el-button type="primary" @click="addVariable">确 定</el-button>
+        <el-button size="mini" @click="btnCancel">取 消</el-button>
+        <el-button size="mini" type="primary" @click="addVariable">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -194,12 +213,26 @@ export default {
           label: '广东'
         }
       ],
+      usageOptions: [
+        {
+          value: '',
+          label: '所有'
+        },
+        {
+          value: 'invoice',
+          label: 'INVOICE'
+        },
+        {
+          value: 'test',
+          label: 'TEST'
+        }
+      ],
       showAddDialog: false,
       addForm: {
         rtu_name: '',
         apsa: null,
         variable: null,
-        usage: 'INVOICE'
+        usage: []
       },
       variableList: [],
       apsaList: [],
@@ -209,6 +242,9 @@ export default {
   },
   watch: {
     'querryInfo.region': function() {
+      this.getItemList()
+    },
+    'querryInfo.usage': function() {
       this.getItemList()
     },
     'addForm.apsa': function() {
@@ -251,7 +287,7 @@ export default {
         rtu_name: '',
         apsa: null,
         variable: null,
-        usage: 'INVOICE'
+        usage: []
       }
       this.variableList = []
       this.apsaList = []
@@ -273,8 +309,8 @@ export default {
     // 添加功能
     async addVariable() {
       // 是否为空
-      if (this.addForm.apsa === null || this.addForm.variable === null) {
-        return Message.error('apsa和变量不能为空')
+      if (this.addForm.apsa === null || this.addForm.variable === null || this.addForm.usage.length === 0) {
+        return Message.error('必填不能为空')
       }
       // 检查是否重复
       const p = await this.addBeforeCheck()

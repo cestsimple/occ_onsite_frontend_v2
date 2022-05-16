@@ -171,9 +171,8 @@ export default {
       yesterday.setDate(today.getDate() - 1)
       const year = yesterday.getFullYear() // 年
       const month = yesterday.getMonth() + 1 // 月
-      const day = yesterday.getDate() // 日
-      const start = year + '-' + month + '-' + day + ' ' + '00:00'
-      const end = year + '-' + month + '-' + day + ' ' + '23:59'
+      const start = year + '-' + month + '-' + yesterday.getDate() + ' 00:00'
+      const end = year + '-' + month + '-' + today.getDate() + ' 00:00'
       this.date = [start, end]
       this.query.start = start
       this.query.end = end
