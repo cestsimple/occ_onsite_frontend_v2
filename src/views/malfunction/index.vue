@@ -12,6 +12,7 @@
 
         <!-- 搜索框 -->
         <search-bar @queryChanged="queryChanged">
+          <el-button slot="before" size="mini" type="primary" @click="exportData">导出Excel</el-button>
           <el-button slot="before" type="primary" size="mini" @click="goAddPage">新增</el-button>
         </search-bar>
 
@@ -228,21 +229,74 @@ export default {
     editMalfunctionMaint(item) {
       this.$refs.editMaint.getData(item)
       this.showEditMaint = true
+    },
+    // 导出数据
+    exportData() {
+      // 验证有无数据
+      if (this.total === 0) {
+        return Message.error('请先刷新数据后再下载')
+      }
+      // 定义表头对应json key
+      const headers = {
+        'RTU名': 'rtu_name',
+        '资产名': 'asset_name',
+        '变量名': 'variable_name',
+        '停机时间': 't_start',
+        '开机时间': 't_end',
+        '停机次数': 'stop_count',
+        '停机时长': 'stop_hour',
+        '停机液氮消耗': 'stop_consumption',
+        '停机标志位': 'stop_label',
+        '停机报警': 'stop_alarm',
+        '停机原因': 'reason_main',
+        '具体原因-1': 'reason_detail_1',
+        '具体原因-2': 'reason_detail_2',
+        '过程组原因': 'reason_l1',
+        '设备原因': 'reason_l2',
+        '组件原因': 'reason_l3',
+        '部件原因': 'reason_l4',
+        'OCC备注': 'occ_comment',
+        '维修备注': 'mt_comment',
+        '上次修改时间': 'change_date',
+        '上次修改者': 'change_user'
+      }
+
+      import('@/vendor/Export2Excel').then(async excel => {
+        // 获取全部数据
+        const res = await getMalfunction({ ...this.query, pagesize: this.total })
+        // 转化Json数据至[[]]格式
+        const data = this.formatJson(headers, res.list)
+        // 导出
+        excel.export_json_to_excel({
+          header: Object.keys(headers),
+          data: data,
+          filename: `停机报表_${this.query.start}_${this.query.region === '' ? '全部区域' : this.query.region}`,
+          bookType: 'xlsx'
+        })
+      })
+    },
+    formatJson(headers, rows) {
+      return rows.map(item => {
+        // item是对象
+        return Object.keys(headers).map(key => {
+          return item[headers[key]]
+        })
+      })
     }
   }
 }
 </script>
 
 <style scoped>
-  /deep/.demo-table-expand {
+  ::v-deep .demo-table-expand {
       width: 80%;
       font-size: 0px;
   }
-  /deep/.demo-table-expand label {
+  ::v-deep .demo-table-expand label {
     width: 85px;
     color: #99a9bf;
   }
-  /deep/.demo-table-expand .el-form-item {
+  ::v-deep .demo-table-expand .el-form-item {
     margin-right: 0;
     margin-bottom: 0;
     width: 30%;

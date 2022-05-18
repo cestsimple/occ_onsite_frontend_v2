@@ -13,6 +13,15 @@
 
         <!-- 资产表区 -->
         <el-table :data="bulkList" border stripe size="mini">
+          <el-table-column label="+" type="expand">
+            <template slot-scope="scope">
+              <el-form>
+                <el-form-item>
+                  <el-button type="info" size="mini" @click="hideAsset(scope.row)">隐藏该资产</el-button>
+                </el-form-item>
+              </el-form>
+            </template>
+          </el-table-column>
           <el-table-column type="index" label="#" />
           <el-table-column label="气站名" prop="site.name" />
           <el-table-column label="RTU名" prop="rtu_name" />
@@ -489,11 +498,22 @@ export default {
     },
     async updateAsset() {
       try {
-        await updateAsset(this.editInfo)
+        await updateAsset({ ...this.editInfo, confirm: 1 })
         Message.success('提交成功')
         this.editDialogClosed()
       } catch (error) {
         Message.error('提交失败：' + error)
+      }
+    },
+    // 设置隐藏
+    async hideAsset(asset) {
+      try {
+        await this.$confirm('隐藏不会删除该资产，以后可过滤进行查看')
+        await updateAsset({ ...asset, confirm: -1 })
+        Message.info('已隐藏')
+        this.getBulkList()
+      } catch (error) {
+        Message.error('隐藏失败：' + error)
       }
     }
   }

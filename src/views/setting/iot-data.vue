@@ -3,13 +3,18 @@
     <el-card v-loading="loading">
       <el-row>
         <el-col :span="24">
-          刷新数据： 抓取数据->抓取过去一天的所有数据，可以更新计算每日的报表； 刷新气站信息->从IOT抓取并更新/删除所有site,asset,variable,tag等信息
+          刷新数据： 抓取数据->抓取过去一天的所有数据，可以更新计算每日的报表
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          刷新气站信息: 从IOT抓取所有site,asset,variable,tag等数据，更新内容包括：IOT上新资产/变量会出现，IOT上删除的会被隐藏，已有资产会更新中文名，维修等字段
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="24">
           <el-button type="primary" :disabled="jobList.some(x => x.name === 'IOT_RECORD')" size="mini" @click="getRecord"> 抓取数据 </el-button>
-          <el-button type="primary" :disabled="jobList.some(x => x.name === 'ONSITE_FILLING')" size="mini" @click="getIotAll">
+          <el-button type="primary" :disabled="jobList.some(x => x.name === 'IOT_ALL')" size="mini" @click="getIotAll">
             刷新气站信息
           </el-button>
         </el-col>
@@ -63,6 +68,7 @@ export default {
       this.loading = false
     },
     async getIotAll() {
+      await this.$confirm('刷新气站信息会花费较久时间，请确认继续')
       this.loading = true
       await getIotAll().catch(() => {
         Message.error('刷新失败')

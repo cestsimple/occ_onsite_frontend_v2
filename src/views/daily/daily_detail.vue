@@ -10,7 +10,9 @@
       <!-- 内容 -->
       <el-card>
         <!-- 搜索框 -->
-        <search-bar @queryChanged="queryChanged" />
+        <search-bar @queryChanged="queryChanged">
+          <el-button slot="before" size="mini" type="primary" @click="exportData">导出Excel</el-button>
+        </search-bar>
 
         <!-- 表单区 -->
         <el-table
@@ -224,6 +226,7 @@
 <script>
 import { getDaily } from '@/api/daily'
 import EditDaily from './edit-daily'
+import { Message } from 'element-ui'
 export default {
   components: { EditDaily },
   filters: {
@@ -240,7 +243,8 @@ export default {
         pagesize: 15,
         name: '',
         start: '',
-        end: ''
+        end: '',
+        region: ''
       },
       loading: false,
       showEditDialog: false,
@@ -278,6 +282,60 @@ export default {
     editDaily(item) {
       this.editItem = item
       this.showEditDialog = true
+    },
+    // 导出数据
+    exportData() {
+      // 验证有无数据
+      if (this.total === 0) {
+        return Message.error('请先刷新数据后再下载')
+      }
+      // 定义表头对应json key
+      const headers = {
+        '日期': 'date',
+        '区域': 'region',
+        'RTU名': 'rtu_name',
+        '型号': 'series',
+        '合同量': 'norminal',
+        '汽化器最大能力': 'vap_max',
+        'H Prod': 'h_prod',
+        'H Missing': 'h_missing',
+        '生产量': 'm3_prod',
+        '平均生产量': 'avg_prod',
+        '客户用量': 'cus_consume',
+        '平均用量': 'avg_consume',
+        'Vpeak': 'v_peak',
+        'Peak': 'peak',
+        'LIN_TOT': 'lin_tot',
+        'Cooling': 'cooling',
+        'Vpeak-Peak': 'dif_peak',
+        'H Stop': 'h_stop',
+        '停机消耗': 'lin_consume',
+        '充液量': 'filling',
+        '计算成功': 'success',
+        '备注': 'comment'
+      }
+
+      import('@/vendor/Export2Excel').then(async excel => {
+        // 获取全部数据
+        const res = await getDaily({ ...this.query, pagesize: this.total })
+        // 转化Json数据至[[]]格式
+        const data = this.formatJson(headers, res.list)
+        // 导出
+        excel.export_json_to_excel({
+          header: Object.keys(headers),
+          data: data,
+          filename: `日报表_${this.query.start}_${this.query.region === '' ? '全部区域' : this.query.region}`,
+          bookType: 'xlsx'
+        })
+      })
+    },
+    formatJson(headers, rows) {
+      return rows.map(item => {
+        // item是对象
+        return Object.keys(headers).map(key => {
+          return item[headers[key]]
+        })
+      })
     }
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <!-- 搜索与添加 -->
   <el-row :gutter="20" :style="{'margin-bottom': '15px'}">
-    <el-col :span="2">
+    <el-col :span="4">
       <!-- 插槽 -->
       <slot name="before" /></el-col>
     <el-col :span="8">

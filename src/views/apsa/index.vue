@@ -17,6 +17,9 @@
           <el-table-column label="+" type="expand">
             <template slot-scope="scope">
               <el-form label-position="left" inline class="demo-table-expand" size="mini">
+                <el-form-item label="资产名">
+                  <el-tag>{{ scope.row.name }}</el-tag>
+                </el-form-item>
                 <el-form-item label="类型">
                   <el-tag>{{ scope.row.apsa.onsite_type }}</el-tag>
                 </el-form-item>
@@ -25,6 +28,9 @@
                 </el-form-item>
                 <el-form-item label="汽化器型号">
                   <el-tag>{{ scope.row.apsa.vap_type }}</el-tag>
+                </el-form-item>
+                <el-form-item>
+                  <el-button type="info" size="mini" @click="hideAsset(scope.row)">隐藏该资产</el-button>
                 </el-form-item>
               </el-form>
             </template>
@@ -246,10 +252,10 @@
             </el-tab-pane>
             <el-tab-pane label="变量登记" name="3">
               <el-row>
-                <el-col :span="4">
+                <el-col :span="5">
                   <el-button size="mini" type="primary" @click="showEditInnerDialog({})">新增变量配对</el-button>
                 </el-col>
-                <el-col :span="3">
+                <el-col :span="19">
                   <el-tooltip class="item" effect="dark" :content="dailyMarkTip" placement="top-start">
                     <i class="el-icon-warning-outline" />
                   </el-tooltip>
@@ -332,7 +338,6 @@ import { getVariable, updateVariable } from '@/api/variable'
 import { Message } from 'element-ui'
 import { getUser } from '@/api/user'
 import { getApsa } from '@/api/apsa'
-
 export default {
   data() {
     return {
@@ -491,11 +496,11 @@ export default {
           facility_fin: '',
           daily_js: 0,
           temperature: 0,
-          vap_max: '',
+          vap_max: 0,
           vap_type: '',
           norminal_flow: 0,
-          daily_bind: '',
-          flow_meter: '',
+          daily_bind: 0,
+          flow_meter: 0,
           cooling_fixed: 0
         },
         name: '',
@@ -505,7 +510,7 @@ export default {
       editVariable: {
         id: 0,
         name: '',
-        confirm: '',
+        confirm: 0,
         daily_mark: ''
       },
       variableList: [],
@@ -559,15 +564,16 @@ export default {
     }
   },
   methods: {
+    // 监听 页码 变化的函数
     handleSizeChange(newSize) {
       this.querryInfo.pagesize = newSize
       this.getApsaList()
     },
-    // 监听 页码 变化的函数
     handleCurrentChange(newPage) {
       this.querryInfo.page = newPage
       this.getApsaList()
     },
+    // 搜索框触发搜索功能
     queryChanged(query) {
       this.querryInfo.name = query.name
       this.querryInfo.region = query.region
@@ -576,6 +582,7 @@ export default {
       this.querryInfo.page = 1
       this.getApsaList()
     },
+    // 获取资产列表，工程师，变量信息
     async getApsaList() {
       const res = await getAsset(this.querryInfo).catch(error => {
         console.log(error)
@@ -583,6 +590,37 @@ export default {
       })
       this.apsaList = res.list
       this.total = res.total
+    },
+    async getVariableList(id) {
+      const res = await getVariable({ 'asset': id }).catch(error => {
+        console.log(error)
+        this.$message.error('获取Variables信息失败')
+      })
+      this.variableList = res
+      this.variableMarkedList = res.filter(x => x.daily_mark !== '')
+    },
+    async getEngineer() {
+      const res = await getUser({ 'engineer': 1 }).catch(error => {
+        console.log(error)
+        this.$message.error('获取工程师信息失败')
+      })
+      this.engineerList = res
+    },
+    // 弹层控制
+    showEditDialog(assetInfo) {
+      this.editInfo = assetInfo
+      this.getVariableList(assetInfo.id)
+      this.getEngineer()
+      this.editVisible = true
+    },
+    showEditInnerDialog(variableInfo) {
+      if (variableInfo.id) {
+        this.innerCreate = 0
+      } else {
+        this.innerCreate = 1
+      }
+      this.editVariable = variableInfo
+      this.innerVisible = true
     },
     editDialogClosed() {
       this.editVisible = false
@@ -610,11 +648,11 @@ export default {
           facility_fin: '',
           daily_js: 0,
           temperature: 0,
-          vap_max: '',
+          vap_max: 0,
           vap_type: '',
           norminal_flow: 0,
-          daily_bind: '',
-          flow_meter: '',
+          daily_bind: 0,
+          flow_meter: 0,
           cooling_fixed: 0
         },
         name: '',
@@ -634,36 +672,7 @@ export default {
       this.innerVisible = false
       this.getApsaList()
     },
-    async getVariableList(id) {
-      const res = await getVariable({ 'asset': id }).catch(error => {
-        console.log(error)
-        this.$message.error('获取Variables信息失败')
-      })
-      this.variableList = res
-      this.variableMarkedList = res.filter(x => x.daily_mark !== '')
-    },
-    async getEngineer() {
-      const res = await getUser({ 'engineer': 1 }).catch(error => {
-        console.log(error)
-        this.$message.error('获取工程师信息失败')
-      })
-      this.engineerList = res
-    },
-    showEditDialog(assetInfo) {
-      this.editInfo = assetInfo
-      this.getVariableList(assetInfo.id)
-      this.getEngineer()
-      this.editVisible = true
-    },
-    showEditInnerDialog(variableInfo) {
-      if (variableInfo.id) {
-        this.innerCreate = 0
-      } else {
-        this.innerCreate = 1
-      }
-      this.editVariable = variableInfo
-      this.innerVisible = true
-    },
+    // 变量操作方法
     async deleteDailyMark(varibaleInfo) {
       try {
         await this.$confirm('是否删除该配对')
@@ -692,6 +701,7 @@ export default {
         Message.error('提交失败：' + error)
       }
     },
+    // 更新资产
     async updateAsset() {
       // 验证工程师
       if (this.editInfo.site.engineer.id === '' || this.editInfo.site.engineer.id === 0) {
@@ -705,15 +715,36 @@ export default {
       if (this.variableMarkedList.filter(x => x.daily_mark === 'H_STP400V').length !== 1) {
         return Message.error('H_STP400V变量重复，请修改')
       }
+      // 验证不能自己绑定自己
+      if (this.editInfo.apsa.daily_bind !== this.editInfo.apsa.id) {
+        return Message.error('不能自己绑定自己')
+      }
+      // 如果是普通计算，则清空bind和fixed
+      if (this.editInfo.apsa.daily_js === 1) {
+        this.editInfo.apsa.cooling_fixed = 0
+        this.editInfo.apsa.daily_bind = -1
+      }
       try {
         await this.$confirm('是否提交修改')
-        await updateAsset(this.editInfo)
+        await updateAsset({ ...this.editInfo, confirm: 1 })
         Message.success('提交成功')
-        this.editDialogClosed()
+        this.getApsaList()
       } catch (error) {
         Message.error('提交失败：' + error)
       }
     },
+    // 设置隐藏
+    async hideAsset(asset) {
+      try {
+        await this.$confirm('隐藏不会删除该资产，以后可过滤进行查看')
+        await updateAsset({ ...asset, confirm: -1 })
+        Message.info('已隐藏')
+        this.getApsaList()
+      } catch (error) {
+        Message.error('隐藏失败：' + error)
+      }
+    },
+    // 搜索框
     async getSeatchItem(query) {
       if (query === null || query === '') {
         return
@@ -727,6 +758,7 @@ export default {
       this.serchItemList = res
       this.loading = false
     },
+    // 跳转页面
     goInvoice() {
       this.$router.push('/apsa/invoice')
     }

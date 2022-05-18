@@ -17,7 +17,9 @@
             :timestamp="activity.timestamp"
             size="normal"
           >
-            {{ activity.content }}
+            <span :style="{'white-space': 'pre-line'}">
+              {{ activity.content }}
+            </span>
           </el-timeline-item>
         </el-timeline>
       </el-card>
@@ -33,7 +35,15 @@ export default {
     return {
       activities: [
         {
-          content: '新增用户页面，可以对用户进行增删改; apsa开票变量新增用途多选; 后台操作页面细化操作分类',
+          content: '新增日报，停机报表导出功能;\n新增设备管理表asset name字段以作区分;\n新增设备管理表可以隐藏不计入报表的资产;\n修复daily登记相关bug(特殊计算绑定自己，常规计算有绑定值);',
+          timestamp: '2022-5-18'
+        },
+        {
+          content: '导入invoice变量配对;\n新增后台手动从IOT抓取并刷新信息;\n对抓取数据进行限时1h,超时取消任务,防止后续任务无法进行;',
+          timestamp: '2022-5-17'
+        },
+        {
+          content: '新增用户页面,可以对用户进行增删改;\napsa开票变量新增用途多选;\n后台操作页面细化操作分类;',
           timestamp: '2022-5-16'
         },
         {
@@ -66,5 +76,9 @@ export default {
 }
 ::v-deep .el-timeline {
   padding-left: 20px;
+}
+::v-deep .el-timeline-item__content {
+  font-size: 13px;
+  line-height: 20px;
 }
 </style>

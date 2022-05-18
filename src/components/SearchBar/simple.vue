@@ -127,6 +127,10 @@ export default {
         {
           value: '0',
           label: '未确认'
+        },
+        {
+          value: '-1',
+          label: '已隐藏'
         }
       ],
       calOption: [
@@ -156,12 +160,7 @@ export default {
       this.getItemList()
     },
     'query.cal': function() {
-      if (this.query.cal === '1' || this.query.cal === '0') {
-        this.query.confirm = '1'
-        this.getItemList()
-      } else {
-        this.getItemList()
-      }
+      this.getItemList()
     }
   },
   created() {
