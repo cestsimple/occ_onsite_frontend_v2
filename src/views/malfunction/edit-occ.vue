@@ -149,7 +149,7 @@ export default {
       this.$emit('update:showDialog', false)
     },
     getData(item) {
-      this.editForm = item
+      this.editForm = JSON.parse(JSON.stringify(item))
     },
     async updateItem() {
       try {

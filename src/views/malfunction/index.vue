@@ -240,10 +240,9 @@ export default {
       const headers = {
         'RTU名': 'rtu_name',
         '资产名': 'asset_name',
-        '变量名': 'variable_name',
+        '资产编号': '',
         '停机时间': 't_start',
         '开机时间': 't_end',
-        '停机次数': 'stop_count',
         '停机时长': 'stop_hour',
         '停机液氮消耗': 'stop_consumption',
         '停机标志位': 'stop_label',
