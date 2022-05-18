@@ -35,6 +35,10 @@ export default {
     return {
       activities: [
         {
+          content: '修复malfunction信息登记功能若干bug,修复逻辑错误;\n新增malfunction所有报表单提交详细数据验证',
+          timestamp: '2022-5-19'
+        },
+        {
           content: '新增日报，停机报表导出功能;\n新增设备管理表asset name字段以作区分;\n新增设备管理表可以隐藏不计入报表的资产;\n修复daily登记相关bug(特殊计算绑定自己，常规计算有绑定值);',
           timestamp: '2022-5-18'
         },

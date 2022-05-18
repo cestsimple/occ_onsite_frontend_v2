@@ -6,13 +6,21 @@
     top="30px"
     @close="btnCancel"
   >
+    <el-alert
+      :title="`当前用户:${userInfo.username}，上次编辑于: ${editForm.change_user} 在 ${editForm.change_date} `"
+      type="info"
+      center
+      show-icon
+      :closable="false"
+    />
     <!-- 表单区域 -->
     <el-form
       ref="editFormRef"
       :model="editForm"
-      label-width="100px"
+      :rules="editFormRule"
+      label-width="120px"
       size="mini"
-    ><el-form-item label="开始时间" prop="t_start">
+    ><el-form-item label="停机时间" prop="t_start">
        <el-date-picker
          v-model="editForm.t_start"
          type="datetime"
@@ -21,7 +29,7 @@
          value-format="yyyy-MM-dd HH:mm"
        />
      </el-form-item>
-      <el-form-item label="结束时间" prop="t_end">
+      <el-form-item label="开机时间" prop="t_end">
         <el-date-picker
           v-model="editForm.t_end"
           type="datetime"
@@ -31,13 +39,13 @@
         />
       </el-form-item>
       <el-form-item label="停机次数" prop="stop_count">
-        <el-input v-model="editForm.stop_count" />
+        <el-input v-model.number="editForm.stop_count" />
       </el-form-item>
       <el-form-item label="停机时长" prop="stop_hour">
-        <el-input v-model="editForm.stop_hour" />
+        <el-input v-model.number="editForm.stop_hour" />
       </el-form-item>
       <el-form-item label="停机用液消耗" prop="stop_consumption">
-        <el-input v-model="editForm.stop_consumption" />
+        <el-input v-model.number="editForm.stop_consumption" />
       </el-form-item>
       <el-form-item label="停机标志位" prop="stop_label">
         <el-select
@@ -76,6 +84,7 @@
 <script>
 import { updateMalfunction } from '@/api/malfunction'
 import { Message } from 'element-ui'
+import { mapGetters } from 'vuex'
 export default {
   props: {
     showDialog: {
@@ -120,8 +129,25 @@ export default {
           value: '400V',
           label: '400V'
         }
-      ]
+      ],
+      // 表单验证规则
+      editFormRule: {
+        t_start: [{ required: true, message: '停机时间不能为空', trigger: 'bulr' }],
+        t_end: [{ required: true, message: '开机时间不能为空', trigger: 'bulr' }],
+        stop_count: [{ required: true, message: '停机次数不能为空', trigger: 'bulr' },
+          { type: 'number', min: 1, message: '停机次数必须是数字且大于1', trigger: 'bulr' }],
+        stop_hour: [{ required: true, message: '停机时长不能为空', trigger: 'bulr' },
+          { type: 'number', min: 0, max: 24, message: '停机时长必须是数字且在0-24之间', trigger: 'bulr' }],
+        stop_consumption: [{ required: true, message: '停机用液消耗不能为空', trigger: 'bulr' },
+          { type: 'number', min: 0, message: '停机时长必须是数字且大于等于0', trigger: 'bulr' }],
+        stop_alarm: [{ required: true, message: '停机报警不能为空', trigger: 'bulr' }]
+      }
     }
+  },
+  computed: {
+    ...mapGetters([
+      'userInfo'
+    ])
   },
   methods: {
     btnCancel() {
@@ -153,7 +179,8 @@ export default {
     },
     async updateItem() {
       try {
-        await updateMalfunction(this.editForm)
+        await this.$refs.editFormRef.validate()
+        await updateMalfunction({ ... this.editForm, change_date: new Date().toLocaleString().replaceAll('/', '-'), change_user: this.userInfo.username })
         // 通知父组件刷新数据
         this.$parent.getMalfunction()
         this.editForm = {
@@ -176,7 +203,7 @@ export default {
           occ_comment: '',
           change_user: ''
         }
-        this.$refs.editFormRef.resetFields()
+        this.btnCancel()
         Message.success('更新成功')
         this.$parent.showEditOcc = false
       } catch (error) {
@@ -188,6 +215,16 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+::v-deep .el-alert{
+  margin-bottom: 15px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+::v-deep .el-alert__title {
+    font-size: 8px;
+}
+::v-deep .el-dialog__body {
+  padding-top: 15px;
+}
 </style>

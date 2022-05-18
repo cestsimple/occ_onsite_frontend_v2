@@ -25,7 +25,7 @@
           size="mini"
           :highlight-current-row="true"
         >
-          <el-table-column type="expand">
+          <el-table-column type="expand" width="35">
             <template slot-scope="scope">
               <el-form label-position="left" inline class="demo-table-expand" size="mini">
                 <el-form-item label="停机原因">
@@ -173,7 +173,7 @@ export default {
       showAddDialog: false,
       showEditOcc: false,
       showEditMaint: false,
-      buttonColWidth: '180px'
+      buttonColWidth: '173px'
     }
   },
   methods: {
@@ -239,8 +239,7 @@ export default {
       // 定义表头对应json key
       const headers = {
         'RTU名': 'rtu_name',
-        '资产名': 'asset_name',
-        '资产编号': '',
+        '资产编号': 'facility_fin',
         '停机时间': 't_start',
         '开机时间': 't_end',
         '停机时长': 'stop_hour',

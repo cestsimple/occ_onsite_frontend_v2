@@ -6,6 +6,14 @@
     top="30px"
     @close="btnCancel"
   >
+    <!-- 信息提示 -->
+    <el-alert
+      :title="`当前用户:${userInfo.username}，上次编辑于: ${addForm.change_user} 在 ${addForm.change_date} `"
+      type="info"
+      center
+      show-icon
+      :closable="false"
+    />
     <!-- 表单区域 -->
     <el-form
       ref="addFormRef"
@@ -142,6 +150,7 @@
 <script>
 import { updateMalfunction, getReason, getReasonDetail } from '@/api/malfunction'
 import { Message } from 'element-ui'
+import { mapGetters } from 'vuex'
 export default {
   props: {
     showDialog: {
@@ -174,7 +183,9 @@ export default {
         change_user: ''
       },
       // 表单验证规则
-      addFormRule: {},
+      addFormRule: {
+        reason_main: [{ required: true, message: '停机原因不能为空', trigger: 'change' }]
+      },
       // 主要原因选择
       mainReasonOptions: [
         {
@@ -207,50 +218,12 @@ export default {
       DetailTwoOptions: []
     }
   },
+  computed: {
+    ...mapGetters([
+      'userInfo'
+    ])
+  },
   watch: {
-    // 监听各级原因发生变化
-    // 'addFormReasonId.l1_id': async function() {
-    //   const levelId = this.addFormReasonId.l1_id
-    //   if (levelId) {
-    //     const res = await getReason({ 'parent': levelId }).catch(() => {
-    //       this.addFormReasonId.l3_id = null
-    //       this.addFormReasonId.l4_id = null
-    //       this.$message.error('获取原因失败')
-    //     })
-    //     this.levelTwoOptions = res.sub_data.subs
-    //     this.levelThreeOptions = []
-    //     this.levelFourOptions = []
-    //     this.addFormReasonId.l3_id = null
-    //     this.addFormReasonId.l4_id = null
-    //   }
-    // },
-    // 'addFormReasonId.l2_id': async function() {
-    //   const levelId = this.addFormReasonId.l2_id
-    //   if (levelId) {
-    //     const res = await getReason({ 'parent': levelId }).catch(() => {
-    //       this.addFormReasonId.l4_id = null
-    //       this.$message.error('获取原因失败')
-    //     })
-    //     this.levelThreeOptions = res.sub_data.subs
-    //     this.levelFourOptions = []
-    //     this.addFormReasonId.l4_id = null
-    //   }
-    // },
-    // 'addFormReasonId.l3_id': async function() {
-    //   const levelId = this.addFormReasonId.l3_id
-    //   const res = await getReason({ 'parent': levelId }).catch(() => {
-    //     this.$message.error('获取原因失败')
-    //   })
-    //   this.levelFourOptions = res.sub_data.subs
-    // },
-    // 'addFormDetailId.l1_id': async function() {
-    //   const levelId = this.addFormDetailId.l1_id
-    //   const res = await getReasonDetail({ 'parent': levelId }).catch(() => {
-    //     Message.error('获取原因失败')
-    //   })
-    //   this.DetailTwoOptions = res.sub_data.subs
-    //   this.addFormDetailId.l2_id = null
-    // },
     'addForm.reason_detail_1': { handler: 'getDetailLevel2' },
     'addForm.reason_l1': { handler: 'getLevel2' },
     'addForm.reason_l2': { handler: 'getLevel3' },
@@ -264,7 +237,6 @@ export default {
     // 获取数据
     getData(item) {
       this.addForm = JSON.parse(JSON.stringify(item))
-      // this.getAllLevels()
       this.firstTime = false
     },
     // 获取一级初始化
@@ -285,28 +257,6 @@ export default {
       this.firstTime = true
       this.$emit('update:showDialog', false)
       this.$refs.addFormRef.resetFields()
-      // 清空addform
-      // this.addForm = {
-
-      //   apsa_id: null,
-      //   t_start: '',
-      //   t_end: '',
-      //   stop_count: 0,
-      //   stop_hour: 0.0,
-      //   stop_consumption: 0.0,
-      //   stop_label: '',
-      //   stop_alarm: '',
-      //   reason_main: '',
-      //   reason_l1: '',
-      //   reason_l2: '',
-      //   reason_l3: '',
-      //   reason_l4: '',
-      //   reason_detail_1: '',
-      //   reason_detail_2: '',
-      //   mt_comment: '',
-      //   occ_comment: '',
-      //   change_user: ''
-      // }
       // 清空原因列表
       this.levelTwoOptions = []
       this.levelThreeOptions = []
@@ -315,6 +265,7 @@ export default {
     },
     // 更新
     async updateItem() {
+      await this.$refs.addFormRef.validate()
       if (
         this.addForm.reason_main !== 'internal_involuntary' &&
         this.addForm.reason_main !== 'voluntary_no_budget'
@@ -326,7 +277,7 @@ export default {
         this.addForm.reason_l4 = ''
       }
       try {
-        await updateMalfunction(this.addForm)
+        await updateMalfunction({ ... this.addForm, change_date: new Date().toLocaleString().replaceAll('/', '-'), change_user: this.userInfo.username })
         // 通知父组件刷新数据
         this.$parent.showEditMaint = false
         Message.success('更新成功')
@@ -414,49 +365,21 @@ export default {
       if (!this.levelFourOptions.some(x => x.cname === this.addForm.reason_l4)) {
         this.addForm.reason_l4 = ''
       }
-    },
-    // 初始化各级sub原因
-    async getAllLevels() {
-      if (
-        this.addForm.reason_main !== 'internal_involuntary' &&
-        this.addForm.reason_main !== 'voluntary_no_budget'
-      ) {
-        if (this.addForm.reason_l1 !== '') {
-          const levelId = this.levelOneOptions.filter(x => x.cname === this.addForm.reason_l1)[0].id
-          const res = await getReason({ 'parent': levelId }).catch(() => {
-            this.$message.error('获取二级原因失败')
-          })
-          this.levelTwoOptions = res.sub_data.subs
-          if (!this.levelTwoOptions.some(x => x.cname === this.addForm.reason_l2)) {
-            this.addForm.reason_l2 = ''
-          }
-        }
-        if (this.addForm.reason_l2 !== '') {
-          const levelId = this.levelTwoOptions.filter(x => x.cname === this.addForm.reason_l2)[0].id
-          const res = await getReason({ 'parent': levelId }).catch(() => {
-            this.$message.error('获取三级原因失败')
-          })
-          this.levelThreeOptions = res.sub_data.subs
-          if (!this.levelThreeOptions.some(x => x.cname === this.addForm.reason_l3)) {
-            this.addForm.reason_l3 = ''
-          }
-        }
-        if (this.addForm.reason_l3 !== '') {
-          const levelId = this.levelThreeOptions.filter(x => x.cname === this.addForm.reason_l3)[0].id
-          const res = await getReason({ 'parent': levelId }).catch(() => {
-            this.$message.error('获取三级原因失败')
-          })
-          this.levelFourOptions = res.sub_data.subs
-          if (!this.levelFourOptions.some(x => x.cname === this.addForm.reason_l4)) {
-            this.addForm.reason_l4 = ''
-          }
-        }
-      }
     }
   }
 }
 </script>
 
-<style>
-
+<style scoped>
+::v-deep .el-alert{
+  margin-bottom: 15px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+::v-deep .el-alert__title {
+    font-size: 8px;
+}
+::v-deep .el-dialog__body {
+  padding-top: 15px;
+}
 </style>
