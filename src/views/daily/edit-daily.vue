@@ -1,8 +1,8 @@
 <template>
-  <el-dialog :title="`${editForm.rtu_name} - 当前编辑者:${userInfo.username}`" :visible="showDialog" width="35%" @close="btnCancel">
+  <el-dialog :title="`${editForm.rtu_name} - Daily数据修改`" :visible="showDialog" width="35%" @close="btnCancel">
     <!-- 表单 -->
     <el-alert
-      :title="`上次编辑者:${modForm.user}`"
+      :title="`当前用户:${userInfo.username}，上次编辑者: ${modForm.user}`"
       type="info"
       center
       show-icon
@@ -19,68 +19,68 @@
           <td>h_prod</td>
           <td>{{ originDaily['h_prod'] }}</td>
           <td width="250px">
-            <el-input v-model="modForm.h_prod_mod" />
+            <el-input v-model.number="modForm.h_prod_mod" type="number" />
           </td>
         </tr>
         <tr>
           <td>h_stpal</td>
           <td>{{ originDaily['h_stpal'] }}</td>
-          <td><el-input v-model="modForm.h_stpal_mod" /></td>
+          <td><el-input v-model.number="modForm.h_stpal_mod" type="number" /></td>
         </tr>
         <tr>
           <td>h_stpdft</td>
           <td>{{ originDaily['h_stpdft'] }}</td>
-          <td><el-input v-model="modForm.h_stpdft_mod" /></td>
+          <td><el-input v-model.number="modForm.h_stpdft_mod" type="number" /></td>
         </tr>
         <tr>
           <td>h_stp400v</td>
           <td>{{ originDaily['h_stp400v'] }}</td>
-          <td><el-input v-model="modForm.h_stp400v_mod" /></td>
+          <td><el-input v-model.number="modForm.h_stp400v_mod" type="number" /></td>
         </tr>
         <tr>
           <td>m3_prod</td>
           <td>{{ originDaily['m3_prod'] }}</td>
-          <td><el-input v-model="modForm.m3_prod_mod" /></td>
+          <td><el-input v-model.number="modForm.m3_prod_mod" type="number" /></td>
         </tr>
         <tr>
           <td>m3_tot</td>
           <td>{{ originDaily['m3_tot'] }}</td>
-          <td><el-input v-model="modForm.m3_tot_mod" /></td>
+          <td><el-input v-model.number="modForm.m3_tot_mod" type="number" /></td>
         </tr>
         <tr>
           <td>m3_peak</td>
           <td>{{ originDaily['m3_peak'] }}</td>
-          <td><el-input v-model="modForm.m3_peak_mod" /></td>
+          <td><el-input v-model.number="modForm.m3_peak_mod" type="number" /></td>
         </tr>
         <tr>
           <td>m3_q1</td>
           <td>{{ originDaily['m3_q1'] }}</td>
-          <td><el-input v-model="modForm.m3_q1_mod" /></td>
+          <td><el-input v-model.number="modForm.m3_q1_mod" type="number" /></td>
         </tr>
         <tr>
           <td>m3_q5</td>
           <td>{{ originDaily['m3_q5'] }}</td>
-          <td><el-input v-model="modForm.m3_q5_mod" /></td>
+          <td><el-input v-model.number="modForm.m3_q5_mod" type="number" /></td>
         </tr>
         <tr>
           <td>m3_q6</td>
           <td>{{ originDaily['m3_q6'] }}</td>
-          <td><el-input v-model="modForm.m3_q6_mod" /></td>
+          <td><el-input v-model.number="modForm.m3_q6_mod" type="number" /></td>
         </tr>
         <tr>
           <td>m3_q7</td>
           <td>{{ originDaily['m3_q7'] }}</td>
-          <td><el-input v-model="modForm.m3_q7_mod" /></td>
+          <td><el-input v-model.number="modForm.m3_q7_mod" type="number" /></td>
         </tr>
         <tr>
           <td>lin_tot</td>
           <td>{{ originDaily['lin_tot'] }}</td>
-          <td><el-input v-model="modForm.lin_tot_mod" /></td>
+          <td><el-input v-model.number="modForm.lin_tot_mod" type="number" /></td>
         </tr>
         <tr>
           <td>flow_meter</td>
           <td>{{ originDaily['flow_meter'] }}</td>
-          <td><el-input v-model="modForm.flow_meter_mod" /></td>
+          <td><el-input v-model.number="modForm.flow_meter_mod" type="number" /></td>
         </tr>
       </thead>
     </table>
@@ -92,21 +92,19 @@
       placeholder="请输入备注信息"
     />
     <!-- 底部按钮 -->
-    <el-row slot="footer" type="flex" justify="center">
-      <el-col :span="12">
-        <el-button
-          type="danger"
-          size="mini"
-          class="btnAdd"
-          @click="btnCancel"
-        >取消</el-button><el-button
-          type="primary"
-          size="mini"
-          class="btnAdd"
-          @click="updateDaily()"
-        >更新数据</el-button>
-      </el-col>
-    </el-row>
+    <span slot="footer" class="dialog-footer">
+      <el-button
+        type="danger"
+        size="mini"
+        class="btnAdd"
+        @click="btnCancel"
+      >取消</el-button><el-button
+        type="primary"
+        size="mini"
+        class="btnAdd"
+        @click="updateDaily()"
+      >更新数据</el-button>
+    </span>
   </el-dialog>
 </template>
 
@@ -119,13 +117,6 @@ export default {
     showDialog: {
       type: Boolean,
       default: false
-    },
-    editItem: {
-      type: Object,
-      default() {
-        return {
-        }
-      }
     }
   },
   data() {
@@ -141,22 +132,18 @@ export default {
       'userInfo'
     ])
   },
-  watch: {
-    editItem: function() {
-      if (this.editItem.rtu_name === '') {
-        return
-      }
-      this.editForm = this.editItem
-      this.getOrigin(this.editItem.id)
-      this.getModify(this.editItem.mod_id)
-    }
-  },
   methods: {
+    // 传入编辑值
+    getData(item) {
+      this.editForm = JSON.parse(JSON.stringify(item))
+      this.getOrigin(item.id)
+      this.getModify(item.mod_id)
+    },
     btnCancel() {
+      this.$emit('update:showDialog', false)
       this.editForm = {}
       this.modForm = {}
       this.originDaily = {}
-      this.$emit('update:showDialog', false)
     },
     async getModify(pk) {
       const res = await getModify(pk).catch(error => {
@@ -187,29 +174,35 @@ export default {
 </script>
 
 <style scoped>
-.el-dialog{
-    margin-top: 1vh !important;
-}
-tr {
-  text-align: center;
-}
 ::v-deep .el-alert{
-  margin-bottom: 5px;
+  margin-bottom: 15px;
   padding-top: 3px;
   padding-bottom: 3px;
 }
 ::v-deep .el-alert__title {
     font-size: 8px;
 }
+::v-deep .el-dialog__body {
+  padding-top: 15px;
+  padding-bottom: 10px;
+}
+::v-deep .el-dialog__footer {
+  padding-right: 40px;
+}
+.el-dialog{
+    margin-top: 1vh !important;
+}
+tr {
+  text-align: center;
+}
 ::v-deep .el-input__inner{
   width: 65%;
   height: 25px !important;
 }
-::v-deep .el-dialog__body {
-  padding-top: 5px;
-}
-
 ::v-deep .el-dialog{
     margin-top: 7vh !important;
+}
+::v-deep .el-textarea__inner {
+  margin-top: 10px;
 }
 </style>

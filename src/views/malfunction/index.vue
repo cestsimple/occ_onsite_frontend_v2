@@ -67,12 +67,12 @@
             width="75"
           />
           <el-table-column
-            label="开始时间"
+            label="停机时间"
             prop="t_start"
             width="125"
           />
           <el-table-column
-            label="结束时间"
+            label="开机时间"
             prop="t_end"
             width="125"
           />
@@ -94,7 +94,7 @@
           <el-table-column
             label="标志位"
             prop="stop_label"
-            width="75"
+            width="65"
           />
           <el-table-column
             label="停机报警"

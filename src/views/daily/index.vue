@@ -49,64 +49,84 @@
           <el-table-column
             label="合同量"
             prop="norminal"
-            width="70"
+            width="65"
+            align="center"
           />
           <el-table-column
             label="平均产量"
             prop="avg_prod"
-            width="80"
-          />
+            width="75"
+            align="right"
+          >
+            <template slot-scope="scope">
+              {{ scope.row.avg_prod | toInt }}
+            </template>
+          </el-table-column>
           <el-table-column
             label="平均用量"
             prop="avg_consume"
-            width="85"
+            width="75"
+            align="right"
           >
             <template slot-scope="scope">
-              {{ scope.row.avg_consume | toInt }}
+              <div :style="scope.row.avg_consume > scope.row.vap_max ? {'color': 'red'} : ''">{{ scope.row.avg_consume | toInt }}</div>
             </template>
           </el-table-column>
           <el-table-column
             label="Cooling"
             prop="cooling"
-            width="100"
+            width="90"
             sortable
+            align="right"
           >
             <template slot-scope="scope">
-              <div :style="scope.row.cooling > 5 ? {'color': 'red'} : ''">{{ scope.row.cooling }}</div>
+              <div :style="scope.row.cooling > 5 ? {'color': 'red'} : ''">{{ scope.row.cooling | twoDigits }}</div>
             </template>
           </el-table-column>
           <el-table-column
             label="Vpeak-Peak"
             prop="dif_peak"
             width="92"
+            align="right"
           >
             <template slot-scope="scope">
-              <div :style="scope.row.dif_peak < 0 ? {'color': 'red'} : ''">{{ scope.row.dif_peak }}</div>
+              <div :style="scope.row.dif_peak < 0 ? {'color': 'red'} : ''">{{ scope.row.dif_peak | twoDigits }}</div>
             </template>
           </el-table-column>
           <el-table-column
             label="停机时长"
             prop="h_stop"
             width="70"
-          />
+            align="right"
+          >
+            <template slot-scope="scope">
+              {{ scope.row.h_stop | twoDigits }}
+            </template>
+          </el-table-column>
           <el-table-column
             label="停机用液"
             prop="lin_consume"
-            width="80"
-          />
+            width="70"
+            align="right"
+          >
+            <template slot-scope="scope">
+              {{ scope.row.lin_consume | twoDigits }}
+            </template>
+          </el-table-column>
           <el-table-column
             label="汽化器能力"
             prop="vap_max"
             width="85"
+            align="center"
           >
             <template slot-scope="scope">
-              <div :style="scope.row.avg_consume > scope.row.vap_max ? {'color': 'red'} : ''">{{ scope.row.vap_max }}</div>
+              {{ scope.row.vap_max }}
             </template>
           </el-table-column>
           <el-table-column
             label="备注"
             prop="comment"
-            width="70"
+            width="85"
             :show-overflow-tooltip="true"
           />
         </el-table>
@@ -132,6 +152,9 @@ export default {
   filters: {
     toInt(value) {
       return Math.round(value)
+    },
+    twoDigits(value) {
+      return value.toFixed(2)
     }
   },
   data() {

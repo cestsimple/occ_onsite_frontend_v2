@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="新增充液记录" :visible="showDialog" width="35%" @close="btnCancel">
+  <el-dialog title="新增充液记录" :visible="showDialog" width="340px" @close="btnCancel">
     <!-- 表单 -->
     <el-form
       ref="addFormRef"
@@ -38,7 +38,8 @@
       </el-form-item>
       <el-form-item label="开始液位" prop="level_1">
         <el-input
-          v-model="addForm.level_1"
+          v-model.number="addForm.level_1"
+          type="number"
         />
       </el-form-item>
       <el-form-item label="结束时间" prop="time_2">
@@ -52,11 +53,12 @@
       </el-form-item>
       <el-form-item label="结束液位" prop="level_2">
         <el-input
-          v-model="addForm.level_2"
+          v-model.number="addForm.level_2"
           placeholder="仅填写数字"
+          type="number"
         />
       </el-form-item>
-      <el-form-item label="充液量" prop="level_1">
+      <el-form-item label="充液量" prop="quantity">
         <el-input disabled placeholder="自动计算，无需填写" />
       </el-form-item>
     </el-form>
@@ -91,6 +93,21 @@ export default {
     }
   },
   data() {
+    const timeRule = (rule, value, callback) => {
+      if (this.addForm.time_2 === '') {
+        return callback(new Error('结束时间不能为空'))
+      }
+      Date.parse(this.addForm.time_2) < Date.parse(this.addForm.time_1) ? callback(new Error('结束时间不能小于开始时间')) : callback()
+    }
+    const levelRule = (rule, value, callback) => {
+      if (this.addForm.level_2 === null) {
+        return callback(new Error('结束液位不能为空'))
+      }
+      if (this.addForm.level_2 > 100 || this.addForm.level_2 < 0) {
+        return callback(new Error('结束液位必须是0-100的数字'))
+      }
+      this.addForm.level_2 < this.addForm.level_1 ? callback(new Error('结束液位不能小于开始液位')) : callback()
+    }
     return {
       // 表单数据
       addForm: {
@@ -102,7 +119,12 @@ export default {
         confirm: 1
       },
       // 表单验证规则
-      addFormRule: {},
+      addFormRule: {
+        time_1: [{ required: true, message: '开始时间不能为空', trigger: 'bulr' }],
+        time_2: [{ required: true, validator: timeRule, trigger: 'bulr' }],
+        level_1: [{ required: true, type: 'number', min: 0, max: 100, message: '开始液位不能为空且是0-100的数字', trigger: 'bulr' }],
+        level_2: [{ required: true, validator: levelRule, trigger: 'bulr' }]
+      },
       // 储罐搜索-Loading标志位
       loading: false,
       // 储罐搜索-列表
@@ -127,18 +149,9 @@ export default {
       try {
         await this.$refs.addFormRef.validate()
         await addFilling(this.addForm)
+        Message.success('添加成功')
         // 通知父组件刷新数据
-        this.$parent.getFilling()
-        this.addForm = {
-          bulk: null,
-          time_1: '',
-          time_2: '',
-          level_1: 0,
-          level_2: 0,
-          confirm: 1
-        }
-        this.$refs.addFormRef.resetFields()
-        this.$parent.showAddDialog = false
+        this.btnCancel()
       } catch (error) {
         console.log(error.response)
         Message.error('添加失败')

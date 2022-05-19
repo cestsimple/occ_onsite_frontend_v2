@@ -39,13 +39,13 @@
         />
       </el-form-item>
       <el-form-item label="停机次数" prop="stop_count">
-        <el-input v-model.number="editForm.stop_count" />
+        <el-input v-model.number="editForm.stop_count" type="number" />
       </el-form-item>
       <el-form-item label="停机时长" prop="stop_hour">
-        <el-input v-model.number="editForm.stop_hour" />
+        <el-input v-model.number="editForm.stop_hour" type="number" />
       </el-form-item>
       <el-form-item label="停机用液消耗" prop="stop_consumption">
-        <el-input v-model.number="editForm.stop_consumption" />
+        <el-input v-model.number="editForm.stop_consumption" type="number" />
       </el-form-item>
       <el-form-item label="停机标志位" prop="stop_label">
         <el-select
@@ -93,6 +93,12 @@ export default {
     }
   },
   data() {
+    const dateRule = (rule, value, callback) => {
+      if (this.addForm.t_end === '') {
+        return callback(new Error('开机时间不能为空'))
+      }
+      Date.parse(this.addForm.t_end) < Date.parse(this.addForm.t_start) ? callback(new Error('开机时间不能小于停机时间')) : callback()
+    }
     return {
       activeIndex: '1',
       // 表单数据
@@ -133,7 +139,7 @@ export default {
       // 表单验证规则
       editFormRule: {
         t_start: [{ required: true, message: '停机时间不能为空', trigger: 'bulr' }],
-        t_end: [{ required: true, message: '开机时间不能为空', trigger: 'bulr' }],
+        t_end: [{ required: true, validator: dateRule, trigger: 'bulr' }],
         stop_count: [{ required: true, message: '停机次数不能为空', trigger: 'bulr' },
           { type: 'number', min: 1, message: '停机次数必须是数字且大于1', trigger: 'bulr' }],
         stop_hour: [{ required: true, message: '停机时长不能为空', trigger: 'bulr' },

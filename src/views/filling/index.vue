@@ -68,7 +68,7 @@
                 type="primary"
                 icon="el-icon-edit"
                 size="mini"
-                @click="editFilling(scope.row)"
+                @click="showEditFilling(scope.row)"
               />
               <!-- 删除按钮 -->
               <el-button
@@ -95,7 +95,7 @@
     </div>
     <!-- 放置组件弹层 -->
     <add-filling :show-dialog.sync="showAddDialog" />
-    <edit-filling :show-dialog.sync="showEditDialog" :edit-item="editItem" />
+    <edit-filling ref="editfilling" :show-dialog.sync="showEditDialog" />
   </div>
 </template>
 
@@ -136,10 +136,6 @@ export default {
       this.query.page = 1
       this.getFilling()
     },
-    // 新增按钮
-    goAddPage() {
-      this.showAddDialog = true
-    },
     // 分页器方法
     handleSizeChange(newSize) {
       this.query.pagesize = newSize
@@ -179,9 +175,14 @@ export default {
         Message.error('提交失败：' + error)
       }
     },
-    editFilling(item) {
-      this.editItem = item
+    // 控制编辑弹层
+    showEditFilling(item) {
+      this.$refs.editfilling.getData(item)
       this.showEditDialog = true
+    },
+    // 新增按钮
+    goAddPage() {
+      this.showAddDialog = true
     }
   }
 }

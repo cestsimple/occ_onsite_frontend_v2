@@ -177,7 +177,7 @@
           <el-table-column
             label="Filling"
             prop="filling"
-            width="70"
+            width="75"
             align="right"
           >
             <template slot-scope="scope">
@@ -199,7 +199,7 @@
                   size="mini"
                   :plain="scope.row.confirm ? true : false"
                   round
-                  @click="editDaily(scope.row)"
+                  @click="showEditDaily(scope.row)"
                 />
               </el-badge>
             </template>
@@ -219,7 +219,7 @@
       </el-card>
     </div>
     <!-- 放置组件弹层 -->
-    <edit-daily :show-dialog.sync="showEditDialog" :edit-item="editItem" />
+    <edit-daily ref="editDaily" :show-dialog.sync="showEditDialog" />
   </div>
 </template>
 
@@ -247,8 +247,7 @@ export default {
         region: ''
       },
       loading: false,
-      showEditDialog: false,
-      editItem: null
+      showEditDialog: false
     }
   },
   methods: {
@@ -279,8 +278,9 @@ export default {
       this.total = res.total
       this.loading = false
     },
-    editDaily(item) {
-      this.editItem = item
+    // 弹层控制
+    showEditDaily(item) {
+      this.$refs.editDaily.getData(item)
       this.showEditDialog = true
     },
     // 导出数据
@@ -291,28 +291,26 @@ export default {
       }
       // 定义表头对应json key
       const headers = {
-        '日期': 'date',
-        '区域': 'region',
-        'RTU名': 'rtu_name',
-        '型号': 'series',
-        '合同量': 'norminal',
-        '汽化器最大能力': 'vap_max',
-        'H Prod': 'h_prod',
-        'H Missing': 'h_missing',
-        '生产量': 'm3_prod',
-        '平均生产量': 'avg_prod',
-        '客户用量': 'cus_consume',
-        '平均用量': 'avg_consume',
-        'Vpeak': 'v_peak',
-        'Peak': 'peak',
-        'LIN_TOT': 'lin_tot',
-        'Cooling': 'cooling',
-        'Vpeak-Peak': 'dif_peak',
-        'H Stop': 'h_stop',
-        '停机消耗': 'lin_consume',
-        '充液量': 'filling',
-        '计算成功': 'success',
-        '备注': 'comment'
+        'date': 'date',
+        'region': 'region',
+        'rtu_name': 'rtu_name',
+        'series': 'series',
+        'norminal': 'norminal',
+        'h prod': 'h_prod',
+        'h missing': 'h_missing',
+        'generator production': 'm3_prod',
+        'avege production': 'avg_prod',
+        'customer consumption': 'cus_consume',
+        'avege consumption': 'avg_consume',
+        'peak': 'peak',
+        'vpeak': 'v_peak',
+        'lin tot': 'lin_tot',
+        'cooling': 'cooling',
+        'vpeak-peak': 'dif_peak',
+        'h stop': 'h_stop',
+        'lin_consume': 'lin_consume',
+        'filling': 'filling',
+        'comment': 'comment'
       }
 
       import('@/vendor/Export2Excel').then(async excel => {
@@ -341,6 +339,8 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+  ::v-deep .el-badge__content {
+    top: 4px;
+  }
 </style>

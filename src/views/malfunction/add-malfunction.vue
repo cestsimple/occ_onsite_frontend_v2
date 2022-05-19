@@ -67,10 +67,12 @@
             /> </el-form-item><el-form-item label="停机时长" prop="stop_hour">
             <el-input
               v-model.number="addForm.stop_hour"
+              type="number"
             /> </el-form-item>
           <el-form-item label="停机用液消耗" prop="stop_consumption">
             <el-input
               v-model.number="addForm.stop_consumption"
+              type="number"
             /> </el-form-item>
           <el-form-item label="停机标志位" prop="stop_label">
             <el-select
