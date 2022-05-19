@@ -1,10 +1,11 @@
 import request from '@/utils/request'
 
-export function getRecord() {
+export function getRecord(params) {
   // 返回promise对象
   return request({
     url: '/iot/record/',
-    method: 'get'
+    method: 'get',
+    params
   })
 }
 

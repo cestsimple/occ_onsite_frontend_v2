@@ -35,6 +35,10 @@ export default {
     return {
       activities: [
         {
+          content: ['新增数据部分刷新功能( 入口:后台操作->抓取IOT数据 );'],
+          timestamp: '2022-5-20'
+        },
+        {
           content: ['修复malfunction信息登记功能若干bug,修复逻辑错误;',
             '\n新增malfunction,filling所有报表单提交详细数据验证;',
             '\n修复daily重跑后报错信息不清空,多个daily_bind会相互覆盖lintot的问题;',
