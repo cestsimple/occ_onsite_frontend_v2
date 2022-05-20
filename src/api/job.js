@@ -8,3 +8,11 @@ export function getJobs(params) {
     params
   })
 }
+
+export function deleteJob(id) {
+  // 返回promise对象
+  return request({
+    url: `/asyncjob/${id}/`,
+    method: 'delete'
+  })
+}

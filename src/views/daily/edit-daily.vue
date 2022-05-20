@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="`${editForm.rtu_name} - Daily数据修改`" :visible="showDialog" width="35%" @close="btnCancel">
+  <el-dialog :title="`${editForm.rtu_name} - Daily数据修改`" :visible="showDialog" width="550px" @close="btnCancel">
     <!-- 表单 -->
     <el-alert
       :title="`当前用户:${userInfo.username}，上次编辑者: ${modForm.user}`"
@@ -196,7 +196,7 @@ tr {
   text-align: center;
 }
 ::v-deep .el-input__inner{
-  width: 65%;
+  width: 95%;
   height: 25px !important;
 }
 ::v-deep .el-dialog{
@@ -204,5 +204,8 @@ tr {
 }
 ::v-deep .el-textarea__inner {
   margin-top: 10px;
+}
+::v-deep input[type="number"]::-webkit-inner-spin-button{
+  display: none!important;
 }
 </style>

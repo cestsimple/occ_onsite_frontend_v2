@@ -17,7 +17,9 @@
           <el-tab-pane label="手动报表计算" name="2">
             <onsite-calculate />
           </el-tab-pane>
-          <el-tab-pane label="开发中。。。" name="4">开发中。。。</el-tab-pane>
+          <el-tab-pane label="Job记录" name="3">
+            <occ-job />
+          </el-tab-pane>
         </el-tabs>
       </el-card>
     </div>
@@ -26,9 +28,10 @@
 
 <script>
 import IotData from './iot-data'
+import OccJob from './occ-job'
 import OnsiteCalculate from './onsite-calculate'
 export default {
-  components: { IotData, OnsiteCalculate },
+  components: { IotData, OnsiteCalculate, OccJob },
   data() {
     return {
       activeName: '1'

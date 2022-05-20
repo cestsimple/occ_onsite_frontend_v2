@@ -130,14 +130,17 @@ export default {
         this.loading = false
       }
     },
+    // 任务
     async getJobs() {
-      this.loading = true
-      const res = await getJobs().catch(() => {
+      try {
+        this.loading = true
+        const res = await getJobs({ finish: 0 })
+        this.jobList = res
+        this.loading = false
+      } catch (error) {
         Message.error('获取Job失败')
         this.loading = false
-      })
-      this.jobList = res.res
-      this.loading = false
+      }
     },
     // 搜索框内容
     async getSeatchItem(query) {

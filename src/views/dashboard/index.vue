@@ -35,7 +35,9 @@ export default {
     return {
       activities: [
         {
-          content: ['新增数据部分刷新功能( 入口:后台操作->抓取IOT数据 );'],
+          content: ['新增数据部分刷新功能( 入口:后台操作->抓取IOT数据 );',
+            '\nAPSA登记变量mark改为下拉选择;',
+            '\n新增Job查看管理功能( 入口:后台操作->Job管理 );'],
           timestamp: '2022-5-20'
         },
         {

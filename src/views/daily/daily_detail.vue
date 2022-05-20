@@ -106,28 +106,28 @@
             align="right"
           >
             <template slot-scope="scope">
-              <div :style="scope.row.avg_consume > scope.row.vap_max ? {'color': 'red'} : ''">{{ scope.row.avg_consume | twoDigits }}</div>
+              {{ scope.row.avg_consume | twoDigits }}
+            </template>
+          </el-table-column>
+          <el-table-column label="Peak" prop="peak" width="73" align="right">
+            <template slot-scope="scope">
+              {{ scope.row.peak | twoDigits }}
             </template>
           </el-table-column>
           <el-table-column
             label="Vpeak"
             prop="v_peak"
-            width="65"
+            width="73"
             align="right"
           >
             <template slot-scope="scope">
               {{ scope.row.v_peak | twoDigits }}
             </template>
           </el-table-column>
-          <el-table-column label="Peak" prop="peak" width="70" align="right">
-            <template slot-scope="scope">
-              {{ scope.row.peak | twoDigits }}
-            </template>
-          </el-table-column>
           <el-table-column
             label="lin_tot"
             prop="lin_tot"
-            width="70"
+            width="75"
             align="right"
           >
             <template slot-scope="scope">

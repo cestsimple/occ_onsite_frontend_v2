@@ -290,7 +290,7 @@
 
       <!-- 内嵌修改变量dialog -->
       <el-dialog
-        width="40%"
+        width="250px"
         :title="innerCreate === 0 ? '修改DailyMark' : '创建变量配对'"
         :visible.sync="innerVisible"
         top="50px"
@@ -302,6 +302,7 @@
           :model="editVariable"
           :rules="editVariableRules"
           label-width="120px"
+          size="mini"
         >
           <div v-if="innerCreate===0">
             <el-form-item label="IOT平台变量名" prop="name">
@@ -321,7 +322,14 @@
             </el-form-item>
           </div>
           <el-form-item label="匹配Daily标识" prop="daily_mark">
-            <el-input v-model="editVariable.daily_mark" />
+            <el-select v-model="editVariable.daily_mark" filterable clearable placeholder="选择">
+              <el-option
+                v-for="item in dailyMarkOptions"
+                :key="item"
+                :label="item"
+                :value="item"
+              />
+            </el-select>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -474,6 +482,20 @@ export default {
           value: 0,
           label: '不计算'
         }
+      ],
+      dailyMarkOptions: [
+        'H_PROD',
+        'H_STPAL',
+        'H_STPDFT',
+        'H_STP400V',
+        'M3_TOT',
+        'M3_PEAK',
+        'M3_Q1',
+        'M3_Q3',
+        'M3_Q5',
+        'M3_Q6',
+        'M3_Q7',
+        'FLOW_METER'
       ],
       editInfo: {
         id: 0,
