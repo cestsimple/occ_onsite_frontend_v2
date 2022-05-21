@@ -35,6 +35,10 @@ export default {
     return {
       activities: [
         {
+          content: ['修复月报数据生成时间限制错误;'],
+          timestamp: '2022-5-21'
+        },
+        {
           content: ['新增数据部分刷新功能( 入口:后台操作->抓取IOT数据 );',
             '\nAPSA登记变量mark改为下拉选择;',
             '\n新增Job查看管理功能( 入口:后台操作->Job管理 );'],

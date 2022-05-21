@@ -74,7 +74,7 @@
 
     </div>
     <!-- 弹层区 -->
-    <el-dialog :title="`添加INVOICE计算变量 - ${addForm.rtu_name}`" :visible="showAddDialog" width="35%" @close="btnCancel">
+    <el-dialog :title="`添加INVOICE计算变量 - ${addForm.rtu_name}`" :visible="showAddDialog" width="350px" @close="btnCancel">
       <el-form
         :model="addForm"
         label-width="100px"
@@ -104,7 +104,7 @@
         <el-button type="primary" size="mini" @click="addVariable">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="添加INVOICE计算变量" :visible="showAddNewDialog" width="35%" @close="btnCancel">
+    <el-dialog title="添加INVOICE计算变量" :visible="showAddNewDialog" width="350px" @close="btnCancel">
       <el-form>
         <el-form-item label="搜索选择APSA" prop="apsa" size="mini">
           <el-select

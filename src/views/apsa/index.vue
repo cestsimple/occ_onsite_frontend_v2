@@ -104,7 +104,7 @@
       <el-dialog
         title="修改Apsa资产信息"
         :visible.sync="editVisible"
-        width="55%"
+        width="550px"
         top="30px"
         @close="editDialogClosed"
       >
@@ -252,10 +252,10 @@
             </el-tab-pane>
             <el-tab-pane label="变量登记" name="3">
               <el-row>
-                <el-col :span="5">
+                <el-col :span="7">
                   <el-button size="mini" type="primary" @click="showEditInnerDialog({})">新增变量配对</el-button>
                 </el-col>
-                <el-col :span="19">
+                <el-col :span="17">
                   <el-tooltip class="item" effect="dark" :content="dailyMarkTip" placement="top-start">
                     <i class="el-icon-warning-outline" />
                   </el-tooltip>
