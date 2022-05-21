@@ -132,43 +132,41 @@ export default {
     }
   },
   methods: {
-    checkDate(date) {
-      const today = new Date()
-
-      if (today.getMonth() + 1 === parseInt(date.split('-')[1])) {
-        return today.getDay() <= 20
+    checkDate(date, day_limit) {
+      if (date === '') {
+        return true
       }
-      if (today.getMonth() + 1 > parseInt(date.split('-')[1])) {
-        return 0
+      let add_day = ''
+      if (day_limit !== 0) {
+        add_day = `-${day_limit}`
+      } else {
+        add_day = ''
       }
-      return 1
+      return Date.parse(date + add_day) > Date.parse(new Date())
     },
     async calculateFillingMonthly() {
-      if (this.fillingQuery.date === '') {
-        return Message.error('请选择日期')
+      if (this.checkDate(this.fillingQuery.date, 21)) {
+        return Message.error('日期为空或未达到计算日期')
       }
-      if (this.checkDate(this.fillingQuery.date)) {
-        return Message.error('未达到计算日期')
-      }
-      await calculateFillingMonthly(this.fillingQuery).catch(error => {
+      try {
+        await calculateFillingMonthly(this.fillingQuery)
+        Message.success('请求成功')
+      } catch (error) {
         Message.error('请求失败')
-        console.log(error)
         Message.info(error.response)
-      })
-      Message.success('请求成功')
+      }
     },
     async calculateInvoiceDiff() {
-      if (this.invoiceQuery.date === '') {
-        return Message.error('请选择日期')
+      if (this.checkDate(this.invoiceQuery.date, 0)) {
+        return Message.error('日期为空或未达到计算日期')
       }
-      if (this.checkDate(this.invoiceQuery.date)) {
-        return Message.error('未达到计算日期')
-      }
-      await calculateInvoiceDiff(this.invoiceQuery).catch(error => {
+      try {
+        await calculateInvoiceDiff(this.invoiceQuery)
+        Message.success('请求成功')
+      } catch (error) {
         Message.error('请求失败')
         Message.info(error.response)
-      })
-      Message.success('请求成功')
+      }
     }
   }
 }

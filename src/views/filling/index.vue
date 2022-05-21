@@ -22,7 +22,7 @@
           <el-table-column
             label="资产名"
             prop="asset_name"
-            width="140"
+            width="150"
           />
           <el-table-column
             label="储罐容积"

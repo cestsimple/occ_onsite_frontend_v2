@@ -72,7 +72,7 @@ export default {
       const res = await getJobs({ finish: 0 }).catch(() => {
         Message.error('获取Job失败')
       })
-      this.jobList = res.res
+      this.jobList = res
     }
   }
 }
