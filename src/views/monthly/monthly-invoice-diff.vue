@@ -98,7 +98,7 @@
       />
     </div>
     <!-- 弹层 -->
-    <el-dialog :title="`${editForm.rtu_name} ${editForm.variable_name}`" :visible="showDialog" width="20%" @close="btnCancel">
+    <el-dialog :title="`${editForm.rtu_name} ${editForm.variable_name}`" :visible="showDialog" width="20%" :close-on-click-modal="false" @close="btnCancel">
       <!-- 表单区 -->
       <el-form
         ref="editFormRef"

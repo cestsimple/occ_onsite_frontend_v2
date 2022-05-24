@@ -4,6 +4,7 @@
     :visible="showDialog"
     width="450px"
     top="30px"
+    :close-on-click-modal="false"
     @close="btnCancel"
   >
     <!-- 信息提示 -->
@@ -189,23 +190,23 @@ export default {
       // 主要原因选择
       mainReasonOptions: [
         {
-          value: 'budget_maint',
+          value: 'Budget Maintenance Interruptions',
           label: '计划内保养'
         },
         {
-          value: 'internal_involuntary',
+          value: 'Internal Involuntary Interruptions',
           label: '内部被动原因'
         },
         {
-          value: 'voluntary_no_budget',
+          value: 'Voluntary + Not Budget Interruptions',
           label: '主动无预算'
         },
         {
-          value: 'external',
+          value: 'External Interruptions',
           label: '外部原因'
         },
         {
-          value: 'customer_disuse',
+          value: 'Disuse by Customer',
           label: '客户停用'
         }
       ],

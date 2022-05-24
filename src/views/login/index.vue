@@ -54,18 +54,10 @@
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
 import { mapActions } from 'vuex'
 export default {
   name: 'Login',
   data() {
-    const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('请输入用户名'))
-      } else {
-        callback()
-      }
-    }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 5) {
         callback(new Error('密码不能少于5位'))
@@ -79,7 +71,7 @@ export default {
         password: ''
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        username: [{ required: true, message: '用户名不能为空', trigger: 'bulr' }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       loading: false,

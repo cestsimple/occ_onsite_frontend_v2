@@ -17,7 +17,7 @@
           </el-col>
           <el-col :span="3">
             <el-button type="primary" size="mini" @click="goRole">
-              新增角色
+              角色管理页
             </el-button>
           </el-col>
           <el-col :span="15">
@@ -75,7 +75,7 @@
     </div>
 
     <!-- 弹层区 -->
-    <el-dialog title="编辑账户基础信息" :visible="showEditDialog" width="350px" @close="btnCancel">
+    <el-dialog title="编辑账户基础信息" :visible="showEditDialog" width="350px" :close-on-click-modal="false" @close="btnCancel">
       <el-form
         :model="editForm"
         label-width="70px"
@@ -110,7 +110,7 @@
       </span>
     </el-dialog>
 
-    <el-dialog title="创建用户" :visible="showAddDialog" width="350px" @close="btnCancel">
+    <el-dialog title="创建用户" :visible="showAddDialog" width="350px" :close-on-click-modal="false" @close="btnCancel">
       <el-form
         ref="addFormRef"
         :model="addForm"

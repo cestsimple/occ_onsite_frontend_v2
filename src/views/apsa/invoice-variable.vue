@@ -74,7 +74,7 @@
 
     </div>
     <!-- 弹层区 -->
-    <el-dialog :title="`添加INVOICE计算变量 - ${addForm.rtu_name}`" :visible="showAddDialog" width="350px" @close="btnCancel">
+    <el-dialog :title="`添加INVOICE计算变量 - ${addForm.rtu_name}`" :visible="showAddDialog" width="350px" :close-on-click-modal="false" @close="btnCancel">
       <el-form
         :model="addForm"
         label-width="100px"

@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="`修改充液记录- ${editForm.rtu_name}`" :visible="showDialog" width="340px" @close="btnCancel">
+  <el-dialog :title="`修改充液记录- ${editForm.rtu_name}`" :visible="showDialog" width="340px" :close-on-click-modal="false" @close="btnCancel">
     <!-- 表单 -->
     <el-form
       ref="editFormRef"

@@ -4,6 +4,7 @@
     :visible="showDialog"
     width="450px"
     top="30px"
+    :close-on-click-modal="false"
     @close="btnCancel"
   >
     <el-alert

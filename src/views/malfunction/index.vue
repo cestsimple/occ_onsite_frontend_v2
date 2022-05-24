@@ -25,46 +25,11 @@
           size="mini"
           :highlight-current-row="true"
         >
-          <el-table-column type="expand" width="35">
-            <template slot-scope="scope">
-              <el-form label-position="left" inline class="demo-table-expand" size="mini">
-                <el-form-item label="停机原因">
-                  <el-tag>{{ scope.row.reason_main }}</el-tag>
-                </el-form-item>
-                <el-form-item label="具体原因-1">
-                  <el-tag>{{ scope.row.reason_detail_1 }}</el-tag>
-                </el-form-item>
-                <el-form-item label="具体原因-2">
-                  <el-tag>{{ scope.row.reason_detail_2 }}</el-tag>
-                </el-form-item>
-                <el-form-item label="过程组原因">
-                  <el-tag>{{ scope.row.reason_l1 }}</el-tag>
-                </el-form-item>
-                <el-form-item label="设备原因">
-                  <el-tag>{{ scope.row.reason_l2 }}</el-tag>
-                </el-form-item>
-                <el-form-item label="组件原因">
-                  <el-tag>{{ scope.row.reason_l3 }}</el-tag>
-                </el-form-item>
-                <el-form-item label="部件原因">
-                  <el-tag>{{ scope.row.reason_l4 }}</el-tag>
-                </el-form-item>
-                <el-form-item label="维修备注">
-                  <el-tag>{{ scope.row.mt_comment }}</el-tag>
-                </el-form-item>
-              </el-form>
-            </template>
-          </el-table-column>
           <el-table-column type="index" label="#" width="35" />
           <el-table-column
             label="RTU Name"
             prop="rtu_name"
             width="160"
-          />
-          <el-table-column
-            label="资产名"
-            prop="asset_name"
-            width="75"
           />
           <el-table-column
             label="开始时间"
@@ -104,9 +69,17 @@
           <el-table-column
             label="停机报警"
             prop="stop_alarm"
-            width="120"
+            :show-overflow-tooltip="true"
           />
-          <el-table-column label="备注" prop="occ_comment" />
+          <el-table-column label="停机原因" prop="reason_main" :show-overflow-tooltip="true" />
+          <el-table-column label="过程组原因" prop="reason_l1" :show-overflow-tooltip="true" />
+          <el-table-column label="设备原因" prop="reason_l2" />
+          <el-table-column label="组件原因" prop="reason_l3" />
+          <el-table-column label="部件原因" prop="reason_l4" />
+          <el-table-column label="具体原因-1" prop="reason_detail_1" />
+          <el-table-column label="具体原因-2" prop="reason_detail_2" />
+          <el-table-column label="OCC备注" prop="occ_comment" :show-overflow-tooltip="true" />
+          <el-table-column label="维修备注" prop="mt_comment" :show-overflow-tooltip="true" />
           <el-table-column label="操作" :width="buttonColWidth" fixed="right">
             <template slot-scope="scope">
               <!-- OCC修改按钮 -->

@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="新增停机记录" :visible="showDialog" width="500px" @close="btnCancel">
+  <el-dialog title="新增停机记录" :visible="showDialog" width="500px" :close-on-click-modal="false" @close="btnCancel">
     <el-steps
       :space="830"
       :active="activeIndex - 0"

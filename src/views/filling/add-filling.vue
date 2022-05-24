@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="新增充液记录" :visible="showDialog" width="340px" @close="btnCancel">
+  <el-dialog title="新增充液记录" :visible="showDialog" width="340px" :close-on-click-modal="false" @close="btnCancel">
     <!-- 表单 -->
     <el-form
       ref="addFormRef"

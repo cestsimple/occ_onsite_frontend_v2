@@ -84,6 +84,7 @@
         :visible.sync="editVisible"
         width="600px"
         top="30px"
+        :close-on-click-modal="false"
         @close="editDialogClosed"
       >
         <!-- 进度条 -->
@@ -214,6 +215,7 @@
         :visible.sync="innerVisible"
         top="50px"
         append-to-body
+        :close-on-click-modal="false"
         @close="editInnerDialogClosed"
       >
         <el-form
