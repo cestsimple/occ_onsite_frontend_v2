@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="`${editForm.rtu_name} - Daily数据修改`" :visible="showDialog" width="550px" @close="btnCancel">
+  <el-dialog :title="`${editForm.rtu_name} - Daily数据修改`" :visible="showDialog" width="550px" :close-on-click-modal="false" @close="btnCancel">
     <!-- 表单 -->
     <el-alert
       :title="`当前用户:${userInfo.username}，上次编辑者: ${modForm.user}`"
@@ -8,7 +8,7 @@
       show-icon
       :closable="false"
     />
-    <table class="modTable" width="90%" style="font-size:75%">
+    <table v-loading="loading" class="modTable" width="90%" style="font-size:75%">
       <thead>
         <tr>
           <th width="30%">变量名称</th>
@@ -124,7 +124,8 @@ export default {
       // 表单验证规则
       editForm: {},
       modForm: {},
-      originDaily: {}
+      originDaily: {},
+      loading: false
     }
   },
   computed: {
@@ -136,8 +137,10 @@ export default {
     // 传入编辑值
     getData(item) {
       this.editForm = JSON.parse(JSON.stringify(item))
+      this.loading = true
       this.getOrigin(item.id)
       this.getModify(item.mod_id)
+      this.loading = false
     },
     btnCancel() {
       this.$emit('update:showDialog', false)
@@ -197,6 +200,7 @@ tr {
 }
 ::v-deep .el-input__inner{
   width: 95%;
+  font-size: 75%;
   height: 25px !important;
 }
 ::v-deep .el-dialog{

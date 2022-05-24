@@ -630,7 +630,7 @@ export default {
     },
     // 弹层控制
     showEditDialog(assetInfo) {
-      this.editInfo = assetInfo
+      this.editInfo = JSON.parse(JSON.stringify(assetInfo))
       this.getVariableList(assetInfo.id)
       this.getEngineer()
       this.editVisible = true
@@ -641,7 +641,7 @@ export default {
       } else {
         this.innerCreate = 1
       }
-      this.editVariable = variableInfo
+      this.editVariable = JSON.parse(JSON.stringify(variableInfo))
       this.innerVisible = true
     },
     editDialogClosed() {
@@ -725,20 +725,21 @@ export default {
     },
     // 更新资产
     async updateAsset() {
+      console.log(this.editInfo)
       // 验证工程师
       if (this.editInfo.site.engineer.id === '' || this.editInfo.site.engineer.id === 0) {
         return Message.error('缺少工程师信息')
       }
       // 验证变量总数
-      if (this.variableMarkedList.length < 11) {
-        return Message.error('变量绑定数量错误，请确认')
+      if (this.variableMarkedList.length < 11 && this.editInfo.apsa.daily_js !== 0) {
+        return Message.error('变量绑定数量错误,请确认')
       }
       // 验证两个400V
-      if (this.variableMarkedList.filter(x => x.daily_mark === 'H_STP400V').length !== 1) {
-        return Message.error('H_STP400V变量重复，请修改')
+      if (this.variableMarkedList.filter(x => x.daily_mark === 'H_STP400V').length !== 1 && this.editInfo.apsa.daily_js !== 0) {
+        return Message.error('H_STP400V变量重复,请修改')
       }
       // 验证不能自己绑定自己
-      if (this.editInfo.apsa.daily_bind !== this.editInfo.apsa.id) {
+      if (this.editInfo.apsa.daily_bind === this.editInfo.apsa.id) {
         return Message.error('不能自己绑定自己')
       }
       // 如果是普通计算，则清空bind和fixed
@@ -750,6 +751,7 @@ export default {
         await this.$confirm('是否提交修改')
         await updateAsset({ ...this.editInfo, confirm: 1 })
         Message.success('提交成功')
+        this.editVisible = false
         this.getApsaList()
       } catch (error) {
         Message.error('提交失败：' + error)
@@ -758,7 +760,7 @@ export default {
     // 设置隐藏
     async hideAsset(asset) {
       try {
-        await this.$confirm('隐藏不会删除该资产，以后可过滤进行查看')
+        await this.$confirm('隐藏不会删除该资产,以后可过滤进行查看')
         await updateAsset({ ...asset, confirm: -1 })
         Message.info('已隐藏')
         this.getApsaList()

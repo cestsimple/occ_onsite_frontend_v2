@@ -4,10 +4,9 @@
       <!-- 面包屑导航 -->
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/apsa' }">用户管理</el-breadcrumb-item>
+        <el-breadcrumb-item>用户管理 Users</el-breadcrumb-item>
       </el-breadcrumb>
 
-      <!-- 卡片内容 -->
       <el-card v-loading="loading">
         <!-- 区域过滤 新增用户-->
         <el-row :style="{'margin-bottom': '15px'}">
@@ -16,7 +15,17 @@
               新增用户
             </el-button>
           </el-col>
-          <el-col :span="21">
+          <el-col :span="3">
+            <el-button type="primary" size="mini" @click="goRole">
+              新增角色
+            </el-button>
+          </el-col>
+          <el-col :span="3">
+            <el-button type="primary" size="mini" @click="goRolePermission">
+              角色权限管理
+            </el-button>
+          </el-col>
+          <el-col :span="15">
             <span>区域过滤：</span>
             <el-select v-model="querryInfo.region" placeholder="请选择" size="mini">
               <el-option
@@ -329,6 +338,14 @@ export default {
       } catch (error) {
         Message.error('用户创建失败：' + error)
       }
+    },
+    // 跳转Role
+    goRole() {
+      this.$router.push('/users/role/')
+    },
+    // 跳转RolePermission
+    goRolePermission() {
+      this.$router.push('/users/role/permission')
     }
   }
 }
@@ -342,4 +359,5 @@ export default {
 ::v-deep .el-dialog__body input {
   width: 200px;
 }
+
 </style>

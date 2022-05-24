@@ -43,3 +43,37 @@ export function createUser(data) {
     data
   })
 }
+
+export function getRole() {
+  // 返回promise对象
+  return request({
+    url: '/user/role',
+    method: 'get'
+  })
+}
+
+export function deleteRole(id) {
+  // 返回promise对象
+  return request({
+    url: `/user/role/${id}/`,
+    method: 'delete'
+  })
+}
+
+export function createRole(data) {
+  // 返回promise对象
+  return request({
+    url: '/user/role/',
+    method: 'post',
+    data
+  })
+}
+
+export function updateRole(data) {
+  // 返回promise对象
+  return request({
+    url: `/user/role/${data.id}/`,
+    method: 'put',
+    data
+  })
+}

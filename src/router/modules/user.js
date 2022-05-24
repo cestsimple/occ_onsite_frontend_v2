@@ -11,5 +11,22 @@ export default {
       title: '用户管理',
       icon: 'people'
     }
+  }, {
+    path: 'role',
+    hidden: true,
+    component: () => import('@/views/users/role-info'),
+    meta: {
+      title: '角色管理',
+      icon: 'people'
+    }
+  },
+  {
+    path: 'role/permission',
+    hidden: true,
+    component: () => import('@/views/users/role-permission'),
+    meta: {
+      title: '角色权限管理',
+      icon: 'people'
+    }
   }]
 }

@@ -69,7 +69,7 @@
             align="right"
           >
             <template slot-scope="scope">
-              <div :style="scope.row.avg_consume > scope.row.vap_max ? {'color': 'red'} : ''">{{ scope.row.avg_consume | toInt }}</div>
+              {{ scope.row.avg_consume | toInt }}
             </template>
           </el-table-column>
           <el-table-column
@@ -120,7 +120,7 @@
             align="center"
           >
             <template slot-scope="scope">
-              {{ scope.row.vap_max }}
+              <div :style="scope.row.avg_consume > scope.row.vap_max ? {'color': 'red'} : ''">{{ scope.row.vap_max }}</div>
             </template>
           </el-table-column>
           <el-table-column

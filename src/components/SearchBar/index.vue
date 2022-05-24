@@ -13,7 +13,7 @@
         end-placeholder="结束日期"
         format="yyyy-MM-dd HH:mm"
         value-format="yyyy-MM-dd HH:mm"
-        :default-time="['00:00:00', '23:59:59']"
+        :default-time="['00:00:00', '00:00:00']"
         size="mini"
         :style="{'width': '345px'}"
       />
