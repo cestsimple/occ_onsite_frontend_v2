@@ -18,6 +18,14 @@ export function getUser(params) {
   })
 }
 
+export function getUserById(id) {
+  // 返回promise对象
+  return request({
+    url: `/user/${id}/`,
+    method: 'get'
+  })
+}
+
 export function updateUser(data) {
   // 返回promise对象
   return request({

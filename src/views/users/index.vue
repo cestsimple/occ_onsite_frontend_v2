@@ -20,11 +20,6 @@
               新增角色
             </el-button>
           </el-col>
-          <el-col :span="3">
-            <el-button type="primary" size="mini" @click="goRolePermission">
-              角色权限管理
-            </el-button>
-          </el-col>
           <el-col :span="15">
             <span>区域过滤：</span>
             <el-select v-model="querryInfo.region" placeholder="请选择" size="mini">
@@ -342,10 +337,6 @@ export default {
     // 跳转Role
     goRole() {
       this.$router.push('/users/role/')
-    },
-    // 跳转RolePermission
-    goRolePermission() {
-      this.$router.push('/users/role/permission')
     }
   }
 }

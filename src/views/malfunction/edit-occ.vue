@@ -62,7 +62,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="停机报警" prop="stop_alarm">
-        <el-input v-model="editForm.stop_alarm" />
+        <el-input v-model="editForm.stop_alarm" :disabled="editForm.stop_label === 'DFT' ? false : true" />
       </el-form-item>
       <el-form-item label="备注信息" prop="occ_comment">
         <el-input
@@ -93,12 +93,17 @@ export default {
     }
   },
   data() {
+    // 自定义表单验证方法
     const dateRule = (rule, value, callback) => {
-      if (this.addForm.t_end === '') {
+      if (this.editForm.t_end === '') {
         return callback(new Error('开机时间不能为空'))
       }
-      Date.parse(this.addForm.t_end) < Date.parse(this.addForm.t_start) ? callback(new Error('开机时间不能小于停机时间')) : callback()
+      Date.parse(this.editForm.t_end) < Date.parse(this.editForm.t_start) ? callback(new Error('开机时间不能小于停机时间')) : callback()
     }
+    const alarmRule = (rule, value, callback) => {
+      this.editForm.stop_label === 'DFT' && this.editForm.stop_alarm === '' ? callback(new Error('标志位为DFT时,停机报警不能为空')) : callback()
+    }
+    // 变量
     return {
       activeIndex: '1',
       // 表单数据
@@ -143,10 +148,10 @@ export default {
         stop_count: [{ required: true, message: '停机次数不能为空', trigger: 'bulr' },
           { type: 'number', min: 1, message: '停机次数必须是数字且大于1', trigger: 'bulr' }],
         stop_hour: [{ required: true, message: '停机时长不能为空', trigger: 'bulr' },
-          { type: 'number', min: 0, max: 24, message: '停机时长必须是数字且在0-24之间', trigger: 'bulr' }],
+          { type: 'number', min: 0, message: '停机时长必须是数字且大于0', trigger: 'bulr' }],
         stop_consumption: [{ required: true, message: '停机用液消耗不能为空', trigger: 'bulr' },
-          { type: 'number', min: 0, message: '停机时长必须是数字且大于等于0', trigger: 'bulr' }],
-        stop_alarm: [{ required: true, message: '停机报警不能为空', trigger: 'bulr' }]
+          { type: 'number', min: 0, message: '停机时长必须是数字且大于0', trigger: 'bulr' }],
+        stop_alarm: [{ validator: alarmRule, trigger: 'bulr' }]
       }
     }
   },
@@ -189,31 +194,11 @@ export default {
         await updateMalfunction({ ... this.editForm, change_date: new Date().toLocaleString().replaceAll('/', '-'), change_user: this.userInfo.username })
         // 通知父组件刷新数据
         this.$parent.getMalfunction()
-        this.editForm = {
-          apsa_id: null,
-          t_start: '',
-          t_end: '',
-          stop_count: 0,
-          stop_hour: 0.0,
-          stop_consumption: 0.0,
-          stop_label: '',
-          stop_alarm: '',
-          reason_main: '',
-          reason_l1: '',
-          reason_l2: '',
-          reason_l3: '',
-          reason_l4: '',
-          reason_detail_1: '',
-          reason_detail_2: '',
-          mt_comment: '',
-          occ_comment: '',
-          change_user: ''
-        }
         this.btnCancel()
         Message.success('更新成功')
         this.$parent.showEditOcc = false
       } catch (error) {
-        console.log(error.response)
+        console.log(error)
         Message.error('更新失败')
       }
     }
