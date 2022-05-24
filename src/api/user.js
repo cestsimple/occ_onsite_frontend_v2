@@ -85,3 +85,11 @@ export function updateRole(data) {
     data
   })
 }
+
+export function assignRole(data) {
+  return request({
+    url: '/user/role/assign/',
+    data,
+    method: 'put'
+  })
+}

@@ -55,7 +55,7 @@
           <el-table-column label="操作" width="150">
             <template slot-scope="scope">
               <el-button type="text" size="small" @click="showEdit(scope.row)">编辑</el-button>
-              <el-button type="text" size="small">角色分配</el-button>
+              <el-button type="text" size="small" @click="showRoleEdit(scope.row)">角色分配</el-button>
               <el-button type="text" size="small" @click="deleteUser(scope.row)">删除</el-button>
             </template>
           </el-table-column>
@@ -149,13 +149,18 @@
         <el-button type="primary" size="mini" @click="createUser">确 定</el-button>
       </span>
     </el-dialog>
+
+    <!-- 分配角色 -->
+    <role-assign ref="editRoleRef" :show-dialog.sync="showRoleAssign" />
   </div>
 </template>
 
 <script>
 import { getUser, updateUser, deleteUser, createUser } from '@/api/user'
 import { Message } from 'element-ui'
+import RoleAssign from './role-assign.vue'
 export default {
+  components: { RoleAssign },
   data() {
     return {
       loading: false,
@@ -215,6 +220,7 @@ export default {
       ],
       showAddDialog: false,
       showEditDialog: false,
+      showRoleAssign: false,
       editForm: {
         id: null,
         username: null,
@@ -337,6 +343,11 @@ export default {
     // 跳转Role
     goRole() {
       this.$router.push('/users/role/')
+    },
+    // 编辑用户role
+    async showRoleEdit(item) {
+      await this.$refs.editRoleRef.getUserInfo(item.id)
+      this.showRoleAssign = true
     }
   }
 }
