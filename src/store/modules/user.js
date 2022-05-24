@@ -1,6 +1,6 @@
 import { getToken, setToken, removeToken, getUserInfo, setUserInfo, setExpire } from '@/utils/auth'
 import { Message } from 'element-ui'
-import { login } from '@/api/user'
+import { getUserById, login } from '@/api/user'
 // 状态
 const state = {
   token: getToken(),
@@ -38,12 +38,12 @@ const mutations = {
 const actions = {
   async login(context, data) {
     // 调用api接口
-    const res = await login(data).catch(error => {
+    let res = await login(data).catch(error => {
       console.log(error)
       Message.error('登陆失败' + error)
     })
-    console.log(res)
     context.commit('setToken', res.token)
+    res = await getUserById(res.id)
     context.commit('setUserInfo', res)
     setExpire()
   },

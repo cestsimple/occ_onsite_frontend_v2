@@ -67,12 +67,12 @@
             width="75"
           />
           <el-table-column
-            label="停机时间"
+            label="开始时间"
             prop="t_start"
             width="125"
           />
           <el-table-column
-            label="开机时间"
+            label="结束时间"
             prop="t_end"
             width="125"
           />
@@ -87,8 +87,13 @@
             width="70"
           />
           <el-table-column
-            label="用液消耗"
+            label="停机用液"
             prop="stop_consumption"
+            width="75"
+          />
+          <el-table-column
+            label="平均用液"
+            prop="avg_con"
             width="75"
           />
           <el-table-column
@@ -106,14 +111,14 @@
             <template slot-scope="scope">
               <!-- OCC修改按钮 -->
               <el-button
-                type="primary"
+                :type="scope.row.confirm === 0? 'primary' : 'success'"
                 icon="el-icon-edit"
                 size="mini"
                 @click="editMalfunctionOcc(scope.row)"
               />
               <!-- Maint修改按钮 -->
               <el-button
-                type="warning"
+                :type="scope.row.reason_main === ''? 'warning' : 'success'"
                 icon="el-icon-setting"
                 size="mini"
                 @click="editMalfunctionMaint(scope.row)"
@@ -240,8 +245,8 @@ export default {
       const headers = {
         'RTU名': 'rtu_name',
         '资产编号': 'facility_fin',
-        '停机时间': 't_start',
-        '开机时间': 't_end',
+        '开始时间': 't_start',
+        '结束时间': 't_end',
         '停机时长': 'stop_hour',
         '停机液氮消耗': 'stop_consumption',
         '停机标志位': 'stop_label',

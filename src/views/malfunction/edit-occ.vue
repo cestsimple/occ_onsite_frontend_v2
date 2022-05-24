@@ -190,8 +190,15 @@ export default {
     },
     async updateItem() {
       try {
+        console.log(this.userInfo)
+        let is_occ = 0
+        if (this.userInfo.region === 'occ') {
+          is_occ = 1
+        } else {
+          is_occ = 0
+        }
         await this.$refs.editFormRef.validate()
-        await updateMalfunction({ ... this.editForm, change_date: new Date().toLocaleString().replaceAll('/', '-'), change_user: this.userInfo.username })
+        await updateMalfunction({ ... this.editForm, confirm: is_occ, change_date: new Date().toLocaleString().replaceAll('/', '-'), change_user: this.userInfo.username })
         // 通知父组件刷新数据
         this.$parent.getMalfunction()
         this.btnCancel()
