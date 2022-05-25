@@ -26,7 +26,6 @@
               />
             </el-select>
           </el-col>
-
         </el-row>
 
         <!-- 表单区 -->
@@ -36,17 +35,13 @@
           <el-table-column label="姓名" sortable="" prop="first_name" />
           <el-table-column label="区域" sortable="" prop="region" width="115" />
           <el-table-column label="分组" sortable="" prop="group" width="90" />
-          <el-table-column label="管理员" prop="is_staff" width="80">
-            <template slot-scope="scope">
-              <div v-if="scope.row.is_staff === true">
-                <el-tag>管理员</el-tag>
-              </div>
-              <div v-else>
-                <el-tag type="info">用户</el-tag>
-              </div>
+          <el-table-column label="角色" prop="roles">
+            <template slot-scope="{row}">
+              <el-tag v-for="item, index in row.roles" :key="index" :type="item===1?'success':item===2? '' : 'info'">
+                {{ roleItems.filter(x=> x.id === item)[0].name }}
+              </el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="角色" prop="email" />
           <el-table-column label="操作" width="150">
             <template slot-scope="scope">
               <el-button type="text" size="small" @click="showEdit(scope.row)">编辑</el-button>
@@ -151,7 +146,7 @@
 </template>
 
 <script>
-import { getUser, updateUser, deleteUser, createUser } from '@/api/user'
+import { getUser, updateUser, deleteUser, createUser, getRole } from '@/api/user'
 import { Message } from 'element-ui'
 import RoleAssign from './role-assign.vue'
 export default {
@@ -242,7 +237,8 @@ export default {
         first_name: [{ required: true, message: '请输入密码', trigger: 'blur' }],
         region: [{ required: true, message: '请选择区域', trigger: 'blur' }],
         group: [{ required: true, message: '请输入区域', trigger: 'blur' }]
-      }
+      },
+      roleItems: []
     }
   },
   watch: {
@@ -252,6 +248,7 @@ export default {
   },
   created() {
     this.getUserList()
+    this.getRoleList()
   },
   methods: {
     handleSizeChange(newSize) {
@@ -269,6 +266,14 @@ export default {
       this.total = total
       this.itemList = list
       this.loading = false
+    },
+    async getRoleList() {
+      try {
+        const res = await getRole()
+        this.roleItems = res
+      } catch (error) {
+        Message.error('获取角色列表失败')
+      }
     },
     // 弹层控制
     showEdit(user) {

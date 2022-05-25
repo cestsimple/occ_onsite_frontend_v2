@@ -88,6 +88,7 @@ export default {
         await assignRole({ id: this.userInfo.id, roleIds: this.roleIds })
         Message.success('设置成功')
         this.btnCancel()
+        this.$parent.getUserList()
       } catch (error) {
         Message.error('设置失败')
       }
