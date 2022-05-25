@@ -129,7 +129,7 @@
                   v-for="item in levelOneOptions"
                   :key="item.id"
                   :label="item.cname"
-                  :value="item.cname"
+                  :value="item.ename"
                 />
               </el-select>
             </el-form-item>
@@ -143,7 +143,7 @@
                   v-for="item in levelTwoOptions"
                   :key="item.id"
                   :label="item.cname"
-                  :value="item.cname"
+                  :value="item.ename"
                 />
               </el-select>
             </el-form-item>
@@ -157,7 +157,7 @@
                   v-for="item in levelThreeOptions"
                   :key="item.id"
                   :label="item.cname"
-                  :value="item.cname"
+                  :value="item.ename"
                 />
               </el-select>
             </el-form-item>
@@ -171,7 +171,7 @@
                   v-for="item in levelFourOptions"
                   :key="item.id"
                   :label="item.cname"
-                  :value="item.cname"
+                  :value="item.ename"
                 />
               </el-select>
             </el-form-item>
@@ -462,12 +462,12 @@ export default {
         this.addForm.reason_l2 = ''
         return
       }
-      const levelId = this.levelOneOptions.filter(x => x.cname === this.addForm.reason_l1)[0].id
+      const levelId = this.levelOneOptions.filter(x => x.ename === this.addForm.reason_l1)[0].id
       const res = await getReason({ 'parent': levelId }).catch(() => {
         this.$message.error('获取二级原因失败')
       })
       this.levelTwoOptions = res.sub_data.subs
-      if (!this.levelTwoOptions.some(x => x.cname === this.addForm.reason_l2)) {
+      if (!this.levelTwoOptions.some(x => x.ename === this.addForm.reason_l2)) {
         this.addForm.reason_l2 = ''
       }
     },
@@ -480,12 +480,12 @@ export default {
       if (this.levelTwoOptions.length === 0) {
         return
       }
-      const levelId = this.levelTwoOptions.filter(x => x.cname === this.addForm.reason_l2)[0].id
+      const levelId = this.levelTwoOptions.filter(x => x.ename === this.addForm.reason_l2)[0].id
       const res = await getReason({ 'parent': levelId }).catch(() => {
         this.$message.error('获取三级原因失败')
       })
       this.levelThreeOptions = res.sub_data.subs
-      if (!this.levelThreeOptions.some(x => x.cname === this.addForm.reason_l3)) {
+      if (!this.levelThreeOptions.some(x => x.ename === this.addForm.reason_l3)) {
         this.addForm.reason_l3 = ''
       }
     },
@@ -497,12 +497,12 @@ export default {
       if (this.levelThreeOptions.length === 0) {
         return
       }
-      const levelId = this.levelThreeOptions.filter(x => x.cname === this.addForm.reason_l3)[0].id
+      const levelId = this.levelThreeOptions.filter(x => x.ename === this.addForm.reason_l3)[0].id
       const res = await getReason({ 'parent': levelId }).catch(() => {
         this.$message.error('获取四级原因失败')
       })
       this.levelFourOptions = res.sub_data.subs
-      if (!this.levelFourOptions.some(x => x.cname === this.addForm.reason_l4)) {
+      if (!this.levelFourOptions.some(x => x.ename === this.addForm.reason_l4)) {
         this.addForm.reason_l4 = ''
       }
     }

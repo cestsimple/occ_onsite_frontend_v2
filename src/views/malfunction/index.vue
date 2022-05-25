@@ -15,7 +15,6 @@
           <el-button slot="before" size="mini" type="primary" @click="exportData">导出Excel</el-button>
           <el-button slot="before" type="primary" size="mini" @click="goAddPage">新增</el-button>
         </search-bar>
-
         <el-row>
           <el-col :span="24">
             停机原因过滤:
@@ -266,6 +265,7 @@ export default {
       }
       // 定义表头对应json key
       const headers = {
+        '区域': 'region',
         'RTU名': 'rtu_name',
         '资产编号': 'facility_fin',
         '开始时间': 't_start',
@@ -275,12 +275,12 @@ export default {
         '停机标志位': 'stop_label',
         '停机报警': 'stop_alarm',
         '停机原因': 'reason_main',
-        '具体原因-1': 'reason_detail_1',
-        '具体原因-2': 'reason_detail_2',
         '过程组原因': 'reason_l1',
         '设备原因': 'reason_l2',
         '组件原因': 'reason_l3',
         '部件原因': 'reason_l4',
+        '具体原因-1': 'reason_detail_1',
+        '具体原因-2': 'reason_detail_2',
         'OCC备注': 'occ_comment',
         '维修备注': 'mt_comment',
         '上次修改时间': 'change_date',
@@ -296,7 +296,7 @@ export default {
         excel.export_json_to_excel({
           header: Object.keys(headers),
           data: data,
-          filename: `停机报表_${this.query.start}_${this.query.region === '' ? '全部区域' : this.query.region}`,
+          filename: `停机报表_${this.query.start.split(' ')[0]}_${this.query.region === '' ? '全部区域' : this.query.region}`,
           bookType: 'xlsx'
         })
       })
