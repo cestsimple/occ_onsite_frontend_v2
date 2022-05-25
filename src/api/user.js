@@ -88,7 +88,7 @@ export function updateRole(data) {
 
 export function assignRole(data) {
   return request({
-    url: '/user/role/assign/',
+    url: '/user/assignRole/',
     data,
     method: 'put'
   })
@@ -125,5 +125,21 @@ export function deletePermission(id) {
   return request({
     url: `/user/permission/${id}/`,
     method: 'delete'
+  })
+}
+
+export function assignPerm(data) {
+  return request({
+    url: '/user/role/assignPrem/',
+    method: 'put',
+    data
+  })
+}
+
+export function getRoleDetail(id) {
+  // 返回promise对象
+  return request({
+    url: `/user/role/${id}/`,
+    method: 'get'
   })
 }

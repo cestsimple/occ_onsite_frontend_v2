@@ -15,12 +15,7 @@
               新增用户
             </el-button>
           </el-col>
-          <el-col :span="3">
-            <el-button type="primary" size="mini" @click="goRole">
-              角色管理页
-            </el-button>
-          </el-col>
-          <el-col :span="15">
+          <el-col :span="21">
             <span>区域过滤：</span>
             <el-select v-model="querryInfo.region" placeholder="请选择" size="mini">
               <el-option
@@ -339,10 +334,6 @@ export default {
       } catch (error) {
         Message.error('用户创建失败：' + error)
       }
-    },
-    // 跳转Role
-    goRole() {
-      this.$router.push('/users/role/')
     },
     // 编辑用户role
     async showRoleEdit(item) {

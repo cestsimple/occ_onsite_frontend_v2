@@ -1,12 +1,6 @@
 <template>
   <div class="dashboard-container">
     <div class="app-container">
-      <!-- 面包屑导航 -->
-      <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/users/' }">用户管理 Users</el-breadcrumb-item>
-        <el-breadcrumb-item>角色管理 Roles</el-breadcrumb-item>
-      </el-breadcrumb>
 
       <el-card v-loading="loading">
         <!-- 区域过滤 新增用户-->
@@ -16,21 +10,17 @@
               新增角色
             </el-button>
           </el-col>
-          <el-col :span="3">
-            <el-button type="primary" size="mini" @click="goRolePermission">
-              角色权限管理
-            </el-button>
-          </el-col>
         </el-row>
 
         <!-- 表单区 -->
         <el-table :data="itemList" border stripe size="mini">
-          <el-table-column label="序号" sortable="" type="index" width="45" />
-          <el-table-column label="角色名称" sortable="" prop="name" />
-          <el-table-column label="描述" sortable="" prop="description" />
-          <el-table-column label="操作" width="100">
+          <el-table-column align="center" label="序号" sortable="" type="index" width="45" />
+          <el-table-column align="center" label="角色名称" sortable="" prop="name" />
+          <el-table-column align="center" label="描述" sortable="" prop="description" />
+          <el-table-column align="center" label="操作">
             <template slot-scope="scope">
               <el-button type="text" size="small" @click="showEdit(scope.row)">编辑</el-button>
+              <el-button type="text" size="small" @click="showAssignPerm(scope.row.id)">分配权限</el-button>
               <el-button type="text" size="small" @click="deleteRole(scope.row)">删除</el-button>
             </template>
           </el-table-column>
@@ -41,6 +31,7 @@
     <!-- 弹层区 -->
     <el-dialog title="编辑角色" :visible="showEditDialog" width="350px" @close="btnCancel">
       <el-form
+        ref="editFormRef"
         :model="editForm"
         label-width="90px"
         size="mini"
@@ -78,12 +69,37 @@
         <el-button type="primary" size="mini" @click="createRole">确 定</el-button>
       </span>
     </el-dialog>
+
+    <el-dialog title="分配权限" :visible="showPermDialog" @close="btnPermCancel">
+      <!-- 权限是一颗树 -->
+      <!-- 将数据绑定到组件上 -->
+      <!-- check-strictly 如果为true 那表示父子勾选时  不互相关联 如果为false就互相关联 -->
+      <!-- id作为唯一标识 -->
+      <el-tree
+        ref="permTree"
+        :data="permData"
+        :props="defaultProps"
+        :show-checkbox="true"
+        :check-strictly="true"
+        :default-expand-all="true"
+        :default-checked-keys="selectCheck"
+        node-key="id"
+      />
+      <!-- 确定 取消 -->
+      <el-row slot="footer" type="flex" justify="center">
+        <el-col :span="6">
+          <el-button type="primary" size="small" @click="btnPermOK">确定</el-button>
+          <el-button size="small" @click="btnPermCancel">取消</el-button>
+        </el-col>
+      </el-row>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getRole, deleteRole, createRole, updateRole } from '@/api/user'
+import { getRole, deleteRole, createRole, updateRole, getPermissionList, getRoleDetail, assignPerm } from '@/api/user'
 import { Message } from 'element-ui'
+import { transListToTreeData } from '@/utils'
 export default {
   data() {
     return {
@@ -102,7 +118,15 @@ export default {
       addFormRules: {
         name: [{ required: true, message: '请输入角色名称', trigger: 'blur' }],
         description: [{ required: true, message: '请输入描述', trigger: 'blur' }]
-      }
+      },
+      // 分配权限
+      showPermDialog: false, // 控制分配权限弹层的显示后者隐藏
+      defaultProps: {
+        label: 'name'
+      },
+      permData: [], // 专门用来接收权限数据 树形数据
+      selectCheck: [], // 定义一个数组来接收 已经选中的节点
+      roleId: null // 用来记录分配角色的id
     }
   },
   watch: {
@@ -125,7 +149,7 @@ export default {
         this.loading = false
       }
     },
-    // 弹层控制
+    // 角色编辑弹层控制
     showEdit(item) {
       this.editForm = JSON.parse(JSON.stringify(item))
       this.showEditDialog = true
@@ -133,7 +157,6 @@ export default {
     btnCancel() {
       this.showAddDialog = false
       this.showEditDialog = false
-      this.$refs.addFormRef.resetFields()
       this.editForm = {
         name: null,
         description: null
@@ -142,6 +165,7 @@ export default {
         name: null,
         description: null
       }
+      this.$refs.addFormRef.resetFields()
     },
     showAdd() {
       this.showAddDialog = true
@@ -183,9 +207,28 @@ export default {
         Message.error('更新失败：' + error)
       }
     },
-    // 跳转RolePermission
-    goRolePermission() {
-      this.$router.push('/users/role/permission')
+    // 权限分配弹窗控制
+    btnPermCancel() {
+      this.selectCheck = [] // 重置数据
+      this.showPermDialog = false
+    },
+    // 点击分配权限
+    // 获取权限点数据 在点击的时候调用 获取权限点数据
+    async showAssignPerm(id) {
+      this.permData = transListToTreeData(await getPermissionList(), null) // 转化list到树形数据
+      this.roleId = id
+      // 应该去获取 这个id的 权限点
+      // 有id 就可以 id应该先记录下来
+      const { permIds } = await getRoleDetail(id) // permIds是当前角色所拥有的权限点数据
+      this.selectCheck = permIds // 将当前角色所拥有的权限id赋值
+      this.showPermDialog = true
+    },
+    async  btnPermOK() {
+      // 调用el-tree的方法
+      // console.log(this.$refs.permTree.getCheckedKeys())
+      await assignPerm({ permIds: this.$refs.permTree.getCheckedKeys(), id: this.roleId })
+      this.$message.success('分配权限成功')
+      this.showPermDialog = false
     }
   }
 }
