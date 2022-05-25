@@ -40,8 +40,8 @@
       </el-form-item>
       <div
         v-if="
-          addForm.reason_main === 'internal_involuntary' ||
-            addForm.reason_main === 'voluntary_no_budget'
+          addForm.reason_main === 'Internal Involuntary Interruptions' ||
+            addForm.reason_main === 'Voluntary + Not Budget Interruptions'
         "
       >
         <el-form-item label="过程组原因" prop="reason_l1">
@@ -268,8 +268,8 @@ export default {
     async updateItem() {
       await this.$refs.addFormRef.validate()
       if (
-        this.addForm.reason_main !== 'internal_involuntary' &&
-        this.addForm.reason_main !== 'voluntary_no_budget'
+        this.addForm.reason_main !== 'Internal Involuntary Interruptions' &&
+        this.addForm.reason_main !== 'Voluntary + Not Budget Interruptions'
       ) {
         // 不需要填写，清空内容
         this.addForm.reason_l1 = ''

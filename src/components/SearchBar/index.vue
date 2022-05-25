@@ -1,21 +1,21 @@
 <template>
   <!-- 搜索与添加 -->
   <el-row :gutter="20" :style="{'margin-bottom': '15px'}">
-    <el-col :span="4">
+    <el-col :span="6">
       <!-- 插槽 -->
       <slot name="before" /></el-col>
-    <el-col :span="8">
+    <el-col :span="6">
       <el-date-picker
         v-model="date"
-        type="datetimerange"
+        type="daterange"
         align="right"
         start-placeholder="开始日期"
         end-placeholder="结束日期"
-        format="yyyy-MM-dd HH:mm"
-        value-format="yyyy-MM-dd HH:mm"
-        :default-time="['00:00:00', '00:00:00']"
+        format="yyyy-MM-dd"
+        value-format="yyyy-MM-dd"
         size="mini"
-        :style="{'width': '345px'}"
+        :default-time="['00:00:00', '23:59:59']"
+        :style="{'width': '260px'}"
       />
     </el-col>
     <el-col :span="3">
@@ -128,8 +128,9 @@ export default {
       if (this.date === [] || this.date === null) {
         this.date = ['', '']
       }
-      this.query.start = this.date[0]
-      this.query.end = this.date[1]
+      this.query.start = this.date[0] + ' 00:00:00'
+      this.query.end = this.date[1] + ' 23:59:59'
+      console.log(this.query)
     },
     'query.region': async function() {
       if (this.query.region === '') {
@@ -171,8 +172,8 @@ export default {
       yesterday.setDate(today.getDate() - 1)
       const year = yesterday.getFullYear() // 年
       const month = yesterday.getMonth() + 1 // 月
-      const start = year + '-' + month + '-' + yesterday.getDate() + ' 00:00'
-      const end = year + '-' + month + '-' + today.getDate() + ' 00:00'
+      const start = year + '-' + month + '-' + yesterday.getDate()
+      const end = year + '-' + month + '-' + yesterday.getDate()
       this.date = [start, end]
       this.query.start = start
       this.query.end = end

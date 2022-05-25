@@ -16,6 +16,26 @@
           <el-button slot="before" type="primary" size="mini" @click="goAddPage">新增</el-button>
         </search-bar>
 
+        <el-row>
+          <el-col :span="24">
+            停机原因过滤:
+            <el-select
+              v-model="query.reason"
+              size="mini"
+              multiple
+              clearable
+              placeholder="请选择"
+            >
+              <el-option
+                v-for="item in mainReasonOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-col>
+        </el-row>
+
         <!-- 表单区 -->
         <el-table
           v-loading="loading"
@@ -29,7 +49,8 @@
           <el-table-column
             label="RTU Name"
             prop="rtu_name"
-            width="160"
+            width="130"
+            :show-overflow-tooltip="true"
           />
           <el-table-column
             label="开始时间"
@@ -145,13 +166,42 @@ export default {
         start: '',
         end: '',
         region: '',
-        group: ''
+        group: '',
+        reason: []
       },
       loading: false,
       showAddDialog: false,
       showEditOcc: false,
       showEditMaint: false,
-      buttonColWidth: '173px'
+      buttonColWidth: '173px',
+      // 主要原因选择
+      mainReasonOptions: [
+        {
+          value: 'Budget Maintenance Interruptions',
+          label: '计划内保养'
+        },
+        {
+          value: 'Internal Involuntary Interruptions',
+          label: '内部被动原因'
+        },
+        {
+          value: 'Voluntary + Not Budget Interruptions',
+          label: '主动无预算'
+        },
+        {
+          value: 'External Interruptions',
+          label: '外部原因'
+        },
+        {
+          value: 'Disuse by Customer',
+          label: '客户停用'
+        }
+      ]
+    }
+  },
+  watch: {
+    'query.reason': function() {
+      this.getMalfunction()
     }
   },
   methods: {

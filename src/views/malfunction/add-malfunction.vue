@@ -115,8 +115,8 @@
           </el-form-item>
           <div
             v-if="
-              addForm.reason_main === 'internal_involuntary' ||
-                addForm.reason_main === 'voluntary_no_budget'
+              addForm.reason_main === 'Internal Involuntary Interruptions' ||
+                addForm.reason_main === 'Voluntary + Not Budget Interruptions'
             "
           >
             <el-form-item label="过程组原因" prop="reason_l1">
@@ -304,23 +304,23 @@ export default {
       // 主要原因选择
       mainReasonOptions: [
         {
-          value: 'budget_maint',
+          value: 'Budget Maintenance Interruptions',
           label: '计划内保养'
         },
         {
-          value: 'internal_involuntary',
+          value: 'Internal Involuntary Interruptions',
           label: '内部被动原因'
         },
         {
-          value: 'voluntary_no_budget',
+          value: 'Voluntary + Not Budget Interruptions',
           label: '主动无预算'
         },
         {
-          value: 'external',
+          value: 'External Interruptions',
           label: '外部原因'
         },
         {
-          value: 'customer_disuse',
+          value: 'Disuse by Customer',
           label: '客户停用'
         }
       ],
@@ -415,8 +415,8 @@ export default {
     async addMalfunction() {
       await this.$refs.addFormRef.validate()
       if (
-        this.addForm.reason_main !== 'internal_involuntary' &&
-        this.addForm.reason_main !== 'voluntary_no_budget'
+        this.addForm.reason_main !== 'Internal Involuntary Interruptions' &&
+        this.addForm.reason_main !== 'Voluntary + Not Budget Interruptions'
       ) {
         // 如果需要填写，清空已填内容
         this.addForm.reason_l1 = ''
