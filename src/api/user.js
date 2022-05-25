@@ -93,3 +93,37 @@ export function assignRole(data) {
     method: 'put'
   })
 }
+
+export function getPermissionList() {
+  // 返回promise对象
+  return request({
+    url: '/user/permission/',
+    method: 'get'
+  })
+}
+
+export function updatePermission(data) {
+  // 返回promise对象
+  return request({
+    url: `/user/permission/${data.id}/`,
+    method: 'put',
+    data
+  })
+}
+
+export function createPermission(data) {
+  // 返回promise对象
+  return request({
+    url: '/user/permission/',
+    method: 'post',
+    data
+  })
+}
+
+export function deletePermission(id) {
+  // 返回promise对象
+  return request({
+    url: `/user/permission/${id}/`,
+    method: 'delete'
+  })
+}
