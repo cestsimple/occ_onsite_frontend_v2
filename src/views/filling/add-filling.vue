@@ -120,6 +120,7 @@ export default {
       },
       // 表单验证规则
       addFormRule: {
+        bulk: [{ required: true, message: '储罐不能为空', trigger: 'bulr' }],
         time_1: [{ required: true, message: '开始时间不能为空', trigger: 'bulr' }],
         time_2: [{ required: true, validator: timeRule, trigger: 'bulr' }],
         level_1: [{ required: true, type: 'number', min: 0, max: 100, message: '开始液位不能为空且是0-100的数字', trigger: 'bulr' }],
@@ -151,9 +152,10 @@ export default {
         await addFilling(this.addForm)
         Message.success('添加成功')
         // 通知父组件刷新数据
+        this.$parent.getFilling()
         this.btnCancel()
       } catch (error) {
-        console.log(error.response)
+        console.log(error)
         Message.error('添加失败')
       }
     },
@@ -166,6 +168,7 @@ export default {
         level_2: 0,
         confirm: 1
       }
+      this.bulkList = []
       this.$refs.addFormRef.resetFields()
       this.$emit('update:showDialog', false)
     }

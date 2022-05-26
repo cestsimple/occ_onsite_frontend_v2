@@ -89,7 +89,10 @@
         </el-form-item>
         <el-form-item label="变量用途">
           <el-checkbox-group v-model="addForm.usage">
-            <el-checkbox v-for="item in usageOptions.slice(1)" :key="item.value" :label="item.label" />
+            <el-checkbox v-for="item in usageOptions.slice(1)" :key="item.value" :label="item.value"> {{
+              item.label
+            }}
+            </el-checkbox>
           </el-checkbox-group>
         </el-form-item>
       </el-form>
@@ -137,7 +140,10 @@
         </el-form-item>
         <el-form-item label="变量用途">
           <el-checkbox-group v-model="addForm.usage">
-            <el-checkbox v-for="item in usageOptions.slice(1)" :key="item.value" :label="item.label" />
+            <el-checkbox v-for="item in usageOptions.slice(1)" :key="item.value" :label="item.value"> {{
+              item.label
+            }}
+            </el-checkbox>
           </el-checkbox-group>
         </el-form-item>
       </el-form>
@@ -145,6 +151,7 @@
         <el-button size="mini" @click="btnCancel">取 消</el-button>
         <el-button size="mini" type="primary" @click="addVariable">确 定</el-button>
       </span>
+      {{ addForm.usage }}
     </el-dialog>
   </div>
 </template>

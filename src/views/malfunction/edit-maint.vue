@@ -99,35 +99,35 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item label="具体原因-1" prop="reason_detail_1">
+          <el-select
+            v-model="addForm.reason_detail_1"
+            clearable
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item in DetailOneOptions"
+              :key="item.id"
+              :label="item.cname"
+              :value="item.cname"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="具体原因-2" prop="reason_detail_2">
+          <el-select
+            v-model="addForm.reason_detail_2"
+            clearable
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item in DetailTwoOptions"
+              :key="item.id"
+              :label="item.cname"
+              :value="item.cname"
+            />
+          </el-select>
+        </el-form-item>
       </div>
-      <el-form-item label="具体原因-1" prop="reason_detail_1">
-        <el-select
-          v-model="addForm.reason_detail_1"
-          clearable
-          placeholder="请选择"
-        >
-          <el-option
-            v-for="item in DetailOneOptions"
-            :key="item.id"
-            :label="item.cname"
-            :value="item.cname"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="具体原因-2" prop="reason_detail_2">
-        <el-select
-          v-model="addForm.reason_detail_2"
-          clearable
-          placeholder="请选择"
-        >
-          <el-option
-            v-for="item in DetailTwoOptions"
-            :key="item.id"
-            :label="item.cname"
-            :value="item.cname"
-          />
-        </el-select>
-      </el-form-item>
       <el-form-item label="备注信息" prop="mt_comment">
         <el-input
           v-model="addForm.mt_comment"
@@ -375,12 +375,12 @@ export default {
 ::v-deep .el-alert{
   margin-bottom: 15px;
   padding-top: 3px;
-  padding-bottom: 3px;
+  padding-bottom: 4px;
 }
 ::v-deep .el-alert__title {
     font-size: 8px;
 }
 ::v-deep .el-dialog__body {
-  padding-top: 15px;
+  padding: 12px 20px 5px !important;
 }
 </style>
