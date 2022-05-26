@@ -130,7 +130,6 @@ export default {
       }
       this.query.start = this.date[0] + ' 00:00:00'
       this.query.end = this.date[1] + ' 23:59:59'
-      console.log(this.query)
     },
     'query.region': async function() {
       if (this.query.region === '') {

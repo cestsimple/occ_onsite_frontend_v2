@@ -37,7 +37,7 @@
           <el-table-column label="分组" sortable="" prop="group" width="90" />
           <el-table-column label="角色" prop="roles">
             <template slot-scope="{row}">
-              <el-tag v-for="item, index in row.roles" :key="index" :type="item===1?'success':item===2? '' : 'info'">
+              <el-tag v-for="item, index in row.roles" :key="index" :type="item===1?'success':item===2? '' : 'info'" size="mini">
                 {{ roleItems.filter(x=> x.id === item)[0].name }}
               </el-tag>
             </template>

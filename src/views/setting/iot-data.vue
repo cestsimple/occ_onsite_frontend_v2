@@ -61,6 +61,19 @@
               />
             </el-select>
           </el-form-item>
+          <el-form-item label="选择日期范围" prop="time_list">
+            <el-date-picker
+              v-model="apsaRefresh.time_list"
+              type="daterange"
+              align="right"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              format="yyyy-MM-dd"
+              value-format="yyyy-MM-dd"
+              size="mini"
+              :style="{'width': '260px'}"
+            />
+          </el-form-item>
         </el-form-item>
         <span class="dialog-footer">
           <el-button size="mini" @click="clearSelect">清空</el-button>
@@ -70,6 +83,7 @@
             @click="getRecord({...apsaRefresh})"
           >提交请求</el-button>
         </span>
+        {{ apsaRefresh.time_list }}
       </el-form>
     </el-card>
   </div>
@@ -85,7 +99,8 @@ export default {
     return {
       jobList: [],
       apsaRefresh: {
-        apsa_list: []
+        apsa_list: [],
+        time_list: []
       },
       intervalJob: null,
       loading: false,
