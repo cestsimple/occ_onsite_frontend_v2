@@ -4,17 +4,20 @@
       <!-- 面包屑导航 -->
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item>权限管理 Permission</el-breadcrumb-item>
+        <el-breadcrumb-item>资产管理 Assets</el-breadcrumb-item>
       </el-breadcrumb>
 
       <!-- 标签页 -->
       <!-- 标签页 -->
       <el-tabs v-model="activeName">
-        <el-tab-pane label="角色管理" name="1">
-          <role-info />
+        <el-tab-pane label="产气设备资产" name="1">
+          <apsa />
         </el-tab-pane>
-        <el-tab-pane label="访问权和操作权" name="2">
-          <permission-info />
+        <el-tab-pane label="储罐资产" name="2">
+          <bulk />
+        </el-tab-pane>
+        <el-tab-pane label="开票变量登记" name="2">
+          <bulk />
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -22,10 +25,10 @@
 </template>
 
 <script>
-import PermissionInfo from './permission-info'
-import RoleInfo from './role-info'
+import Apsa from './apsa'
+import Bulk from './bulk'
 export default {
-  components: { PermissionInfo, RoleInfo },
+  components: { Apsa, Bulk },
   data() {
     return {
       activeName: '1'
@@ -40,5 +43,8 @@ export default {
   }
   ::v-deep .el-card__body {
     padding-top: 5px;
+  }
+  .el-tabs__nav-scroll {
+      font-size: 75%;
   }
 </style>

@@ -1,8 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 // 引入modules中子路由
-import apsaRouter from './modules/apsa'
-import bulkRouter from './modules/bulk'
 import userRouter from './modules/user'
 import permissionRouter from './modules/permission'
 import fillingRouter from './modules/filling'
@@ -11,6 +9,7 @@ import settingRouter from './modules/setting'
 import dailySimplegRouter from './modules/daily'
 import dailyDetailgRouter from './modules/daily_detail'
 import monthlyRouter from './modules/monthly'
+import assetRouter from './modules/asset'
 Vue.use(Router)
 
 /* Layout */
@@ -18,7 +17,7 @@ import Layout from '@/layout'
 
 // 定义动态路由变量
 export const asyncRouter = [
-  fillingRouter, dailySimplegRouter, dailyDetailgRouter, malfunctionRouter, monthlyRouter, apsaRouter, bulkRouter,
+  fillingRouter, dailySimplegRouter, dailyDetailgRouter, malfunctionRouter, monthlyRouter, assetRouter,
   userRouter, permissionRouter, settingRouter
 ]
 

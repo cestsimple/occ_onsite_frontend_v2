@@ -242,4 +242,7 @@ export default {
 ::v-deep .el-dialog__body input {
   width: 200px;
 }
+.app-container {
+    padding-top: 5px;
+  }
 </style>

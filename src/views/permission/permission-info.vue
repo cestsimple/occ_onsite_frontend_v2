@@ -152,6 +152,8 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+  .app-container {
+    padding-top: 5px;
+  }
 </style>

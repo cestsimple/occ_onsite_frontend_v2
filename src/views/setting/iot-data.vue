@@ -83,7 +83,6 @@
             @click="getRecord({...apsaRefresh})"
           >提交请求</el-button>
         </span>
-        {{ apsaRefresh.time_list }}
       </el-form>
     </el-card>
   </div>
