@@ -34,13 +34,29 @@
 
         <!-- 表格区 -->
         <el-table :data="itemList" border stripe size="mini">
+          <el-table-column label="序号" sortable="" type="index" />
           <el-table-column label="RTU名 (点击添加该气站变量)" prop="rtu_name">
             <template slot-scope="scope">
               <a @click="showAdd(scope.row)">{{ scope.row.rtu_name }}</a>
             </template>
           </el-table-column>
           <el-table-column label="变量名" prop="variable_name" />
-          <el-table-column label="用途" prop="usage" />
+          <el-table-column label="变量功能" align="center">
+            <el-table-column label="INVOICE" prop="usage" align="center">
+              <template slot-scope="{row}">
+                <div v-if="row.usage.some(x=>x === 'INVOICE')">
+                  &#10004;
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column label="MONTHLY" prop="usage" align="center">
+              <template slot-scope="{row}">
+                <div v-if="row.usage.some(x=>x === 'MONTHLY')">
+                  &#10004;
+                </div>
+              </template>
+            </el-table-column>
+          </el-table-column>
           <el-table-column label="操作" width="65px" fixed="right">
             <template slot-scope="scope">
               <!-- 修改按钮 -->
@@ -169,7 +185,7 @@ export default {
         region: '',
         page: 1,
         pagesize: 10,
-        usage: 'invoice'
+        usage: ''
       },
       itemList: [],
       regionOptions: [
@@ -316,7 +332,7 @@ export default {
       // 检查是否重复
       const p = await this.addBeforeCheck()
       if (p) {
-        return Message.error('该变量已存在')
+        return Message.error('该变量已存在,修改请先删除再添加')
       }
       try {
         await addInvoiceVariable(this.addForm)

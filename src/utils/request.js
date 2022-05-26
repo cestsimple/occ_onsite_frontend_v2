@@ -7,7 +7,7 @@ const TimeOut = 3600 * 24 * 1// 定义jwt超时时间
 
 // create an axios instance
 const service = axios.create({
-  timeout: 10000 // request timeout
+  timeout: 15000 // request timeout
 })
 service.defaults.baseURL = process.env.VUE_APP_BASE_API
 
