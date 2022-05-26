@@ -1,12 +1,6 @@
 <template>
   <div class="dashboard-container">
     <div class="app-container">
-      <!-- 面包屑导航 -->
-      <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/apsa' }">设备资产管理</el-breadcrumb-item>
-        <el-breadcrumb-item>设备资产Invoice变量管理</el-breadcrumb-item>
-      </el-breadcrumb>
 
       <el-card>
         <!-- 区域过滤 新增变量-->
@@ -63,7 +57,7 @@
         <!-- 分页器 -->
         <el-pagination
           :current-page="querryInfo.page"
-          :page-sizes="[15, 20, 50, 999]"
+          :page-sizes="[10, 15, 20, 50]"
           :page-size="querryInfo.pagesize"
           layout="total, sizes, prev, pager, next, jumper"
           :total="total"
@@ -167,7 +161,7 @@ export default {
       querryInfo: {
         region: '',
         page: 1,
-        pagesize: 20,
+        pagesize: 10,
         usage: 'invoice'
       },
       itemList: [],
@@ -364,4 +358,7 @@ export default {
     ::v-deep span {
         font-size: small;
     }
+    .app-container {
+    padding: 5px 5px 5px;
+  }
 </style>

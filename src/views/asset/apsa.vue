@@ -3,9 +3,7 @@
     <div class="app-container">
       <el-card class="box-card">
         <!-- 搜索栏 -->
-        <filter-bar @queryChanged="queryChanged">
-          <el-button slot="before" type="primary" size="mini" @click="goInvoice">开票变量</el-button>
-        </filter-bar>
+        <filter-bar @queryChanged="queryChanged" />
 
         <!-- 资产表区 -->
         <el-table :data="apsaList" border stripe size="mini">
@@ -778,10 +776,6 @@ export default {
       })
       this.serchItemList = res
       this.loading = false
-    },
-    // 跳转页面
-    goInvoice() {
-      this.$router.push('/asset/invoice')
     }
   }
 }

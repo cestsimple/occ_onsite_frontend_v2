@@ -16,8 +16,8 @@
         <el-tab-pane label="储罐资产" name="2">
           <bulk />
         </el-tab-pane>
-        <el-tab-pane label="开票变量登记" name="2">
-          <bulk />
+        <el-tab-pane label="开票变量登记" name="3">
+          <invoice />
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -27,8 +27,9 @@
 <script>
 import Apsa from './apsa'
 import Bulk from './bulk'
+import Invoice from './invoice-variable'
 export default {
-  components: { Apsa, Bulk },
+  components: { Apsa, Bulk, Invoice },
   data() {
     return {
       activeName: '1'
