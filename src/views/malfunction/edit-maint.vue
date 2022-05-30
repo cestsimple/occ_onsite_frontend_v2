@@ -248,8 +248,29 @@ export default {
   },
   methods: {
     // 获取数据
-    getData(item) {
+    async getData(item) {
       this.addForm = JSON.parse(JSON.stringify(item))
+      if (this.addForm.reason_l1) {
+        const levelId = this.levelOneOptions.filter(x => x.ename === this.addForm.reason_l1)[0].id
+        const res = await getReason({ 'parent': levelId }).catch(() => {
+          this.$message.error('获取二级原因失败')
+        })
+        this.levelTwoOptions = res.sub_data.subs
+      }
+      if (this.addForm.reason_l2) {
+        const levelId = this.levelTwoOptions.filter(x => x.ename === this.addForm.reason_l2)[0].id
+        const res = await getReason({ 'parent': levelId }).catch(() => {
+          this.$message.error('获取三级原因失败')
+        })
+        this.levelThreeOptions = res.sub_data.subs
+      }
+      if (this.addForm.reason_l3) {
+        const levelId = this.levelThreeOptions.filter(x => x.ename === this.addForm.reason_l3)[0].id
+        const res = await getReason({ 'parent': levelId }).catch(() => {
+          this.$message.error('获取四级原因失败')
+        })
+        this.levelFourOptions = res.sub_data.subs
+      }
       this.firstTime = false
     },
     // 获取一级初始化
