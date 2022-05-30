@@ -8,3 +8,11 @@ export function getApsa(params) {
     params
   })
 }
+
+export function getAssetById(id) {
+  // 返回promise对象
+  return request({
+    url: `/apsa/${id}/`,
+    method: 'get'
+  })
+}

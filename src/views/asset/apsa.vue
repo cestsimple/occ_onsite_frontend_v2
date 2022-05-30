@@ -340,7 +340,7 @@ import { getAsset, updateAsset } from '@/api/asset'
 import { getVariable, updateVariable } from '@/api/variable'
 import { Message } from 'element-ui'
 import { getUser } from '@/api/user'
-import { getApsa } from '@/api/apsa'
+import { getApsa, getAssetById } from '@/api/apsa'
 export default {
   data() {
     return {
@@ -600,6 +600,10 @@ export default {
       this.getApsaList()
     },
     // 获取资产列表，工程师，变量信息
+    async getApsaById(id) {
+      const res = await getAssetById(id)
+      this.serchItemList = [res]
+    },
     async getApsaList() {
       const res = await getAsset(this.querryInfo).catch(error => {
         console.log(error)
@@ -624,10 +628,13 @@ export default {
       this.engineerList = res
     },
     // 弹层控制
-    showEditDialog(assetInfo) {
+    async showEditDialog(assetInfo) {
       this.editInfo = JSON.parse(JSON.stringify(assetInfo))
-      this.getVariableList(assetInfo.id)
-      this.getEngineer()
+      await this.getVariableList(assetInfo.id)
+      await this.getEngineer()
+      if (this.editInfo.apsa.daily_bind !== -1 && this.editInfo.apsa.daily_bind !== null) {
+        await this.getApsaById(this.editInfo.apsa.daily_bind)
+      }
       this.editVisible = true
     },
     showEditInnerDialog(variableInfo) {
@@ -644,6 +651,7 @@ export default {
       this.innerVisible = false
       this.variableList = []
       this.variableMarkedList = []
+      this.serchItemList = []
       this.editInfo = {
         id: 0,
         site: {
