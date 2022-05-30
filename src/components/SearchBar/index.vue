@@ -127,9 +127,12 @@ export default {
     date: function() {
       if (this.date === [] || this.date === null) {
         this.date = ['', '']
+        this.query.start = ''
+        this.query.end = ''
+        return
       }
-      this.query.start = this.date[0] + ' 00:00:00'
-      this.query.end = this.date[1] + ' 23:59:59'
+      this.date[0] !== '' ? this.query.start = this.date[0] + ' 00:00:00' : ''
+      this.date[1] !== '' ? this.query.end = this.date[1] + ' 23:59:59' : ''
     },
     'query.region': async function() {
       if (this.query.region === '') {

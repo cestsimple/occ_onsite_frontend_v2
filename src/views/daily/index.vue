@@ -28,6 +28,7 @@
             label="日期"
             prop="date"
             width="90"
+            sortable
             :show-overflow-tooltip="true"
           />
           <el-table-column
@@ -200,9 +201,13 @@ export default {
     // Daily增删改查
     async getDaily() {
       this.loading = true
-      const res = await getDaily(this.query)
-      this.list = res.list
-      this.total = res.total
+      try {
+        const res = await getDaily(this.query)
+        this.list = res.list
+        this.total = res.total
+      } catch (error) {
+        this.$message.error('daily获取失败')
+      }
       this.loading = false
     }
   }

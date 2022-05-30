@@ -10,7 +10,7 @@
               添加变量
             </el-button>
           </el-col>
-          <el-col :span="22">
+          <el-col :span="12">
             <span>区域过滤：</span>
             <el-select v-model="querryInfo.region" placeholder="请选择" size="mini">
               <el-option
@@ -29,6 +29,21 @@
                 :value="item.value"
               />
             </el-select>
+          </el-col>
+          <el-col :span="10">
+            <el-input
+              v-model="querryInfo.name"
+              placeholder="输入RTU名或气站中文名进行搜索"
+              clearable
+              size="mini"
+              @keyup.enter.native="getItemList"
+            >
+              <el-button
+                slot="append"
+                icon="el-icon-search"
+                @click="getItemList"
+              />
+            </el-input>
           </el-col>
         </el-row>
 
@@ -185,7 +200,8 @@ export default {
         region: '',
         page: 1,
         pagesize: 10,
-        usage: ''
+        usage: '',
+        name: ''
       },
       itemList: [],
       regionOptions: [
@@ -259,6 +275,9 @@ export default {
   },
   watch: {
     'querryInfo.region': function() {
+      this.getItemList()
+    },
+    'querryInfo.name': function() {
       this.getItemList()
     },
     'querryInfo.usage': function() {

@@ -10,13 +10,13 @@
       <!-- 标签页 -->
       <!-- 标签页 -->
       <el-tabs v-model="activeName">
-        <el-tab-pane label="产气设备资产" name="1">
+        <el-tab-pane label="产气设备" name="1">
           <apsa />
         </el-tab-pane>
-        <el-tab-pane label="储罐资产" name="2">
+        <el-tab-pane label="储罐" name="2">
           <bulk />
         </el-tab-pane>
-        <el-tab-pane label="开票变量登记" name="3">
+        <el-tab-pane label="月报变量" name="3">
           <invoice />
         </el-tab-pane>
       </el-tabs>

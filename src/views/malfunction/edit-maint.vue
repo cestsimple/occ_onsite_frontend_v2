@@ -160,6 +160,12 @@ export default {
     }
   },
   data() {
+    const reasonRule = (rule, value, callback) => {
+      if (this.addForm.reason_main === 'Internal Involuntary Interruptions' ||
+            this.addForm.reason_main === 'Voluntary + Not Budget Interruptions') {
+        value === '' || value === null ? callback(new Error('请填写所有原因')) : callback()
+      }
+    }
     return {
       firstTime: true,
       // 表单数据
@@ -185,7 +191,13 @@ export default {
       },
       // 表单验证规则
       addFormRule: {
-        reason_main: [{ required: true, message: '停机原因不能为空', trigger: 'change' }]
+        reason_main: [{ required: true, message: '停机原因不能为空', trigger: 'change' }],
+        reason_l1: [{ validator: reasonRule, trigger: 'bulr' }],
+        reason_l2: [{ validator: reasonRule, trigger: 'bulr' }],
+        reason_l3: [{ validator: reasonRule, trigger: 'bulr' }],
+        reason_l4: [{ validator: reasonRule, trigger: 'bulr' }],
+        reason_detail_1: [{ validator: reasonRule, trigger: 'bulr' }],
+        reason_detail_2: [{ validator: reasonRule, trigger: 'bulr' }]
       },
       // 主要原因选择
       mainReasonOptions: [
@@ -266,7 +278,13 @@ export default {
     },
     // 更新
     async updateItem() {
-      await this.$refs.addFormRef.validate()
+      try {
+        await this.$refs.addFormRef.validate()
+      } catch (error) {
+        Message.error('表单数据验证失败')
+        return
+      }
+
       if (
         this.addForm.reason_main !== 'Internal Involuntary Interruptions' &&
         this.addForm.reason_main !== 'Voluntary + Not Budget Interruptions'
@@ -285,7 +303,7 @@ export default {
         this.$parent.getMalfunction()
         this.btnCancel()
       } catch (error) {
-        console.log(error.response)
+        console.log(error)
         Message.error('更新失败')
       }
     },
