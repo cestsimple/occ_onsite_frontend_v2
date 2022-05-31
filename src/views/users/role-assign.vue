@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="`分配角色 - ${userInfo.first_name}`" :visible="showDialog" @close="btnCancel">
+  <el-dialog :title="`分配角色 - ${userInfo.first_name}`" :visible="showDialog" width="600px" @close="btnCancel">
     <!-- 多选框组 -->
     <el-checkbox-group v-model="roleIds">
       <!-- 循环选项 -->
@@ -84,6 +84,10 @@ export default {
     },
     // 设置用户角色
     async assignRole() {
+      if (this.userInfo.username === 'admin' && this.userInfo.roles.length > this.roleIds.length) {
+        Message.info('管理员账户不允许减少权限!')
+        return
+      }
       try {
         await assignRole({ id: this.userInfo.id, roleIds: this.roleIds })
         Message.success('设置成功')
@@ -98,6 +102,8 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+  ::v-deep .el-dialog__footer {
+    padding-top: 25px;
+  }
 </style>

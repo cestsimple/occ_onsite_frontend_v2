@@ -94,10 +94,12 @@
           <el-input v-model="editForm.password" size="mini" />
         </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="btnCancel">取 消</el-button>
-        <el-button type="primary" size="mini" @click="updateUser">确 定</el-button>
-      </span>
+      <el-row slot="footer" type="flex" justify="center">
+        <el-col :span="10">
+          <el-button size="mini" @click="btnCancel">取 消</el-button>
+          <el-button type="primary" size="mini" @click="updateUser">确 定</el-button>
+        </el-col>
+      </el-row>
     </el-dialog>
 
     <el-dialog title="创建用户" :visible="showAddDialog" width="350px" :close-on-click-modal="false" @close="btnCancel">
@@ -134,10 +136,12 @@
           <el-input v-model="addForm.group" size="mini" />
         </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="btnCancel">取 消</el-button>
-        <el-button type="primary" size="mini" @click="createUser">确 定</el-button>
-      </span>
+      <el-row slot="footer" type="flex" justify="center">
+        <el-col :span="10">
+          <el-button size="mini" @click="btnCancel">取 消</el-button>
+          <el-button type="primary" size="mini" @click="createUser">确 定</el-button>
+        </el-col>
+      </el-row>
     </el-dialog>
 
     <!-- 分配角色 -->
@@ -149,6 +153,7 @@
 import { getUser, updateUser, deleteUser, createUser, getRole } from '@/api/user'
 import { Message } from 'element-ui'
 import RoleAssign from './role-assign.vue'
+import { mapGetters } from 'vuex'
 export default {
   components: { RoleAssign },
   data() {
@@ -241,6 +246,11 @@ export default {
       roleItems: []
     }
   },
+  computed: {
+    ...mapGetters([
+      'userInfo'
+    ])
+  },
   watch: {
     'querryInfo.region': function() {
       this.getUserList()
@@ -277,6 +287,10 @@ export default {
     },
     // 弹层控制
     showEdit(user) {
+      if (this.userInfo.username !== 'hoowoo' && this.userInfo.username !== 'admin') {
+        Message.info('无权限修改管理员账户')
+        return
+      }
       this.editForm = JSON.parse(JSON.stringify(user))
       this.showEditDialog = true
     },
@@ -342,6 +356,10 @@ export default {
     },
     // 编辑用户role
     async showRoleEdit(item) {
+      if (this.userInfo.username !== 'hoowoo' && this.userInfo.username !== 'admin') {
+        Message.info('无权限修改管理员账户')
+        return
+      }
       await this.$refs.editRoleRef.getUserInfo(item.id)
       this.showRoleAssign = true
     }

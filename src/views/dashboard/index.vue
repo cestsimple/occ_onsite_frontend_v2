@@ -35,6 +35,12 @@ export default {
     return {
       activities: [
         {
+          content: ['修复asset登记页面绑定资产回显为数字ID的问题;',
+            '\n修复DFT停机时用液计算错误的问题;',
+            '\n新增角色设置限制;'],
+          timestamp: '2022-5-31'
+        },
+        {
           content: ['新增从设备Lin_tot可以自动计算lin_tot且会联动同步到主设备lin_tot Mod值;',
             '\n修复从IOT抓取变量时会因总数量不变造成更新失败的问题;',
             '\n调整月报变量页面展示内容;',

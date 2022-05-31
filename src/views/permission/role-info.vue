@@ -20,7 +20,7 @@
           <el-table-column align="center" label="操作">
             <template slot-scope="scope">
               <el-button type="text" size="small" @click="showEdit(scope.row)">编辑</el-button>
-              <el-button type="text" size="small" @click="showAssignPerm(scope.row.id)">分配权限</el-button>
+              <el-button type="text" size="small" @click="showAssignPerm(scope.row)">分配权限</el-button>
               <el-button type="text" size="small" @click="deleteRole(scope.row)">删除</el-button>
             </template>
           </el-table-column>
@@ -29,7 +29,7 @@
     </div>
 
     <!-- 弹层区 -->
-    <el-dialog title="编辑角色" :visible="showEditDialog" width="350px" @close="btnCancel">
+    <el-dialog title="编辑角色" :visible="showEditDialog" width="350px" :close-on-click-modal="false" @close="btnCancel">
       <el-form
         ref="editFormRef"
         :model="editForm"
@@ -49,7 +49,7 @@
       </span>
     </el-dialog>
 
-    <el-dialog title="创建角色" :visible="showAddDialog" width="350px" @close="btnCancel">
+    <el-dialog title="创建角色" :visible="showAddDialog" width="350px" :close-on-click-modal="false" @close="btnCancel">
       <el-form
         ref="addFormRef"
         :model="addForm"
@@ -70,7 +70,7 @@
       </span>
     </el-dialog>
 
-    <el-dialog title="分配权限" :visible="showPermDialog" @close="btnPermCancel">
+    <el-dialog title="分配权限" :visible="showPermDialog" :close-on-click-modal="false" @close="btnPermCancel">
       <!-- 权限是一颗树 -->
       <!-- 将数据绑定到组件上 -->
       <!-- check-strictly 如果为true 那表示父子勾选时  不互相关联 如果为false就互相关联 -->
@@ -100,8 +100,15 @@
 import { getRole, deleteRole, createRole, updateRole, getPermissionList, getRoleDetail, assignPerm } from '@/api/user'
 import { Message } from 'element-ui'
 import { transListToTreeData } from '@/utils'
+import { mapGetters } from 'vuex'
 export default {
   data() {
+    const nameRule = (rule, value, callback) => {
+      if (value === '' || value === null) {
+        callback(new Error('角色名不能为空'))
+      }
+      this.itemList.some(x => x.name === value) ? callback(new Error('角色名已存在')) : callback()
+    }
     return {
       loading: false,
       itemList: [],
@@ -116,7 +123,7 @@ export default {
         description: null
       },
       addFormRules: {
-        name: [{ required: true, message: '请输入角色名称', trigger: 'blur' }],
+        name: [{ required: true, validator: nameRule, trigger: 'blur' }],
         description: [{ required: true, message: '请输入描述', trigger: 'blur' }]
       },
       // 分配权限
@@ -128,6 +135,9 @@ export default {
       selectCheck: [], // 定义一个数组来接收 已经选中的节点
       roleId: null // 用来记录分配角色的id
     }
+  },
+  computed: {
+    ...mapGetters(['userInfo'])
   },
   watch: {
     'querryInfo.region': function() {
@@ -151,6 +161,10 @@ export default {
     },
     // 角色编辑弹层控制
     showEdit(item) {
+      if (item.name === '管理员' && (this.userInfo.username !== 'admin' && this.userInfo.username !== 'hoowoo')) {
+        Message.info('您无权限编辑管理员角色!')
+        return
+      }
       this.editForm = JSON.parse(JSON.stringify(item))
       this.showEditDialog = true
     },
@@ -214,12 +228,16 @@ export default {
     },
     // 点击分配权限
     // 获取权限点数据 在点击的时候调用 获取权限点数据
-    async showAssignPerm(id) {
+    async showAssignPerm(item) {
+      if (item.name === '管理员' && (this.userInfo.username !== 'admin' && this.userInfo.username !== 'hoowoo')) {
+        Message.info('您无权限分配管理员的角色权限!')
+        return
+      }
       this.permData = transListToTreeData(await getPermissionList(), null) // 转化list到树形数据
-      this.roleId = id
+      this.roleId = item.id
       // 应该去获取 这个id的 权限点
       // 有id 就可以 id应该先记录下来
-      const { permIds } = await getRoleDetail(id) // permIds是当前角色所拥有的权限点数据
+      const { permIds } = await getRoleDetail(item.id) // permIds是当前角色所拥有的权限点数据
       this.selectCheck = permIds // 将当前角色所拥有的权限id赋值
       this.showPermDialog = true
     },
