@@ -16,7 +16,7 @@ Vue.use(Router)
 import Layout from '@/layout'
 
 // 定义动态路由变量
-export const asyncRouter = [
+export const asyncRoutes = [
   fillingRouter, dailySimplegRouter, dailyDetailgRouter, malfunctionRouter, monthlyRouter, assetRouter,
   userRouter, permissionRouter, settingRouter
 ]
@@ -54,7 +54,7 @@ export const constantRoutes = [
 const createRouter = () => new Router({
   // mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
-  routes: [...constantRoutes, ...asyncRouter] // 动静态路由临时拼接
+  routes: [...constantRoutes] // 动静态路由临时拼接
 })
 
 const router = createRouter()

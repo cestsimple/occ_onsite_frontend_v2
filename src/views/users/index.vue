@@ -335,7 +335,7 @@ export default {
     },
     async updateUser() {
       try {
-        await updateUser(this.editForm)
+        await updateUser({ ...this.editForm, level: 0 })
         Message.success('信息更新成功')
         this.getUserList()
         this.showEditDialog = false

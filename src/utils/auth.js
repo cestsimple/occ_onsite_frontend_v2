@@ -22,18 +22,22 @@ export function setExpire() {
 }
 
 export function setUserInfo(res) {
+  localStorage.setItem('id', res.id)
   localStorage.setItem('username', res.username)
-  localStorage.setItem('level', res.level)
   localStorage.setItem('region', res.region)
   localStorage.setItem('group', res.group)
+  localStorage.setItem('menus', res.perms.menus)
+  localStorage.setItem('points', res.perms.points)
 }
 
 export function getUserInfo() {
   return {
+    id: localStorage.getItem('id'),
     username: localStorage.getItem('username'),
-    level: localStorage.getItem('level'),
     region: localStorage.getItem('region'),
-    group: localStorage.getItem('group')
+    group: localStorage.getItem('group'),
+    menus: localStorage.getItem('menus'),
+    points: localStorage.getItem('points')
   }
 }
 

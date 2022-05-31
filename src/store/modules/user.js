@@ -1,10 +1,12 @@
 import { getToken, setToken, removeToken, getUserInfo, setUserInfo, setExpire } from '@/utils/auth'
 import { Message } from 'element-ui'
 import { getUserById, login } from '@/api/user'
+import { asyncRoutes, constantRoutes } from '@/router'
 // 状态
 const state = {
   token: getToken(),
-  userInfo: getUserInfo()
+  userInfo: getUserInfo(),
+  routes: []
 }
 // 修改状态
 const mutations = {
@@ -18,26 +20,34 @@ const mutations = {
     removeToken()
   },
   setUserInfo(state, res) {
+    state.userInfo.id = res.id
     state.userInfo.username = res.username
-    state.userInfo.level = res.level
     state.userInfo.region = res.region
     state.userInfo.group = res.group
+    state.userInfo.menus = res.perms.menus
+    state.userInfo.points = res.perms.points
     // 同步给localstorage
     setUserInfo(res)
   },
   removeUserInfo(state) {
     state.userInfo = {
+      id: null,
       username: '',
-      level: 0,
       region: '',
-      group: ''
+      group: '',
+      menus: [],
+      points: []
     }
+  },
+  // 用户路由权限
+  setRoutes(state, newRoutes) {
+    state.routes = [...constantRoutes, ...newRoutes]
   }
 }
 // 执行异步
 const actions = {
+  // 登录
   async login(context, data) {
-    // 调用api接口
     let res = await login(data).catch(error => {
       console.log(error)
       Message.error('登陆失败' + error)
@@ -45,13 +55,29 @@ const actions = {
     context.commit('setToken', res.token)
     res = await getUserById(res.id)
     context.commit('setUserInfo', res)
+    // 添加路由
+    const routes = []
+    res.perms.menus.forEach(key => {
+      routes.push(...asyncRoutes.filter(item => item.name === key))
+    })
+    context.commit('setRoutes', routes)
     setExpire()
   },
+  // 登出
   logout(context) {
-    // 删除token
     context.commit('removeToken')
-    // 删除用户信息
     context.commit('removeUserInfo')
+  },
+  async filterRoutes(context, id) {
+    const res = await getUserById(id)
+    context.commit('setUserInfo', res)
+    // 添加路由
+    const routes = []
+    res.perms.menus.forEach(key => {
+      routes.push(...asyncRoutes.filter(item => item.name === key))
+    })
+    context.commit('setRoutes', routes)
+    return routes
   }
 }
 export default {
