@@ -13,7 +13,7 @@
         </el-row>
 
         <!-- 表单区 -->
-        <el-table :data="list" border="" row-key="id">
+        <el-table :data="list" border="" row-key="id" size="mini">
           <el-table-column label="名称" prop="name" />
           <el-table-column align="center" label="路径或标识" prop="code" />
           <el-table-column align="center" label="描述" prop="description" />
@@ -155,5 +155,8 @@ export default {
 <style scoped>
   .app-container {
     padding-top: 5px;
+  }
+  .el-table .success-row {
+    background: #f0f9eb;
   }
 </style>

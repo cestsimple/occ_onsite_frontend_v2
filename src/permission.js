@@ -18,8 +18,12 @@ router.beforeEach(async(to, from, next) => {
     } else {
       // 判断是否有用户信息
       if (store.getters.routes.length === 0) {
+        if (store.getters.userInfo.id === null) {
+          store.dispatch('user/logout')
+          next('/login/')
+        }
         const routes = await store.dispatch('user/filterRoutes', store.getters.userInfo.id)
-        router.addRoutes(routes)
+        router.addRoutes([...routes, { path: '*', redirect: '/404', hidden: true }])
         next(to.path)
       } else {
         next()

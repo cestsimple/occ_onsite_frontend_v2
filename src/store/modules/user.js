@@ -1,7 +1,7 @@
 import { getToken, setToken, removeToken, getUserInfo, setUserInfo, setExpire } from '@/utils/auth'
 import { Message } from 'element-ui'
 import { getUserById, login } from '@/api/user'
-import { asyncRoutes, constantRoutes } from '@/router'
+import { asyncRoutes, constantRoutes, resetRouter } from '@/router'
 // 状态
 const state = {
   token: getToken(),
@@ -67,6 +67,9 @@ const actions = {
   logout(context) {
     context.commit('removeToken')
     context.commit('removeUserInfo')
+    // 重置路由
+    resetRouter()
+    context.commit('setRoutes', [])
   },
   async filterRoutes(context, id) {
     const res = await getUserById(id)
