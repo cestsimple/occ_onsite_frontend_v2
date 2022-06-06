@@ -35,6 +35,11 @@ export default {
     return {
       activities: [
         {
+          content: ['设置每日1:55,4:25服务器自动重启;',
+            '\n增加RecordJob执行前会清空所有已存在任务;'],
+          timestamp: '2022-5-31'
+        },
+        {
           content: ['修复asset登记页面绑定资产回显为数字ID的问题;',
             '\n修复DFT停机时用液计算错误的问题;',
             '\n新增角色页面编辑限制;',

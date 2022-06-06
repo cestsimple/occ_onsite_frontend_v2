@@ -24,6 +24,7 @@
         size="mini"
         clearable
         placeholder="请选择地区"
+        :disabled="userInfo.region !== 'occ' && userInfo.region !== 'OCC'? true : false"
       >
         <el-option
           v-for="item in regionOptions"
@@ -39,6 +40,7 @@
       v-model="query.group"
       placeholder="请选具体维修/分组"
       size="mini"
+      :disabled="userInfo.region !== 'occ' && userInfo.region !== 'OCC'? true : false"
     >
       <el-option
         v-for="item in groupOptions"
@@ -52,6 +54,7 @@
         placeholder="输入RTU名或气站中文名进行搜索"
         clearable
         size="mini"
+        :disabled="userInfo.region !== 'occ' && userInfo.region !== 'OCC'? true : false"
         @keyup.enter.native="getItemList"
       >
         <el-button
@@ -66,6 +69,7 @@
 
 <script>
 import { getEngineer } from '@/api/searchbar'
+import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
@@ -123,6 +127,11 @@ export default {
       groupOptions: []
     }
   },
+  computed: {
+    ...mapGetters([
+      'userInfo'
+    ])
+  },
   watch: {
     date: function() {
       if (this.date === [] || this.date === null) {
@@ -165,6 +174,7 @@ export default {
   },
   created() {
     this.set_date()
+    this.setEngineerParams()
     this.getItemList()
   },
   methods: {
@@ -182,6 +192,12 @@ export default {
     },
     getItemList() {
       this.$emit('queryChanged', this.query)
+    },
+    setEngineerParams() {
+      if (this.userInfo.region !== 'occ' && this.userInfo.region !== 'OCC') {
+        this.query.region = this.userInfo.region
+        this.query.group = this.userInfo.group
+      }
     }
   }
 }
