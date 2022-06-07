@@ -9,19 +9,21 @@ export function getRecord(params) {
   })
 }
 
-export function calculateFilling() {
+export function calculateFilling(params) {
   // 返回promise对象
   return request({
     url: '/filling/calculate/',
-    method: 'get'
+    method: 'get',
+    params
   })
 }
 
-export function calculateDaily() {
+export function calculateDaily(params) {
   // 返回promise对象
   return request({
     url: '/daily/calculate/',
-    method: 'get'
+    method: 'get',
+    params
   })
 }
 

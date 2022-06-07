@@ -2,8 +2,8 @@
   <div class="navbar">
     <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
     <div class="app-breadcrumb">
-      IMOCC在线平台
-      <span class="breadBtn">V2 Alpha</span>
+      IMOCC在线平台V2
+      <span class="breadBtn">Public Beta</span>
     </div>
     <!-- <breadcrumb class="breadcrumb-container" /> -->
 

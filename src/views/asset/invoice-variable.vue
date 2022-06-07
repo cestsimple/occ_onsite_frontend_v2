@@ -49,7 +49,7 @@
 
         <!-- 表格区 -->
         <el-table :data="itemList" border stripe size="mini">
-          <el-table-column label="序号" sortable="" type="index" />
+          <el-table-column label="序号" sortable="" type="index" align="center" />
           <el-table-column label="RTU名 (点击添加该气站变量)" prop="rtu_name">
             <template slot-scope="scope">
               <a @click="showAdd(scope.row)">{{ scope.row.rtu_name }}</a>

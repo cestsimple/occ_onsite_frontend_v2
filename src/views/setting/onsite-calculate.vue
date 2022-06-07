@@ -3,7 +3,7 @@
     <el-card>
       <el-row>
         <el-col :span="24">
-          刷新所有数据执行顺序： 抓取数据 ==> 计算filling ==> 计算daily和malfunction
+          说明: 不选择日期时默认计算前一日报表
         </el-col>
       </el-row>
       <el-row>
@@ -14,6 +14,21 @@
           <el-button type="primary" :disabled="jobList.some(x => x.name === 'ONSITE_DAILY' || x.name === 'IOT_RECORD')" size="mini" @click="calculateDaily">
             计算daily和malfunction
           </el-button>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-date-picker
+            v-model="date_list"
+            type="daterange"
+            align="right"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd"
+            size="mini"
+            :style="{'width': '260px'}"
+          />
         </el-col>
       </el-row>
       <el-row>
@@ -43,7 +58,8 @@ export default {
     return {
       jobList: [],
       intervalJob: null,
-      value2: ''
+      value2: '',
+      date_list: []
     }
   },
   created() {
@@ -55,14 +71,14 @@ export default {
   },
   methods: {
     async calculateFilling() {
-      await calculateFilling().catch(() => {
+      await calculateFilling({ date_list: this.date_list }).catch(() => {
         Message.error('刷新失败')
       })
       Message.success('刷新成功，请等待完成')
       this.getJobs()
     },
     async calculateDaily() {
-      await calculateDaily().catch(() => {
+      await calculateDaily({ date_list: this.date_list }).catch(() => {
         Message.error('刷新失败')
       })
       Message.success('刷新成功，请等待完成')
