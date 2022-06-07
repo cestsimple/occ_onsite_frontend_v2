@@ -20,8 +20,8 @@
               首页
             </el-dropdown-item>
           </router-link>
-          <a target="_blank" href="https://gitee.com/cestsimple/occ_onsite_frontend_v2">
-            <el-dropdown-item>项目仓库</el-dropdown-item>
+          <a target="_blank" @click="showDialog">
+            <el-dropdown-item>修改密码</el-dropdown-item>
           </a>
           <el-dropdown-item divided @click.native="logout">
             <span style="display:block;">登出</span>
@@ -29,16 +29,55 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+    <el-dialog title="修改密码" :visible="showEditPassword" width="350px" :close-on-click-modal="false" @close="btnCancel">
+      <el-form
+        :model="editForm"
+        label-width="100px"
+        size="mini"
+      >
+        <el-form-item label="输入旧密码" prop="old_password">
+          <el-input v-model="editForm.old_password" size="mini" type="password" />
+        </el-form-item>
+        <el-form-item label="验证身份">
+          <el-button type="primary" size="mini" @click="login">{{ auth_msg }}</el-button>
+        </el-form-item>
+        <div v-show="auth">
+          <el-form-item label="输入新密码" prop="new_password_1">
+            <el-input v-model="editForm.new_password_1" size="mini" type="password" />
+          </el-form-item>
+          <el-form-item label="再次输入" prop="new_password_2">
+            <el-input v-model="editForm.new_password_2" size="mini" type="password" />
+          </el-form-item>
+        </div>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="mini" @click="btnCancel">取 消</el-button>
+        <el-button type="primary" size="mini" @click="updatePassword">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import { login, setPassword } from '@/api/user'
 import Hamburger from '@/components/Hamburger'
 
 export default {
   components: {
     Hamburger
+  },
+  data() {
+    return {
+      showEditPassword: false,
+      editForm: {
+        new_password_1: '',
+        new_password_2: '',
+        old_password: ''
+      },
+      auth: false,
+      auth_msg: '提交'
+    }
   },
   computed: {
     ...mapGetters([
@@ -54,6 +93,46 @@ export default {
     async logout() {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+    },
+    async login() {
+      if (this.auth === '验证通过，填写新密码') {
+        return
+      }
+      try {
+        await login({ username: this.userInfo.username, password: this.editForm.old_password })
+      } catch (error) {
+        this.auth_msg = '验证失败，点击后再次提交'
+        return
+      }
+      this.auth = true
+      this.auth_msg = '验证通过，填写新密码'
+    },
+    async updatePassword() {
+      if (this.editForm.new_password_1 !== this.editForm.new_password_2) {
+        return this.$message.error('两次密码不相同')
+      }
+      if (this.editForm.new_password_1 === this.editForm.old_password) {
+        return this.$message.error('新密码与旧密码相同，无需修改')
+      }
+      try {
+        await setPassword({ id: this.userInfo.id, password: this.editForm.new_password_1 })
+        this.$message.success('更新成功')
+        this.showEditPassword = false
+      } catch (error) {
+        this.$message.error('更新失败' + error)
+      }
+    },
+    showDialog() {
+      this.showEditPassword = true
+    },
+    btnCancel() {
+      this.editForm = {
+        new_password: '',
+        old_password: ''
+      }
+      this.showEditPassword = false
+      this.auth = false
+      this.auth_msg = '提交'
     }
   }
 }

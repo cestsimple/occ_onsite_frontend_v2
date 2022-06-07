@@ -9,6 +9,15 @@ export function login(data) {
   })
 }
 
+export function setPassword(data) {
+  // 返回promise对象
+  return request({
+    url: '/user/password/',
+    method: 'put',
+    data
+  })
+}
+
 export function getUser(params) {
   // 返回promise对象
   return request({
