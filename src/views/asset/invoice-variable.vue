@@ -72,9 +72,16 @@
               </template>
             </el-table-column>
           </el-table-column>
-          <el-table-column label="操作" width="65px" fixed="right">
+          <el-table-column label="操作" width="120px" fixed="right" align="center">
             <template slot-scope="scope">
               <!-- 修改按钮 -->
+              <el-button
+                type="primary"
+                icon="el-icon-edit"
+                size="mini"
+                @click="showEdit(scope.row)"
+              />
+              <!-- 删除按钮 -->
               <el-button
                 type="danger"
                 icon="el-icon-delete"
@@ -99,7 +106,7 @@
 
     </div>
     <!-- 弹层区 -->
-    <el-dialog :title="`添加INVOICE计算变量 - ${addForm.rtu_name}`" :visible="showAddDialog" width="350px" :close-on-click-modal="false" @close="btnCancel">
+    <el-dialog :title="`添加变量 - ${addForm.rtu_name}`" :visible="showAddDialog" width="350px" :close-on-click-modal="false" @close="btnCancel">
       <el-form
         :model="addForm"
         label-width="100px"
@@ -120,10 +127,7 @@
         </el-form-item>
         <el-form-item label="变量用途">
           <el-checkbox-group v-model="addForm.usage">
-            <el-checkbox v-for="item in usageOptions.slice(1)" :key="item.value" :label="item.value"> {{
-              item.label
-            }}
-            </el-checkbox>
+            <el-checkbox v-for="item in usageOptions.slice(1)" :key="item.value" :label="item.value" />
           </el-checkbox-group>
         </el-form-item>
       </el-form>
@@ -132,7 +136,7 @@
         <el-button type="primary" size="mini" @click="addVariable">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="添加INVOICE计算变量" :visible="showAddNewDialog" width="350px" @close="btnCancel">
+    <el-dialog title="添加变量" :visible="showAddNewDialog" width="350px" @close="btnCancel">
       <el-form>
         <el-form-item label="搜索选择APSA" prop="apsa" size="mini">
           <el-select
@@ -184,11 +188,37 @@
       </span>
       {{ addForm.usage }}
     </el-dialog>
+    <el-dialog title="编辑变量" :visible="showEditDialog" width="350px" :close-on-click-modal="false" @close="btnCancel">
+      <el-form
+        :model="editForm"
+        label-width="100px"
+        size="mini"
+      >
+        <el-form-item label="RTU_NAME" prop="rtu_name">
+          <el-input v-model="editForm.rtu_name" size="mini" disabled />
+        </el-form-item>
+        <el-form-item label="IOT平台变量" prop="variable_name">
+          <el-input v-model="editForm.variable_name" size="mini" disabled />
+        </el-form-item>
+        <el-form-item label="变量用途">
+          <el-checkbox-group v-model="editForm.usage">
+            <el-checkbox v-for="item in usageOptions.slice(1)" :key="item.value" :label="item.value"> {{
+              item.label
+            }}
+            </el-checkbox>
+          </el-checkbox-group>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="mini" @click="btnCancel">取 消</el-button>
+        <el-button type="primary" size="mini" @click="editVariable">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getInvoiceVariable, deleteInvoiceVariable, addInvoiceVariable } from '@/api/invoice-diff'
+import { getInvoiceVariable, deleteInvoiceVariable, addInvoiceVariable, updateInvoiceVariable } from '@/api/invoice-diff'
 import { Message } from 'element-ui'
 import { getApsa } from '@/api/apsa'
 import { getVariable } from '@/api/variable'
@@ -261,7 +291,14 @@ export default {
         }
       ],
       showAddDialog: false,
+      showEditDialog: false,
       addForm: {
+        rtu_name: '',
+        apsa: null,
+        variable: null,
+        usage: []
+      },
+      editForm: {
         rtu_name: '',
         apsa: null,
         variable: null,
@@ -316,8 +353,16 @@ export default {
       this.addForm.rtu_name = apsa.rtu_name
       this.showAddDialog = true
     },
+    showEdit(item) {
+      this.editForm = JSON.parse(JSON.stringify(item))
+      this.showEditDialog = true
+    },
+    showAddNew() {
+      this.showAddNewDialog = true
+    },
     btnCancel() {
       this.showAddDialog = false
+      this.showEditDialog = false
       this.showAddNewDialog = false
       this.addForm = {
         rtu_name: '',
@@ -325,11 +370,14 @@ export default {
         variable: null,
         usage: []
       }
+      this.editForm = {
+        rtu_name: '',
+        apsa: null,
+        variable: null,
+        usage: []
+      }
       this.variableList = []
       this.apsaList = []
-    },
-    showAddNew() {
-      this.showAddNewDialog = true
     },
     // 删除功能
     async deleteVariable(item) {
@@ -360,6 +408,20 @@ export default {
         this.showAddDialog = false
       } catch (error) {
         Message.error('新增失败：' + error)
+      }
+    },
+    // 修改功能
+    async editVariable() {
+      if (this.editForm.usage === null || this.editForm.length === 0) {
+        return Message.error('用途为空时请在页面中选择删除功能')
+      }
+      try {
+        await updateInvoiceVariable(this.editForm)
+        Message.success('更新成功')
+        this.getItemList()
+        this.showEditDialog = false
+      } catch (error) {
+        Message.error('更新失败' + error)
       }
     },
     // 添加前查询功能

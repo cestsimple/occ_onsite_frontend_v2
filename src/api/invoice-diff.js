@@ -43,3 +43,12 @@ export function addInvoiceVariable(data) {
     data
   })
 }
+
+export function updateInvoiceVariable(data) {
+  // 返回promise对象
+  return request({
+    url: `/monthly/variable/`,
+    method: 'put',
+    data
+  })
+}
