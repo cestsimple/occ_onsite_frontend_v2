@@ -277,7 +277,7 @@ export default {
         stop_count: [{ required: true, message: '停机次数不能为空', trigger: 'bulr' },
           { type: 'number', min: 1, message: '停机次数必须是数字且大于1', trigger: 'bulr' }],
         stop_hour: [{ required: true, message: '停机时长不能为空', trigger: 'bulr' },
-          { type: 'number', min: 0, max: 24, message: '停机时长必须是数字且在0-24之间', trigger: 'bulr' }],
+          { type: 'number', min: 0, message: '停机时长必须是数字且大于0', trigger: 'bulr' }],
         stop_consumption: [{ required: true, message: '停机用液消耗不能为空', trigger: 'bulr' },
           { type: 'number', min: 0, message: '停机时长必须是数字且大于等于0', trigger: 'bulr' }],
         stop_label: [{ required: true, message: '停机标志位不能为空', trigger: 'bulr' }]

@@ -81,7 +81,7 @@
             align="right"
           >
             <template slot-scope="scope">
-              <div :style="scope.row.cooling > 5 ? {'color': 'red'} : ''">{{ scope.row.cooling | twoDigits }}</div>
+              <div :style="scope.row.cooling > 5 || scope.row.cooling < 0? {'color': 'red'} : ''">{{ scope.row.cooling | twoDigits }}</div>
             </template>
           </el-table-column>
           <el-table-column

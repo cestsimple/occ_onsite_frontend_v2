@@ -48,7 +48,7 @@
         </el-row>
 
         <!-- 表格区 -->
-        <el-table :data="itemList" border stripe size="mini">
+        <el-table v-loading="loading" :data="itemList" border stripe size="mini">
           <el-table-column label="序号" sortable="" type="index" align="center" />
           <el-table-column label="RTU名 (点击添加该气站变量)" prop="rtu_name">
             <template slot-scope="scope">
@@ -64,6 +64,8 @@
                 </div>
               </template>
             </el-table-column>
+            <el-table-column label="顺序" prop="order_invoice" align="center" />
+
             <el-table-column label="MONTHLY" prop="usage" align="center">
               <template slot-scope="{row}">
                 <div v-if="row.usage.some(x=>x === 'MONTHLY')">
@@ -71,6 +73,7 @@
                 </div>
               </template>
             </el-table-column>
+            <el-table-column label="顺序" prop="order_monthly" align="center" />
           </el-table-column>
           <el-table-column label="操作" width="120px" fixed="right" align="center">
             <template slot-scope="scope">
@@ -95,7 +98,7 @@
         <!-- 分页器 -->
         <el-pagination
           :current-page="querryInfo.page"
-          :page-sizes="[10, 15, 20, 50]"
+          :page-sizes="[10, 20, 50, 2000]"
           :page-size="querryInfo.pagesize"
           layout="total, sizes, prev, pager, next, jumper"
           :total="total"
@@ -109,7 +112,8 @@
     <el-dialog :title="`添加变量 - ${addForm.rtu_name}`" :visible="showAddDialog" width="350px" :close-on-click-modal="false" @close="btnCancel">
       <el-form
         :model="addForm"
-        label-width="100px"
+        :rules="FormRule"
+        label-width="120px"
         size="mini"
       >
         <el-form-item label="RTU_NAME" prop="rtu_name">
@@ -130,6 +134,16 @@
             <el-checkbox v-for="item in usageOptions.slice(1)" :key="item.value" :label="item.value" />
           </el-checkbox-group>
         </el-form-item>
+        <div v-show="addForm.usage.some(x=>x === 'INVOICE')">
+          <el-form-item label="INVOICE顺序" prop="order_invoice">
+            <el-input v-model.number="addForm.order_invoice" size="mini" />
+          </el-form-item>
+        </div>
+        <div v-show="addForm.usage.some(x=>x === 'MONTHLY')">
+          <el-form-item label="MONTHLY顺序" prop="order_monthly">
+            <el-input v-model.number="addForm.order_monthly" size="mini" />
+          </el-form-item>
+        </div>
       </el-form>
       <span class="dialog-footer">
         <el-button size="mini" @click="btnCancel">取 消</el-button>
@@ -137,7 +151,12 @@
       </span>
     </el-dialog>
     <el-dialog title="添加变量" :visible="showAddNewDialog" width="350px" @close="btnCancel">
-      <el-form>
+      <el-form
+        :model="addForm"
+        :rules="FormRule"
+        label-width="120px"
+        size="mini"
+      >
         <el-form-item label="搜索选择APSA" prop="apsa" size="mini">
           <el-select
             v-model="addForm.apsa"
@@ -181,33 +200,54 @@
             </el-checkbox>
           </el-checkbox-group>
         </el-form-item>
+        <div v-show="addForm.usage.some(x=>x === 'INVOICE')">
+          <el-form-item label="INVOICE顺序" prop="order_invoice">
+            <el-input v-model.number="addForm.order_invoice" size="mini" />
+          </el-form-item>
+        </div>
+        <div v-show="addForm.usage.some(x=>x === 'MONTHLY')">
+          <el-form-item label="MONTHLY顺序" prop="order_monthly">
+            <el-input v-model.number="addForm.order_monthly" size="mini" />
+          </el-form-item>
+        </div>
       </el-form>
       <span class="dialog-footer">
         <el-button size="mini" @click="btnCancel">取 消</el-button>
         <el-button size="mini" type="primary" @click="addVariable">确 定</el-button>
       </span>
-      {{ addForm.usage }}
     </el-dialog>
     <el-dialog title="编辑变量" :visible="showEditDialog" width="350px" :close-on-click-modal="false" @close="btnCancel">
       <el-form
-        :model="editForm"
-        label-width="100px"
+        ref="editFormRef"
+        :model="addForm"
+        :rules="FormRule"
+        label-width="120px"
         size="mini"
       >
         <el-form-item label="RTU_NAME" prop="rtu_name">
-          <el-input v-model="editForm.rtu_name" size="mini" disabled />
+          <el-input v-model="addForm.rtu_name" size="mini" disabled />
         </el-form-item>
         <el-form-item label="IOT平台变量" prop="variable_name">
-          <el-input v-model="editForm.variable_name" size="mini" disabled />
+          <el-input v-model="addForm.variable_name" size="mini" disabled />
         </el-form-item>
         <el-form-item label="变量用途">
-          <el-checkbox-group v-model="editForm.usage">
+          <el-checkbox-group v-model="addForm.usage">
             <el-checkbox v-for="item in usageOptions.slice(1)" :key="item.value" :label="item.value"> {{
               item.label
             }}
             </el-checkbox>
           </el-checkbox-group>
         </el-form-item>
+        <div v-show="addForm.usage.some(x=>x === 'INVOICE')">
+          <el-form-item label="INVOICE顺序" prop="order_invoice">
+            <el-input v-model.number="addForm.order_invoice" size="mini" />
+          </el-form-item>
+        </div>
+        <div v-show="addForm.usage.some(x=>x === 'MONTHLY')">
+          <el-form-item label="MONTHLY顺序" prop="order_monthly">
+            <el-input v-model.number="addForm.order_monthly" size="mini" />
+          </el-form-item>
+        </div>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button size="mini" @click="btnCancel">取 消</el-button>
@@ -224,6 +264,13 @@ import { getApsa } from '@/api/apsa'
 import { getVariable } from '@/api/variable'
 export default {
   data() {
+    // 自定义表单验证方法
+    const orderInvoice = (rule, value, callback) => {
+      value === '' && this.addForm.usage.some(x => x === 'INVOICE') ? callback(new Error('不能为空')) : callback()
+    }
+    const orderMonthly = (rule, value, callback) => {
+      value === '' && this.addForm.usage.some(x => x === 'MONTHLY') ? callback(new Error('不能为空')) : callback()
+    }
     return {
       total: 0,
       querryInfo: {
@@ -296,13 +343,23 @@ export default {
         rtu_name: '',
         apsa: null,
         variable: null,
-        usage: []
+        usage: [],
+        order_invoice: 0,
+        order_monthly: 0
       },
       editForm: {
         rtu_name: '',
         apsa: null,
         variable: null,
-        usage: []
+        usage: [],
+        order_invoice: 0,
+        order_monthly: 0
+      },
+      FormRule: {
+        rtu_name: [{ required: true, message: '不能为空', trigger: 'bulr' }],
+        variable_name: [{ required: true, message: '不能为空', trigger: 'bulr' }],
+        order_invoice: [{ type: 'number', validator: orderInvoice, trigger: 'bulr' }],
+        order_monthly: [{ type: 'number', validator: orderMonthly, trigger: 'bulr' }]
       },
       variableList: [],
       apsaList: [],
@@ -340,12 +397,15 @@ export default {
       this.getItemList()
     },
     async getItemList() {
+      this.loading = true
       const res = await getInvoiceVariable(this.querryInfo).catch(error => {
         console.log(error)
         this.$message.error('无法获取资产变量列表')
+        this.loading = false
       })
       this.itemList = res.list
       this.total = res.total
+      this.loading = false
     },
     // 弹层控制
     showAdd(apsa) {
@@ -354,7 +414,7 @@ export default {
       this.showAddDialog = true
     },
     showEdit(item) {
-      this.editForm = JSON.parse(JSON.stringify(item))
+      this.addForm = JSON.parse(JSON.stringify(item))
       this.showEditDialog = true
     },
     showAddNew() {
@@ -368,13 +428,17 @@ export default {
         rtu_name: '',
         apsa: null,
         variable: null,
-        usage: []
+        usage: [],
+        order_invoice: null,
+        order_monthly: null
       }
       this.editForm = {
         rtu_name: '',
         apsa: null,
         variable: null,
-        usage: []
+        usage: [],
+        order_invoice: null,
+        order_monthly: null
       }
       this.variableList = []
       this.apsaList = []
@@ -396,6 +460,12 @@ export default {
       if (this.addForm.apsa === null || this.addForm.variable === null || this.addForm.usage.length === 0) {
         return Message.error('必填不能为空')
       }
+      if (this.addForm.usage.some(x => x === 'INVOICE') && this.addForm.order_invoice === null) {
+        return Message.error('顺序必填')
+      }
+      if (this.addForm.usage.some(x => x === 'MONTHLY') && this.addForm.order_monthly === null) {
+        return Message.error('顺序必填')
+      }
       // 检查是否重复
       const p = await this.addBeforeCheck()
       if (p) {
@@ -412,11 +482,17 @@ export default {
     },
     // 修改功能
     async editVariable() {
-      if (this.editForm.usage === null || this.editForm.length === 0) {
+      if (this.addForm.usage === null || this.addForm.length === 0) {
         return Message.error('用途为空时请在页面中选择删除功能')
       }
+      if (this.addForm.usage.some(x => x === 'INVOICE') && !this.addForm.order_monthly) {
+        return Message.error('顺序必填')
+      }
+      if (this.addForm.usage.some(x => x === 'MONTHLY') && !this.addForm.order_monthly) {
+        return Message.error('顺序必填')
+      }
       try {
-        await updateInvoiceVariable(this.editForm)
+        await updateInvoiceVariable(this.addForm)
         Message.success('更新成功')
         this.getItemList()
         this.showEditDialog = false

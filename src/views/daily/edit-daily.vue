@@ -153,6 +153,7 @@ export default {
         Message.error('获取modify数据失败' + error)
       })
       this.modForm = res
+      console.log(this.modForm)
     },
     async getOrigin(pk) {
       const res = await getOrigin(pk).catch(error => {
@@ -161,6 +162,7 @@ export default {
       this.originDaily = res
     },
     async updateDaily() {
+      console.log(this.modForm)
       try {
         await updateModify({ ...this.modForm, 'user': this.userInfo.username })
         await updateDaily(this.editForm)

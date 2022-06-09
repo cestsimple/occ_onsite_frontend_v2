@@ -18,6 +18,27 @@
       </el-row>
       <el-row>
         <el-col :span="24">
+          <el-select
+            v-model="apsa_list"
+            filterable
+            remote
+            multiple
+            placeholder="输入气站中文或RTU名"
+            :remote-method="getSeatchItem"
+            :loading="loading"
+            size="mini"
+          >
+            <el-option
+              v-for="item in serchItemList"
+              :key="item.id"
+              :label="item.site_name + '-' + item.asset_name"
+              :value="item.id"
+            />
+          </el-select>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24">
           <el-date-picker
             v-model="date_list"
             type="daterange"
@@ -51,6 +72,7 @@
 
 <script>
 import { getJobs } from '@/api/job'
+import { getApsa } from '@/api/apsa'
 import { calculateFilling, calculateDaily } from '@/api/manuel'
 import { Message } from 'element-ui'
 export default {
@@ -59,7 +81,9 @@ export default {
       jobList: [],
       intervalJob: null,
       value2: '',
-      date_list: []
+      date_list: [],
+      apsa_list: [],
+      serchItemList: []
     }
   },
   created() {
@@ -71,14 +95,14 @@ export default {
   },
   methods: {
     async calculateFilling() {
-      await calculateFilling({ date_list: this.date_list }).catch(() => {
+      await calculateFilling({ date_list: this.date_list, apsa_list: this.apsa_list }).catch(() => {
         Message.error('刷新失败')
       })
       Message.success('刷新成功，请等待完成')
       this.getJobs()
     },
     async calculateDaily() {
-      await calculateDaily({ date_list: this.date_list }).catch(() => {
+      await calculateDaily({ date_list: this.date_list, apsa_list: this.apsa_list }).catch(() => {
         Message.error('刷新失败')
       })
       Message.success('刷新成功，请等待完成')
@@ -89,6 +113,23 @@ export default {
         Message.error('获取Job失败')
       })
       this.jobList = res
+    },
+    // 搜索框内容
+    async getSeatchItem(query) {
+      if (query === null || query === '') {
+        return
+      }
+      this.loading = true
+      const res = await getApsa({ 'name': query }).catch((error) => {
+        console.log(error)
+        this.loading = false
+        this.$message.error('无法获取资产列表')
+      })
+      this.serchItemList = res
+      this.loading = false
+    },
+    clearSelect() {
+      this.apsaRefresh.apsa_list = []
     }
   }
 }
