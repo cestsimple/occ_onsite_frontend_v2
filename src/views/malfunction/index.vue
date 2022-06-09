@@ -9,14 +9,13 @@
 
       <!-- 内容 -->
       <el-card>
-
         <!-- 搜索框 -->
         <search-bar @queryChanged="queryChanged">
           <el-button slot="before" size="mini" type="primary" @click="exportData">导出Excel</el-button>
           <el-button slot="before" type="primary" size="mini" @click="goAddPage">新增</el-button>
         </search-bar>
         <el-row>
-          <el-col :span="24">
+          <el-col :span="8">
             停机原因过滤:
             <el-select
               v-model="query.reason"
@@ -33,23 +32,44 @@
               />
             </el-select>
           </el-col>
+          <el-col :span="2">
+            <el-button size="mini" @click="showSelectBox">
+              {{ selectButtonMsg }}
+            </el-button>
+          </el-col>
+          <div v-if="showSelect">
+            <el-col :span="14">
+              <el-button size="mini" type="primary" @click="showMergeDialog">
+                合并
+              </el-button>
+            </el-col>
+          </div>
+
         </el-row>
 
         <!-- 表单区 -->
         <el-table
+          ref="multipleTable"
           v-loading="loading"
           :data="list"
           border
           stripe
           size="mini"
           :highlight-current-row="true"
+          @selection-change="handleSelectionChange"
         >
-          <el-table-column type="index" label="#" width="35" />
+          <el-table-column
+            v-if="showSelect"
+            type="selection"
+            width="39"
+            align="center"
+          />
           <el-table-column
             label="RTU Name"
             prop="rtu_name"
             width="130"
             :show-overflow-tooltip="true"
+            fixed="left"
           />
           <el-table-column
             label="开始时间"
@@ -163,11 +183,89 @@
     <add-malfunction :show-dialog.sync="showAddDialog" />
     <edit-occ ref="editOcc" :show-dialog.sync="showEditOcc" />
     <edit-maint ref="editMaint" :show-dialog.sync="showEditMaint" />
+    <el-dialog title="合并停机" :visible="showMergeForm" width="450px" :close-on-click-modal="false" @close="closeMergeDialog">
+      <el-form
+        ref="addFormRef"
+        :model="addForm"
+        :rules="addFormRule"
+        label-width="130px"
+        label-position="left"
+        size="mini"
+      >
+        <el-form-item label="气站设备名" prop="name">
+          <el-input
+            v-model="addForm.name"
+            disabled
+          />
+        </el-form-item>
+        <el-form-item label="停机时间" prop="t_start">
+          <el-date-picker
+            v-model="addForm.t_start"
+            type="datetime"
+            placeholder="选择日期时间"
+            format="yyyy-MM-dd HH:mm"
+            value-format="yyyy-MM-dd HH:mm"
+          /> </el-form-item>
+        <el-form-item label="开机时间" prop="t_end">
+          <el-date-picker
+            v-model="addForm.t_end"
+            type="datetime"
+            placeholder="选择日期时间"
+            format="yyyy-MM-dd HH:mm"
+            value-format="yyyy-MM-dd HH:mm"
+          /> </el-form-item>
+        <el-form-item label="停机次数" prop="stop_count">
+          <el-input
+            v-model.number="addForm.stop_count"
+          /> </el-form-item><el-form-item label="停机时长" prop="stop_hour">
+          <el-input
+            v-model.number="addForm.stop_hour"
+            type="number"
+          /> </el-form-item>
+        <el-form-item label="停机用液消耗" prop="stop_consumption">
+          <el-input
+            v-model.number="addForm.stop_consumption"
+            type="number"
+          /> </el-form-item>
+        <el-form-item label="停机标志位" prop="stop_label">
+          <el-select
+            v-model="addForm.stop_label"
+            clearable
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item in stopLabelOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select> </el-form-item>
+        <el-form-item label="停机报警" prop="stop_alarm">
+          <el-input
+            v-model="addForm.stop_alarm"
+          /> </el-form-item>
+        <el-form-item label="备注信息" prop="occ_comment">
+          <el-input
+            v-model="addForm.occ_comment"
+            type="textarea"
+          />
+        </el-form-item>
+      </el-form>
+      <!-- 底部按钮区 -->
+      <span slot="footer" class="dialog-footer">
+        <el-button size="mini" @click="closeMergeDialog">取 消</el-button>
+        <el-button
+          type="primary"
+          size="mini"
+          @click="mergeMalfunction"
+        >提交记录</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getMalfunction, deleteMalfunction, getReason } from '@/api/malfunction'
+import { addMalfunction, getMalfunction, deleteMalfunction, getReason } from '@/api/malfunction'
 import { Message } from 'element-ui'
 import AddMalfunction from './add-malfunction'
 import EditOcc from './edit-occ'
@@ -175,6 +273,12 @@ import EditMaint from './edit-maint'
 export default {
   components: { AddMalfunction, EditOcc, EditMaint },
   data() {
+    const dateRule = (rule, value, callback) => {
+      if (this.addForm.t_end === '') {
+        return callback(new Error('开机时间不能为空'))
+      }
+      Date.parse(this.addForm.t_end) < Date.parse(this.addForm.t_start) ? callback(new Error('开机时间不能小于停机时间')) : callback()
+    }
     return {
       list: [],
       total: 0,
@@ -216,7 +320,59 @@ export default {
           label: '客户停用'
         }
       ],
-      reasons_all: []
+      reasons_all: [],
+      // 停机合并多选框显示
+      showMergeForm: false,
+      showSelect: false,
+      selectedRows: [],
+      selectButtonMsg: '合并停机',
+      addForm: {
+        name: '',
+        apsa_id: null,
+        t_start: '',
+        t_end: '',
+        stop_count: 1,
+        stop_hour: 0.0,
+        stop_consumption: 0.0,
+        stop_label: '',
+        stop_alarm: '',
+        reason_main: '',
+        reason_l1: '',
+        reason_l2: '',
+        reason_l3: '',
+        reason_l4: '',
+        reason_detail_1: '',
+        reason_detail_2: '',
+        mt_comment: '',
+        occ_comment: '',
+        change_user: ''
+      },
+      stopLabelOptions: [
+        {
+          value: 'DFT',
+          label: 'DFT'
+        },
+        {
+          value: 'AL',
+          label: 'AL'
+        },
+        {
+          value: '400V',
+          label: '400V'
+        }
+      ],
+      // 表单验证规则
+      addFormRule: {
+        t_start: [{ required: true, message: '停机时间不能为空', trigger: 'bulr' }],
+        t_end: [{ required: true, validator: dateRule, trigger: 'bulr' }],
+        stop_count: [{ required: true, message: '停机次数不能为空', trigger: 'bulr' },
+          { type: 'number', min: 1, message: '停机次数必须是数字且大于1', trigger: 'bulr' }],
+        stop_hour: [{ required: true, message: '停机时长不能为空', trigger: 'bulr' },
+          { type: 'number', min: 0, message: '停机时长必须是数字且大于0', trigger: 'bulr' }],
+        stop_consumption: [{ required: true, message: '停机用液消耗不能为空', trigger: 'bulr' },
+          { type: 'number', min: 0, message: '停机时长必须是数字且大于等于0', trigger: 'bulr' }],
+        stop_label: [{ required: true, message: '停机标志位不能为空', trigger: 'bulr' }]
+      }
     }
   },
   watch: {
@@ -352,6 +508,63 @@ export default {
         return this.reasons_all.filter(x => x.ename === eng)[0].cname
       } catch (error) {
         return eng
+      }
+    },
+    // 停机合并多选切换
+    showSelectBox() {
+      if (this.showSelect) {
+        this.showSelect = false
+        this.selectButtonMsg = '合并停机'
+        this.selectedRows = []
+        this.$refs.multipleTable.clearSelection()
+        return
+      }
+      this.showSelect = true
+      this.selectButtonMsg = '取消合并'
+    },
+    handleSelectionChange(val) {
+      this.selectedRows = val
+    },
+    // 显示停机合并弹层
+    showMergeDialog() {
+      if (this.selectedRows.length < 2) {
+        return Message.info('至少选择两条记录')
+      }
+      this.selectedRows.forEach((item) => {
+        if (this.addForm.apsa_id === null || !this.addForm.apsa_id) {
+          this.addForm.apsa_id = item.apsa
+          this.addForm.name = item.rtu_name + '-' + item.asset_name
+        }
+        this.addForm.stop_hour += item.stop_hour
+        this.addForm.stop_consumption += item.stop_consumption
+        this.addForm.stop_label = item.stop_label
+      })
+      this.showMergeForm = true
+    },
+    // 关闭停机合并弹层
+    closeMergeDialog() {
+      this.showMergeForm = false
+      this.selectedRows = []
+      this.$refs.multipleTable.clearSelection()
+      this.showSelect = false
+      this.selectButtonMsg = '合并停机'
+    },
+    // 合并功能
+    async mergeMalfunction() {
+      try {
+        await this.$refs.addFormRef.validate()
+        await addMalfunction(this.addForm)
+        await this.selectedRows.forEach(async(item) => {
+          await deleteMalfunction(item.id)
+        })
+        Message.success('添加合并成功')
+        this.showMergeForm = false
+        this.$refs.addFormRef.resetFields()
+        this.getMalfunction()
+      } catch (error) {
+        console.log(error)
+        console.log(error.message)
+        Message.error('添加合并失败' + error.response.data)
       }
     }
   }

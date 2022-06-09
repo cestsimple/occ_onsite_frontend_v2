@@ -175,7 +175,6 @@ export default {
   created() {
     this.set_date()
     this.setEngineerParams()
-    console.log(this.query)
     this.getItemList()
   },
   methods: {
