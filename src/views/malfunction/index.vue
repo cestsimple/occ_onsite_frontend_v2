@@ -530,37 +530,43 @@ export default {
       if (this.selectedRows.length < 2) {
         return Message.info('至少选择两条记录')
       }
-      this.selectedRows.forEach((item) => {
-        if (this.addForm.apsa_id === null || !this.addForm.apsa_id) {
+      let apsa_id = -1
+      for (const item of this.selectedRows) {
+        if (apsa_id === -1) {
           this.addForm.apsa_id = item.apsa
           this.addForm.name = item.rtu_name + '-' + item.asset_name
+          apsa_id = item.apsa
+        } else {
+          if (this.addForm.apsa_id !== item.apsa) {
+            return Message.error('气站不相同,无法合并')
+          }
         }
         this.addForm.stop_hour += item.stop_hour
         this.addForm.stop_consumption += item.stop_consumption
         this.addForm.stop_label = item.stop_label
-      })
+      }
       this.showMergeForm = true
     },
     // 关闭停机合并弹层
     closeMergeDialog() {
+      this.getMalfunction()
       this.showMergeForm = false
       this.selectedRows = []
       this.$refs.multipleTable.clearSelection()
       this.showSelect = false
       this.selectButtonMsg = '合并停机'
     },
-    // 合并功能
+    // 提交合并
     async mergeMalfunction() {
       try {
         await this.$refs.addFormRef.validate()
         await addMalfunction(this.addForm)
-        await this.selectedRows.forEach(async(item) => {
+        for (const item of this.selectedRows) {
           await deleteMalfunction(item.id)
-        })
+        }
         Message.success('添加合并成功')
         this.showMergeForm = false
         this.$refs.addFormRef.resetFields()
-        this.getMalfunction()
       } catch (error) {
         console.log(error)
         console.log(error.message)
