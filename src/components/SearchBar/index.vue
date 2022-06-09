@@ -175,6 +175,7 @@ export default {
   created() {
     this.set_date()
     this.setEngineerParams()
+    console.log(this.query)
     this.getItemList()
   },
   methods: {
@@ -197,6 +198,9 @@ export default {
       if (this.userInfo.region !== 'occ' && this.userInfo.region !== 'OCC') {
         this.query.region = this.userInfo.region
         this.query.group = this.userInfo.group
+        this.query.start = ''
+        this.query.end = ''
+        this.date = ['', '']
       }
     }
   }

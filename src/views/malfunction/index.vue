@@ -93,27 +93,27 @@
           />
           <el-table-column label="停机原因" prop="reason_main" :show-overflow-tooltip="true">
             <template slot-scope="{row}">
-              {{ row.reason_main ? mainReasonOptions.filter(x=>x.value===row.reason_main)[0].label : '' }}
+              {{ translateReason(row.reason_main, 1) }}
             </template>
           </el-table-column>
           <el-table-column label="过程组原因" prop="reason_l1" :show-overflow-tooltip="true">
             <template slot-scope="{row}">
-              {{ row.reason_l1 ? reasons_all.filter(x=>x.ename===row.reason_l1)[0].cname : '' }}
+              {{ translateReason(row.reason_l1, 0) }}
             </template>
           </el-table-column>
           <el-table-column label="设备原因" prop="reason_l2">
             <template slot-scope="{row}">
-              {{ row.reason_l2 ? reasons_all.filter(x=>x.ename===row.reason_l2)[0].cname : '' }}
+              {{ translateReason(row.reason_l2, 0) }}
             </template>
           </el-table-column>
           <el-table-column label="组件原因" prop="reason_l3">
             <template slot-scope="{row}">
-              {{ row.reason_l3 ? reasons_all.filter(x=>x.ename===row.reason_l3)[0].cname : '' }}
+              {{ translateReason(row.reason_l3, 0) }}
             </template>
           </el-table-column>
           <el-table-column label="部件原因" prop="reason_l4">
             <template slot-scope="{row}">
-              {{ row.reason_l4 ? reasons_all.filter(x=>x.ename===row.reason_l4)[0].cname : '' }}
+              {{ translateReason(row.reason_l4, 0) }}
             </template>
           </el-table-column>
           <el-table-column label="具体原因-1" prop="reason_detail_1" />
@@ -339,6 +339,20 @@ export default {
         this.$message.error('获取原因失败')
       })
       this.reasons_all = res.reason_list
+    },
+    // 英文原因转中文
+    translateReason(eng, isMain) {
+      try {
+        if (eng === '') {
+          return ''
+        }
+        if (isMain === 1) {
+          return this.reasons_all.filter(x => x.value === eng)[0].label
+        }
+        return this.reasons_all.filter(x => x.ename === eng)[0].cname
+      } catch (error) {
+        return eng
+      }
     }
   }
 }
