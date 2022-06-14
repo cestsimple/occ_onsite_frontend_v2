@@ -46,13 +46,31 @@
             label="RTU名称"
             prop="rtu_name"
             :show-overflow-tooltip="true"
-          />
+          >
+            <template slot-scope="scope">
+              <div v-if="scope.row.mark.includes('noflowmeter')">
+                <el-tooltip content="无流量计" placement="top">
+                  <div :style="{'color': 'blue'}">{{ scope.row.rtu_name }}</div>
+                </el-tooltip>
+              </div>
+              <div v-else>{{ scope.row.rtu_name }}</div>
+            </template>
+          </el-table-column>
           <el-table-column
             label="合同量"
             prop="norminal"
             width="65"
             align="center"
-          />
+          >
+            <template slot-scope="scope">
+              <div v-if="scope.row.mark.includes('hasextraflow')">
+                <el-tooltip content="有额外用液" placement="top">
+                  <div :style="{'color': 'blue'}">{{ scope.row.norminal }}</div>
+                </el-tooltip>
+              </div>
+              <div v-else>{{ scope.row.norminal }}</div>
+            </template>
+          </el-table-column>
           <el-table-column
             label="平均产量"
             prop="avg_prod"

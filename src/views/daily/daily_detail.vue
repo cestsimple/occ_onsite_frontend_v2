@@ -43,13 +43,31 @@
             prop="rtu_name"
             :show-overflow-tooltip="true"
             :min-width="100"
-          />
+          >
+            <template slot-scope="scope">
+              <div v-if="scope.row.mark.includes('noflowmeter')">
+                <el-tooltip content="无流量计" placement="left">
+                  <div :style="{'color': 'blue'}">{{ scope.row.rtu_name }}</div>
+                </el-tooltip>
+              </div>
+              <div v-else>{{ scope.row.rtu_name }}</div>
+            </template>
+          </el-table-column>
           <el-table-column
             label="Nornimal"
             prop="norminal"
             width="75"
             align="right"
-          />
+          >
+            <template slot-scope="scope">
+              <div v-if="scope.row.mark.includes('hasextraflow')">
+                <el-tooltip content="有额外用液" placement="top">
+                  <div :style="{'color': 'blue'}">{{ scope.row.norminal }}</div>
+                </el-tooltip>
+              </div>
+              <div v-else>{{ scope.row.norminal }}</div>
+            </template>
+          </el-table-column>
           <el-table-column
             label="H Prod"
             prop="h_prod"

@@ -112,6 +112,7 @@
           <el-step title="气站信息登记" />
           <el-step title="设备信息登记" />
           <el-step title="变量登记" />
+          <el-step title="特殊标识" />
         </el-steps>
         <!-- Tab栏 -->
         <el-form
@@ -272,7 +273,16 @@
                       @click="deleteDailyMark(scope.row)"
                     />
                   </template>
-                </el-table-column> </el-table></el-tab-pane>
+                </el-table-column> </el-table>
+            </el-tab-pane>
+            <el-tab-pane label="特殊标识" name="4">
+              <el-form-item label="无流量计">
+                <el-switch v-model="noFlowMeter" />
+              </el-form-item>
+              <el-form-item label="有额外用液">
+                <el-switch v-model="hasExtraFlow" />
+              </el-form-item>
+            </el-tab-pane>
           </el-tabs>
         </el-form>
         <!-- 底部按钮区 -->
@@ -518,7 +528,8 @@ export default {
           norminal_flow: 0,
           daily_bind: 0,
           flow_meter: 0,
-          cooling_fixed: 0
+          cooling_fixed: 0,
+          mark: ''
         },
         name: '',
         rtu_name: '',
@@ -563,7 +574,10 @@ export default {
       loading: false,
       serchItemList: [],
       // tooltip
-      dailyMarkTip: '11个变量:H_PROD,STP400V,STPAL,STPDFT. M3_PEAK,PROD,Q1,Q5,Q6,Q7,TOT. 可选流量计'
+      dailyMarkTip: '11个变量:H_PROD,STP400V,STPAL,STPDFT. M3_PEAK,PROD,Q1,Q5,Q6,Q7,TOT. 可选流量计',
+      // 额外标识
+      noFlowMeter: false,
+      hasExtraFlow: false
     }
   },
   watch: {
@@ -630,6 +644,12 @@ export default {
     // 弹层控制
     async showEditDialog(assetInfo) {
       this.editInfo = JSON.parse(JSON.stringify(assetInfo))
+      if (assetInfo.apsa.mark.includes('noflowmeter')) {
+        this.noFlowMeter = true
+      }
+      if (assetInfo.apsa.mark.includes('hasextraflow')) {
+        this.hasExtraFlow = true
+      }
       await this.getVariableList(assetInfo.id)
       await this.getEngineer()
       if (this.editInfo.apsa.daily_bind !== -1 && this.editInfo.apsa.daily_bind !== null) {
@@ -647,6 +667,7 @@ export default {
       this.innerVisible = true
     },
     editDialogClosed() {
+      this.editInnerDialogClosed()
       this.editVisible = false
       this.innerVisible = false
       this.variableList = []
@@ -678,14 +699,16 @@ export default {
           norminal_flow: 0,
           daily_bind: 0,
           flow_meter: 0,
-          cooling_fixed: 0
+          cooling_fixed: 0,
+          mark: ''
         },
         name: '',
         rtu_name: '',
         comment: ''
       }
       this.activeIndex = '1'
-      this.editInnerDialogClosed()
+      this.hasExtraFlow = false
+      this.noFlowMeter = false
     },
     editInnerDialogClosed() {
       this.editVariable = {
@@ -710,11 +733,8 @@ export default {
     },
     async updateVariable() {
       if (this.editVariable.id === undefined) {
-        console.log(this.editVariable)
         const v = this.variableList.filter(x => x.name === this.editVariable.name)[0]
-        console.log(v)
         this.editVariable.id = v.id
-        console.log(this.editVariable)
       }
       try {
         await updateVariable({ ...this.editVariable, 'confirm': 1 })
@@ -728,7 +748,6 @@ export default {
     },
     // 更新资产
     async updateAsset() {
-      console.log(this.editInfo)
       // 验证工程师
       if (this.editInfo.site.engineer.id === '' || this.editInfo.site.engineer.id === 0) {
         return Message.error('缺少工程师信息')
@@ -750,6 +769,19 @@ export default {
         this.editInfo.apsa.cooling_fixed = 0
         this.editInfo.apsa.daily_bind = -1
       }
+      // 对特殊标识进行处理
+      let mark_str = ''
+      if (this.noFlowMeter) {
+        mark_str = 'noflowmeter'
+      }
+      if (this.hasExtraFlow) {
+        if (mark_str === '') {
+          mark_str = 'hasextraflow'
+        } else {
+          mark_str += ',hasextraflow'
+        }
+      }
+      this.editInfo.apsa.mark = mark_str
       try {
         await this.$confirm('是否提交修改')
         await updateAsset({ ...this.editInfo, confirm: 1 })
