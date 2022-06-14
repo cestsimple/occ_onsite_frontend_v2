@@ -446,9 +446,10 @@ export default {
     },
     // 删除功能
     async deleteVariable(item) {
+      console.log(item)
       try {
         await this.$confirm('是否删除该变量')
-        await deleteInvoiceVariable(item.id)
+        await deleteInvoiceVariable(item.variable)
         Message.success('删除成功')
         this.getItemList()
       } catch (error) {

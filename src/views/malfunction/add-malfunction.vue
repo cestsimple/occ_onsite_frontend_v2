@@ -229,6 +229,7 @@
 import { Message } from 'element-ui'
 import { getApsa } from '@/api/apsa'
 import { getReason, getReasonDetail, addMalfunction } from '@/api/malfunction'
+import { mapGetters } from 'vuex'
 export default {
   props: {
     showDialog: {
@@ -333,6 +334,11 @@ export default {
       DetailTwoOptions: []
     }
   },
+  computed: {
+    ...mapGetters([
+      'userInfo'
+    ])
+  },
   watch: {
     // 监听各级原因发生变化
     'addForm.reason_detail_1': { handler: 'getDetailLevel2' },
@@ -426,7 +432,7 @@ export default {
       }
       try {
         await this.$refs.addFormRef.validate()
-        await addMalfunction(this.addForm)
+        await addMalfunction({ ...this.addForm, change_user: this.userInfo.username })
         Message.success('添加成功')
         // 通知父组件刷新数据
         this.$parent.showAddDialog = false

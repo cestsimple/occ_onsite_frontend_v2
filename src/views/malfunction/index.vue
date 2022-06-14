@@ -270,6 +270,7 @@ import { Message } from 'element-ui'
 import AddMalfunction from './add-malfunction'
 import EditOcc from './edit-occ'
 import EditMaint from './edit-maint'
+import { mapGetters } from 'vuex'
 export default {
   components: { AddMalfunction, EditOcc, EditMaint },
   data() {
@@ -374,6 +375,11 @@ export default {
         stop_label: [{ required: true, message: '停机标志位不能为空', trigger: 'bulr' }]
       }
     }
+  },
+  computed: {
+    ...mapGetters([
+      'userInfo'
+    ])
   },
   watch: {
     'query.reason': function() {
@@ -561,7 +567,7 @@ export default {
       try {
         await this.$confirm('合并会删除选中的原始记录! 是否继续')
         await this.$refs.addFormRef.validate()
-        await addMalfunction(this.addForm)
+        await addMalfunction({ ...this.addForm, confirm: 1, change_user: this.userInfo.username })
         for (const item of this.selectedRows) {
           await deleteMalfunction(item.id)
         }
