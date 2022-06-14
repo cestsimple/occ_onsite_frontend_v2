@@ -173,7 +173,7 @@ export default {
           label: '所有区域'
         },
         {
-          value: 'occ',
+          value: 'OCC',
           label: 'OCC'
         },
         {
@@ -240,8 +240,7 @@ export default {
         ],
         password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
         first_name: [{ required: true, message: '请输入密码', trigger: 'blur' }],
-        region: [{ required: true, message: '请选择区域', trigger: 'blur' }],
-        group: [{ required: true, message: '请输入区域', trigger: 'blur' }]
+        region: [{ required: true, message: '请选择区域', trigger: 'blur' }]
       },
       roleItems: []
     }
@@ -334,6 +333,11 @@ export default {
       }
     },
     async updateUser() {
+      if (this.editForm.group === null) {
+        this.editForm.group = ''
+      }
+      this.editForm.region = this.editForm.region.toUpperCase()
+      this.editForm.group = this.editForm.group.toUpperCase()
       try {
         await updateUser({ ...this.editForm, level: 0 })
         Message.success('信息更新成功')
@@ -344,6 +348,11 @@ export default {
       }
     },
     async createUser() {
+      if (this.addForm.group === null) {
+        this.addForm.group = ''
+      }
+      this.addForm.region = this.addForm.region.toUpperCase()
+      this.addForm.group = this.addForm.group.toUpperCase()
       try {
         await this.$refs.addFormRef.validate()
         await createUser(this.addForm)

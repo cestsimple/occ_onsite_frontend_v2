@@ -24,7 +24,7 @@
         size="mini"
         clearable
         placeholder="请选择地区"
-        :disabled="userInfo.region !== 'occ' && userInfo.region !== 'OCC'? true : false"
+        :disabled="userInfo.region.toUpperCase() !== 'OCC' ? true : false"
       >
         <el-option
           v-for="item in regionOptions"
@@ -40,7 +40,7 @@
       v-model="query.group"
       placeholder="请选具体维修/分组"
       size="mini"
-      :disabled="userInfo.region !== 'occ' && userInfo.region !== 'OCC'? true : false"
+      :disabled="userInfo.region.toUpperCase() !== 'OCC' && userInfo.group !== ''? true : false"
     >
       <el-option
         v-for="item in groupOptions"
@@ -54,7 +54,7 @@
         placeholder="输入RTU名或气站中文名进行搜索"
         clearable
         size="mini"
-        :disabled="userInfo.region !== 'occ' && userInfo.region !== 'OCC'? true : false"
+        :disabled="userInfo.region.toUpperCase() !== 'OCC' && userInfo.group !== ''? true : false"
         @keyup.enter.native="getItemList"
       >
         <el-button
