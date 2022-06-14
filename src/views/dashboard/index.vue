@@ -10,7 +10,7 @@
           <span>欢迎登录OCC在线平台</span>
         </div>
 
-        <el-timeline>
+        <!-- <el-timeline>
           <el-timeline-item
             v-for="(activity, index) in activities"
             :key="index"
@@ -21,7 +21,7 @@
               {{ activity.content.join('') }}
             </span>
           </el-timeline-item>
-        </el-timeline>
+        </el-timeline> -->
       </el-card>
 
     </div>

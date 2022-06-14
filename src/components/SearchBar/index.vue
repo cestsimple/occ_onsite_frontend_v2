@@ -4,7 +4,7 @@
     <el-col :span="6">
       <!-- 插槽 -->
       <slot name="before" /></el-col>
-    <el-col :span="6">
+    <el-col :span="5">
       <el-date-picker
         v-model="date"
         type="daterange"
@@ -48,7 +48,7 @@
         :label="item.group + ' ' + item.first_name"
         :value="item.group"
       /> </el-select></el-col>
-    <el-col :span="7">
+    <el-col :span="6">
       <el-input
         v-model="query.name"
         placeholder="输入RTU名或气站中文名进行搜索"

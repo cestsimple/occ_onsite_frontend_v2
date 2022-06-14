@@ -559,6 +559,7 @@ export default {
     // 提交合并
     async mergeMalfunction() {
       try {
+        await this.$confirm('合并会删除选中的原始记录! 是否继续')
         await this.$refs.addFormRef.validate()
         await addMalfunction(this.addForm)
         for (const item of this.selectedRows) {

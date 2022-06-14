@@ -11,7 +11,7 @@
           <el-button type="primary" :disabled="jobList.some(x => x.name === 'ONSITE_FILLING' || x.name === 'IOT_RECORD')" size="mini" @click="calculateFilling">
             计算filling
           </el-button>
-          <el-button type="primary" :disabled="jobList.some(x => x.name === 'ONSITE_DAILY' || x.name === 'IOT_RECORD')" size="mini" @click="calculateDaily">
+          <el-button type="primary" :disabled="jobList.some(x => x.name === 'ONSITE_DAILY' || x.name === 'IOT_RECORD' || x.name === 'ONSITE_FILLING')" size="mini" @click="calculateDaily">
             计算daily和malfunction
           </el-button>
         </el-col>

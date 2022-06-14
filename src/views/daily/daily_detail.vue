@@ -185,6 +185,12 @@
               {{ scope.row.filling | twoDigits }}
             </template>
           </el-table-column>
+          <el-table-column
+            label="备注"
+            prop="comment"
+            width="85"
+            :show-overflow-tooltip="true"
+          />
           <el-table-column label="操作" width="60" fixed="right">
             <template slot-scope="scope">
               <!-- 修改按钮 -->

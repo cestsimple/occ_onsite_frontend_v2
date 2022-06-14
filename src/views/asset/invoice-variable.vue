@@ -396,6 +396,7 @@ export default {
       this.querryInfo.page = newPage
       this.getItemList()
     },
+    // 获取变量
     async getItemList() {
       this.loading = true
       const res = await getInvoiceVariable(this.querryInfo).catch(error => {
@@ -485,11 +486,11 @@ export default {
       if (this.addForm.usage === null || this.addForm.length === 0) {
         return Message.error('用途为空时请在页面中选择删除功能')
       }
-      if (this.addForm.usage.some(x => x === 'INVOICE') && !this.addForm.order_monthly) {
-        return Message.error('顺序必填')
+      if (this.addForm.usage.some(x => x === 'INVOICE') && !this.addForm.order_invoice) {
+        return Message.error('INVOICE顺序必填')
       }
       if (this.addForm.usage.some(x => x === 'MONTHLY') && !this.addForm.order_monthly) {
-        return Message.error('顺序必填')
+        return Message.error('MONTHLY顺序必填')
       }
       try {
         await updateInvoiceVariable(this.addForm)
