@@ -97,7 +97,7 @@
       <el-dialog
         title="修改Apsa资产信息"
         :visible.sync="editVisible"
-        width="550px"
+        width="600px"
         top="30px"
         :close-on-click-modal="false"
         @close="editDialogClosed"
@@ -294,7 +294,7 @@
 
       <!-- 内嵌修改变量dialog -->
       <el-dialog
-        width="250px"
+        width="350px"
         :title="innerCreate === 0 ? '修改DailyMark' : '创建变量配对'"
         :visible.sync="innerVisible"
         top="50px"
