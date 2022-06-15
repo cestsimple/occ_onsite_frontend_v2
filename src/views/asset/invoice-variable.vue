@@ -50,7 +50,7 @@
         <!-- 表格区 -->
         <el-table v-loading="loading" :data="itemList" border stripe size="mini">
           <el-table-column label="序号" sortable="" type="index" align="center" />
-          <el-table-column label="RTU名 (点击添加该气站变量)" prop="rtu_name">
+          <el-table-column label="RTU名 (点击添加该气站变量)" prop="rtu_name" sortable>
             <template slot-scope="scope">
               <a @click="showAdd(scope.row)">{{ scope.row.rtu_name }}</a>
             </template>
@@ -109,7 +109,7 @@
 
     </div>
     <!-- 弹层区 -->
-    <el-dialog :title="`添加变量 - ${addForm.rtu_name}`" :visible="showAddDialog" width="350px" :close-on-click-modal="false" @close="btnCancel">
+    <el-dialog :title="`添加变量 - ${addForm.rtu_name}`" :visible="showAddDialog" width="400px" :close-on-click-modal="false" @close="btnCancel">
       <el-form
         :model="addForm"
         :rules="FormRule"
@@ -150,7 +150,7 @@
         <el-button type="primary" size="mini" @click="addVariable">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="添加变量" :visible="showAddNewDialog" width="350px" :close-on-click-modal="false" @close="btnCancel">
+    <el-dialog title="添加变量" :visible="showAddNewDialog" width="400px" :close-on-click-modal="false" @close="btnCancel">
       <el-form
         :model="addForm"
         :rules="FormRule"
@@ -216,7 +216,7 @@
         <el-button size="mini" type="primary" @click="addVariable">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="编辑变量" :visible="showEditDialog" width="350px" :close-on-click-modal="false" @close="btnCancel">
+    <el-dialog title="编辑变量" :visible="showEditDialog" width="400px" :close-on-click-modal="false" @close="btnCancel">
       <el-form
         ref="editFormRef"
         :model="addForm"
@@ -378,8 +378,13 @@ export default {
       this.getItemList()
     },
     'addForm.apsa': function() {
+      console.log('ssss')
       if (this.showAddNewDialog === true || this.showAddDialog === true) {
-        this.getVariableList(this.addForm.apsa)
+        this.variableList = []
+        this.addForm.variable = null
+        if (this.addForm.apsa !== null && this.addForm.apsa !== '') {
+          this.getVariableList(this.addForm.apsa)
+        }
       }
     }
   },
@@ -477,7 +482,6 @@ export default {
         await addInvoiceVariable(this.addForm)
         Message.success('新增成功')
         this.getItemList()
-        this.showAddNewDialog = false
       } catch (error) {
         Message.error('新增失败：' + error)
       }
