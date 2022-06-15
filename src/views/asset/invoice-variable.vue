@@ -150,7 +150,7 @@
         <el-button type="primary" size="mini" @click="addVariable">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="添加变量" :visible="showAddNewDialog" width="350px" @close="btnCancel">
+    <el-dialog title="添加变量" :visible="showAddNewDialog" width="350px" :close-on-click-modal="false" @close="btnCancel">
       <el-form
         :model="addForm"
         :rules="FormRule"
@@ -477,7 +477,7 @@ export default {
         await addInvoiceVariable(this.addForm)
         Message.success('新增成功')
         this.getItemList()
-        this.showAddDialog = false
+        this.showAddNewDialog = false
       } catch (error) {
         Message.error('新增失败：' + error)
       }

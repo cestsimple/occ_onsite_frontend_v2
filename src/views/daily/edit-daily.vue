@@ -23,6 +23,31 @@
           </td>
         </tr>
         <tr>
+          <td>m3_prod</td>
+          <td>{{ originDaily['m3_prod'] }}</td>
+          <td><el-input v-model.number="modForm.m3_prod_mod" type="number" /></td>
+        </tr>
+        <tr>
+          <td>m3_tot</td>
+          <td>{{ originDaily['m3_tot'] }}</td>
+          <td><el-input v-model.number="modForm.m3_tot_mod" type="number" /></td>
+        </tr>
+        <tr>
+          <td>m3_q1</td>
+          <td>{{ originDaily['m3_q1'] }}</td>
+          <td><el-input v-model.number="modForm.m3_q1_mod" type="number" /></td>
+        </tr>
+        <tr>
+          <td>m3_q5</td>
+          <td>{{ originDaily['m3_q5'] }}</td>
+          <td><el-input v-model.number="modForm.m3_q5_mod" type="number" /></td>
+        </tr>
+        <tr>
+          <td>m3_peak</td>
+          <td>{{ originDaily['m3_peak'] }}</td>
+          <td><el-input v-model.number="modForm.m3_peak_mod" type="number" /></td>
+        </tr>
+        <tr>
           <td>h_stpal</td>
           <td>{{ originDaily['h_stpal'] }}</td>
           <td><el-input v-model.number="modForm.h_stpal_mod" type="number" /></td>
@@ -36,31 +61,6 @@
           <td>h_stp400v</td>
           <td>{{ originDaily['h_stp400v'] }}</td>
           <td><el-input v-model.number="modForm.h_stp400v_mod" type="number" /></td>
-        </tr>
-        <tr>
-          <td>m3_prod</td>
-          <td>{{ originDaily['m3_prod'] }}</td>
-          <td><el-input v-model.number="modForm.m3_prod_mod" type="number" /></td>
-        </tr>
-        <tr>
-          <td>m3_tot</td>
-          <td>{{ originDaily['m3_tot'] }}</td>
-          <td><el-input v-model.number="modForm.m3_tot_mod" type="number" /></td>
-        </tr>
-        <tr>
-          <td>m3_peak</td>
-          <td>{{ originDaily['m3_peak'] }}</td>
-          <td><el-input v-model.number="modForm.m3_peak_mod" type="number" /></td>
-        </tr>
-        <tr>
-          <td>m3_q1</td>
-          <td>{{ originDaily['m3_q1'] }}</td>
-          <td><el-input v-model.number="modForm.m3_q1_mod" type="number" /></td>
-        </tr>
-        <tr>
-          <td>m3_q5</td>
-          <td>{{ originDaily['m3_q5'] }}</td>
-          <td><el-input v-model.number="modForm.m3_q5_mod" type="number" /></td>
         </tr>
         <tr>
           <td>m3_q6</td>

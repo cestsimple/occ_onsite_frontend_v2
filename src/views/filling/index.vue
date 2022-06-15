@@ -168,7 +168,6 @@ export default {
         return Message.warning('已确认记录只能修改或删除')
       }
       try {
-        await this.$confirm('确定提交该记录')
         await confirmFilling(item)
         this.getFilling()
       } catch (error) {
