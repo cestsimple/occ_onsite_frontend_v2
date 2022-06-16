@@ -29,7 +29,7 @@
       </el-card>
 
       <!-- 放置一个弹层 用来编辑新增节点 -->
-      <el-dialog :title="showText" :visible="showDialog" @close="btnCancel">
+      <el-dialog :title="showText" :visible="showDialog" width="380px" :close-on-click-modal="false" @close="btnCancel">
         <!-- 表单 -->
         <el-form ref="perFormRef" :model="formData" :rules="rules" label-width="120px">
           <el-form-item label="权限名称" prop="name">
@@ -43,7 +43,7 @@
           </el-form-item>
         </el-form>
         <el-row slot="footer" type="flex" justify="center">
-          <el-col :span="6">
+          <el-col :span="12">
             <el-button size="small" type="primary" @click="btnOK">确定</el-button>
             <el-button size="small" @click="btnCancel">取消</el-button>
           </el-col>

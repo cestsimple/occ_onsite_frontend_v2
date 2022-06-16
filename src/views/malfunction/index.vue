@@ -12,7 +12,7 @@
         <!-- 搜索框 -->
         <search-bar @queryChanged="queryChanged">
           <el-button slot="before" size="mini" type="primary" @click="exportData">导出Excel</el-button>
-          <el-button slot="before" type="primary" size="mini" @click="goAddPage">新增</el-button>
+          <el-button slot="before" type="primary" size="mini" :disabled="!checkPermission('malfunction_add')" @click="goAddPage">新增</el-button>
         </search-bar>
         <el-row>
           <el-col :span="8">
@@ -33,7 +33,7 @@
             </el-select>
           </el-col>
           <el-col :span="2">
-            <el-button size="mini" @click="showSelectBox">
+            <el-button size="mini" :disabled="!checkPermission('malfunction_merge')" @click="showSelectBox">
               {{ selectButtonMsg }}
             </el-button>
           </el-col>
@@ -147,6 +147,7 @@
                 :type="scope.row.confirm === 0? 'primary' : 'success'"
                 icon="el-icon-edit"
                 size="mini"
+                :disabled="!checkPermission('malfunction_occ')"
                 @click="editMalfunctionOcc(scope.row)"
               />
               <!-- Maint修改按钮 -->
@@ -154,6 +155,7 @@
                 :type="scope.row.reason_main === ''? 'warning' : 'success'"
                 icon="el-icon-setting"
                 size="mini"
+                :disabled="!checkPermission('malfunction_maint')"
                 @click="editMalfunctionMaint(scope.row)"
               />
               <!-- 删除按钮 -->
@@ -161,6 +163,7 @@
                 type="danger"
                 icon="el-icon-delete"
                 size="mini"
+                :disabled="!checkPermission('malfunction_del')"
                 @click="deleteMalfunction(scope.row)"
               />
             </template>

@@ -11,6 +11,7 @@ import App from './App'
 import store from './store'
 import router from './router'
 import Components from '@/components'
+import checkPermission from './mixin/checkPermission'
 
 import '@/icons' // icon
 import '@/permission' // permission control
@@ -22,6 +23,9 @@ Vue.use(ElementUI)
 
 // 注册自定义组件
 Vue.use(Components)
+// 全局混入对象(全局的组件都拥有该方法)
+Vue.mixin(checkPermission)
+
 Vue.config.productionTip = false
 
 new Vue({
