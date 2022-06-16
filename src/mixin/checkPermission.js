@@ -4,9 +4,9 @@ export default {
     checkPermission(key) {
       const userInfo = store.getters.userInfo
       if (userInfo.points && userInfo.points.length) {
-        return userInfo.points.some(x => x === key)
+        return userInfo.points.some(x => x === key) ? { display: '' } : { display: 'none' }
       }
-      return false
+      return { display: 'none' }
     }
   }
 }

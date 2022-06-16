@@ -12,7 +12,7 @@
         <!-- 搜索框 -->
         <search-bar @queryChanged="queryChanged">
           <el-button slot="before" size="mini" type="primary" @click="exportData">导出Excel</el-button>
-          <el-button slot="before" type="primary" size="mini" :style="{ display: checkPermission('malfunction_add') ? '' : 'none' }" @click="goAddPage">
+          <el-button slot="before" type="primary" size="mini" :style="checkPermission('malfunction_add')" @click="goAddPage">
             新增
           </el-button>
         </search-bar>
@@ -35,7 +35,7 @@
             </el-select>
           </el-col>
           <el-col :span="2">
-            <el-button size="mini" :style="{ display: checkPermission('malfunction_merge') ? '' : 'none' }" @click="showSelectBox">
+            <el-button size="mini" :style="checkPermission('malfunction_merge')" @click="showSelectBox">
               {{ selectButtonMsg }}
             </el-button>
           </el-col>
@@ -142,14 +142,14 @@
           <el-table-column label="具体原因-2" prop="reason_detail_2" />
           <el-table-column label="OCC备注" prop="occ_comment" :show-overflow-tooltip="true" />
           <el-table-column label="维修备注" prop="mt_comment" :show-overflow-tooltip="true" />
-          <el-table-column label="操作" fixed="right">
+          <el-table-column label="操作" :width="rowWidth" fixed="right">
             <template slot-scope="scope">
               <!-- OCC修改按钮 -->
               <el-button
                 :type="scope.row.confirm === 0? 'primary' : 'success'"
                 icon="el-icon-edit"
                 size="mini"
-                :style="{ display: checkPermission('malfunction_occ') ? '' : 'none' }"
+                :style="checkPermission('malfunction_occ')"
                 @click="editMalfunctionOcc(scope.row)"
               />
               <!-- Maint修改按钮 -->
@@ -157,7 +157,7 @@
                 :type="scope.row.reason_main === ''? 'warning' : 'success'"
                 icon="el-icon-setting"
                 size="mini"
-                :disabled="!checkPermission('malfunction_maint')"
+                :style="checkPermission('malfunction_maint')"
                 @click="editMalfunctionMaint(scope.row)"
               />
               <!-- 删除按钮 -->
@@ -165,7 +165,7 @@
                 type="danger"
                 icon="el-icon-delete"
                 size="mini"
-                :style="{ display: checkPermission('malfunction_del') ? '' : 'none' }"
+                :style="checkPermission('malfunction_del')"
                 @click="deleteMalfunction(scope.row)"
               />
             </template>
@@ -298,6 +298,7 @@ export default {
         group: '',
         reason: []
       },
+      rowWidth: '173px',
       loading: false,
       showAddDialog: false,
       showEditOcc: false,
@@ -392,6 +393,7 @@ export default {
   },
   created() {
     this.getReasonsAll()
+    this.computeWidth()
   },
   methods: {
     // 搜索框方法
@@ -416,6 +418,15 @@ export default {
     handleCurrentChange(newPage) {
       this.query.page = newPage
       this.getMalfunction()
+    },
+    // 计算操作栏宽度
+    computeWidth() {
+      if (this.checkPermission('malfunction_occ').display === 'none') {
+        this.rowWidth = '133px'
+      }
+      if (this.checkPermission('malfunction_del').display === 'none') {
+        this.rowWidth = '82px'
+      }
     },
     // Malfunction方法
     async getMalfunction() {
