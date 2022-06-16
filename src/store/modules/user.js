@@ -22,6 +22,7 @@ const mutations = {
   setUserInfo(state, res) {
     state.userInfo.id = res.id
     state.userInfo.username = res.username
+    state.userInfo.name = res.first_name
     state.userInfo.region = res.region
     state.userInfo.group = res.group
     state.userInfo.menus = res.perms.menus

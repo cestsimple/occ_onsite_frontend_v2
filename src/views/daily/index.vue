@@ -10,7 +10,7 @@
       <el-card>
         <!-- 搜索框 -->
         <search-bar @queryChanged="queryChanged">
-          <el-button slot="before" type="primary" size="mini" :disabled="!checkPermission('daily_detail')" @click="goDetailPage">详情页</el-button>
+          <el-button slot="before" type="primary" size="mini" :style="{ display: checkPermission('daily_detail') ? '' : 'none' }" @click="goDetailPage">详情页</el-button>
         </search-bar>
 
         <!-- 表单区 -->

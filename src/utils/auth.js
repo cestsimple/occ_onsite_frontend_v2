@@ -24,6 +24,7 @@ export function setExpire() {
 export function setUserInfo(res) {
   localStorage.setItem('id', res.id)
   localStorage.setItem('username', res.username)
+  localStorage.setItem('name', res.first_name)
   localStorage.setItem('region', res.region)
   localStorage.setItem('group', res.group)
   localStorage.setItem('menus', res.perms.menus)
@@ -34,6 +35,7 @@ export function getUserInfo() {
   return {
     id: localStorage.getItem('id'),
     username: localStorage.getItem('username'),
+    name: localStorage.getItem('name'),
     region: localStorage.getItem('region'),
     group: localStorage.getItem('group'),
     menus: localStorage.getItem('menus'),

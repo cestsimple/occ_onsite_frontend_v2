@@ -12,7 +12,9 @@
         <!-- 搜索框 -->
         <search-bar @queryChanged="queryChanged">
           <el-button slot="before" size="mini" type="primary" @click="exportData">导出Excel</el-button>
-          <el-button slot="before" type="primary" size="mini" :disabled="!checkPermission('malfunction_add')" @click="goAddPage">新增</el-button>
+          <el-button slot="before" type="primary" size="mini" :style="{ display: checkPermission('malfunction_add') ? '' : 'none' }" @click="goAddPage">
+            新增
+          </el-button>
         </search-bar>
         <el-row>
           <el-col :span="8">
@@ -33,7 +35,7 @@
             </el-select>
           </el-col>
           <el-col :span="2">
-            <el-button size="mini" :disabled="!checkPermission('malfunction_merge')" @click="showSelectBox">
+            <el-button size="mini" :style="{ display: checkPermission('malfunction_merge') ? '' : 'none' }" @click="showSelectBox">
               {{ selectButtonMsg }}
             </el-button>
           </el-col>
@@ -140,14 +142,14 @@
           <el-table-column label="具体原因-2" prop="reason_detail_2" />
           <el-table-column label="OCC备注" prop="occ_comment" :show-overflow-tooltip="true" />
           <el-table-column label="维修备注" prop="mt_comment" :show-overflow-tooltip="true" />
-          <el-table-column label="操作" :width="buttonColWidth" fixed="right">
+          <el-table-column label="操作" fixed="right">
             <template slot-scope="scope">
               <!-- OCC修改按钮 -->
               <el-button
                 :type="scope.row.confirm === 0? 'primary' : 'success'"
                 icon="el-icon-edit"
                 size="mini"
-                :disabled="!checkPermission('malfunction_occ')"
+                :style="{ display: checkPermission('malfunction_occ') ? '' : 'none' }"
                 @click="editMalfunctionOcc(scope.row)"
               />
               <!-- Maint修改按钮 -->
@@ -163,7 +165,7 @@
                 type="danger"
                 icon="el-icon-delete"
                 size="mini"
-                :disabled="!checkPermission('malfunction_del')"
+                :style="{ display: checkPermission('malfunction_del') ? '' : 'none' }"
                 @click="deleteMalfunction(scope.row)"
               />
             </template>
@@ -300,7 +302,6 @@ export default {
       showAddDialog: false,
       showEditOcc: false,
       showEditMaint: false,
-      buttonColWidth: '173px',
       // 主要原因选择
       mainReasonOptions: [
         {
