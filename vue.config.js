@@ -6,7 +6,8 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-const name = defaultSettings.title || 'default title' // page title
+// const name = defaultSettings.title || 'default title' // page title
+const name = process.env.NODE_ENV === 'development' ? '开发中 OCC在线' : defaultSettings.title || 'default title'
 
 // If your port is set to 80,
 // use administrator privileges to execute the command line.

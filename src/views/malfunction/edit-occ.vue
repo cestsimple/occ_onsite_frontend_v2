@@ -192,7 +192,7 @@ export default {
     async updateItem() {
       try {
         let is_occ = 0
-        if (this.userInfo.region === 'occ') {
+        if (this.userInfo.region === 'OCC' || this.userInfo.region === 'occ') {
           is_occ = 1
         } else {
           is_occ = 0
