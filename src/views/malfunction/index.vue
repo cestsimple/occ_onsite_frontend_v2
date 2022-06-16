@@ -561,6 +561,27 @@ export default {
       this.$refs.multipleTable.clearSelection()
       this.showSelect = false
       this.selectButtonMsg = '合并停机'
+      this.addForm = {
+        name: '',
+        apsa_id: null,
+        t_start: '',
+        t_end: '',
+        stop_count: 1,
+        stop_hour: 0.0,
+        stop_consumption: 0.0,
+        stop_label: '',
+        stop_alarm: '',
+        reason_main: '',
+        reason_l1: '',
+        reason_l2: '',
+        reason_l3: '',
+        reason_l4: '',
+        reason_detail_1: '',
+        reason_detail_2: '',
+        mt_comment: '',
+        occ_comment: '',
+        change_user: ''
+      }
     },
     // 提交合并
     async mergeMalfunction() {
