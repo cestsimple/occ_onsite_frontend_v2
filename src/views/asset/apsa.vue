@@ -582,16 +582,18 @@ export default {
   },
   watch: {
     'editInfo.site.engineer.id': function() {
-      if (this.editInfo.site.engineer.id) {
-        const engineer = this.engineerList.filter(x => x.id === this.editInfo.site.engineer.id)[0]
-        this.editInfo.site.engineer.region = engineer.region
-        this.editInfo.site.engineer.group = engineer.group
-        this.editInfo.site.engineer.first_name = engineer.first_name
-      } else {
-        this.editInfo.site.engineer.region = ''
-        this.editInfo.site.engineer.group = ''
-        this.editInfo.site.engineer.first_name = ''
+      if (this.editInfo.site.engineer === null) {
+        this.editInfo.site.engineer = { region: '', first_name: '', group: '', id: null }
+        return
       }
+
+      if (this.editInfo.site.engineer.id === null) {
+        return
+      }
+      const engineer = this.engineerList.filter(x => x.id === this.editInfo.site.engineer.id)[0]
+      this.editInfo.site.engineer.region = engineer.region
+      this.editInfo.site.engineer.group = engineer.group
+      this.editInfo.site.engineer.first_name = engineer.first_name
     }
   },
   methods: {
