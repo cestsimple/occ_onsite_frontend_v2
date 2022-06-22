@@ -46,10 +46,15 @@
           <el-col :span="8">
             <el-date-picker
               v-model="invoiceQuery.date"
-              type="date"
-              placeholder="选择日期"
-              size="mini"
+              type="daterange"
+              align="right"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              format="yyyy-MM-dd"
               value-format="yyyy-MM-dd"
+              size="mini"
+              :default-time="['00:00:00', '23:59:59']"
+              :style="{'width': '260px'}"
             />
           </el-col>
           <el-col :span="5">
@@ -84,7 +89,7 @@ export default {
         region: ''
       },
       invoiceQuery: {
-        date: '',
+        date: [],
         region: ''
       },
       regionOptions: [

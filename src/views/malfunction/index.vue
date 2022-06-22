@@ -559,6 +559,27 @@ export default {
           apsa_id = item.apsa
         } else {
           if (this.addForm.apsa_id !== item.apsa) {
+            this.addForm.stop_hour = {
+              name: '',
+              apsa_id: null,
+              t_start: '',
+              t_end: '',
+              stop_count: 1,
+              stop_hour: 0.0,
+              stop_consumption: 0.0,
+              stop_label: '',
+              stop_alarm: '',
+              reason_main: '',
+              reason_l1: '',
+              reason_l2: '',
+              reason_l3: '',
+              reason_l4: '',
+              reason_detail_1: '',
+              reason_detail_2: '',
+              mt_comment: '',
+              occ_comment: '',
+              change_user: ''
+            }
             return Message.error('气站不相同,无法合并')
           }
         }

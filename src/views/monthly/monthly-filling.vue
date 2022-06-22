@@ -42,40 +42,18 @@
 
       <!-- 报表区 -->
       <el-table :data="itemList" border stripe size="mini" empty-text="暂无数据，请添加条件后搜索">
-        <el-table-column type="index" label="#" width="35" />
+        <el-table-column type="index" label="#" width="50" />
         <el-table-column
           label="日期"
           prop="date"
           width="100"
           :show-overflow-tooltip="true"
         />
-        <el-table-column label="RTU Name" prop="rtu_name" />
-        <el-table-column
-          label="资产名"
-          prop="asset_name"
-        />
-        <el-table-column
-          label="上月液位 (%)"
-          prop="start"
-          align="right"
-        >
-          <template slot-scope="scope">
-            <div :style="scope.row.start === 0 ? {'color': 'red'} : ''">{{ scope.row.start }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="本月液位 (%)"
-          prop="end"
-          align="right"
-        >
-          <template slot-scope="scope">
-            <div :style="scope.row.end === 0 ? {'color': 'red'} : ''">{{ scope.row.end }}</div>
-          </template>
-        </el-table-column>
+        <el-table-column label="RTU Name" prop="rtu_name" align="center" />
         <el-table-column
           label="消耗量 (m³)"
           prop="quantity"
-          align="right"
+          align="center"
         >
           <template slot-scope="scope">
             {{ scope.row.quantity | twoDigits }}
@@ -162,30 +140,30 @@
           prop="asset_name"
         />
         <el-table-column
-          label="开始时间"
-          prop="time_1"
+          label="储罐大小"
+          prop="tank_size"
+          align="right"
+        />
+        <el-table-column
+          label="时间"
+          prop="date"
           align="right"
         />
         <el-table-column
           label="开始液位"
-          prop="level_1"
+          prop="start"
           align="right"
           width="80px"
         />
         <el-table-column
-          label="结束时间"
-          prop="time_2"
-          align="right"
-        />
-        <el-table-column
           label="结束液位"
-          prop="level_2"
+          prop="end"
           align="right"
           width="80px"
         />
         <el-table-column
           label="充液量(M3)"
-          prop="quatity"
+          prop="quantity"
           align="right"
           width="100px"
         />
@@ -195,7 +173,7 @@
 </template>
 
 <script>
-import { getFilling, updateFilling, getDetail } from '@/api/monthly-filling'
+import { getFilling, updateFilling } from '@/api/monthly-filling'
 import { Message } from 'element-ui'
 export default {
   filters: {
@@ -209,6 +187,7 @@ export default {
       query: {
         page: 1,
         pagesize: 10,
+        aggr: 1,
         date: '',
         region: ''
       },
@@ -378,7 +357,7 @@ export default {
       if (this.total === 0) {
         return Message.error('请先完成查询')
       }
-      const res = await getDetail(this.query).catch(() => {
+      const res = await getFilling({ date: this.query.date, region: this.query.region }).catch(() => {
         Message.error('获取数据失败')
       })
       this.detailList = res
