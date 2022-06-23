@@ -3,16 +3,21 @@
     <div class="app-container">
       <!-- 搜索区 -->
       <el-row>
-        <el-col :span="6">
+        <el-col :span="5">
           <el-date-picker
             v-model="query.date"
-            type="date"
-            placeholder="选择日期"
-            size="mini"
+            type="daterange"
+            align="right"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            format="yyyy-MM-dd"
             value-format="yyyy-MM-dd"
+            size="mini"
+            :default-time="['00:00:00', '23:59:59']"
+            :style="{'width': '260px'}"
           />
         </el-col>
-        <el-col :span="5">
+        <el-col :span="3">
           <el-select
             v-model="query.region"
             size="mini"
@@ -27,10 +32,25 @@
             />
           </el-select>
         </el-col>
+        <el-col :span="3">
+          <el-select
+            v-model="query.usage"
+            size="mini"
+            clearable
+            placeholder="请选择用途"
+          >
+            <el-option
+              v-for="item in usageOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-col>
         <el-col :span="5">
           <el-button size="mini" type="primary" @click="getItemList">搜索</el-button>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="8">
           <el-button size="mini" type="primary" @click="exportData">导出Excel</el-button>
         </el-col>
       </el-row>
@@ -47,7 +67,7 @@
         <el-table-column label="RTU Name" prop="rtu_name" />
         <el-table-column label="变量名" prop="variable_name" />
         <el-table-column
-          label="上月数值"
+          label="开始数值"
           prop="start"
           align="right"
         >
@@ -56,7 +76,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="本月数值"
+          label="结束数值"
           prop="end"
           align="right"
         >
@@ -160,9 +180,9 @@ export default {
       query: {
         page: 1,
         pagesize: 15,
-        date: '',
+        date: [],
         region: '',
-        usage: 'invoice'
+        usage: 'INVOICE'
       },
       itemList: [],
       regionOptions: [
@@ -205,6 +225,16 @@ export default {
         {
           value: 'ALGD',
           label: '广东'
+        }
+      ],
+      usageOptions: [
+        {
+          value: 'MONTHLY',
+          label: '月报'
+        },
+        {
+          value: 'INVOICE',
+          label: '开票'
         }
       ],
       editForm: {

@@ -10,16 +10,16 @@
       <el-card>
         <!-- 标签页 -->
         <el-tabs v-model="activeName">
-          <el-tab-pane label="充液月报" name="1">
+          <el-tab-pane label="充液汇总" name="1">
             <filling />
           </el-tab-pane>
-          <el-tab-pane label="开票数据" name="2">
+          <el-tab-pane label="变量数据" name="2">
             <invoice-diff />
           </el-tab-pane>
-          <el-tab-pane label="数据生成" name="3">
+          <el-tab-pane label="数据生成" name="4">
             <calculate-request />
           </el-tab-pane>
-          <el-tab-pane label="开发中。。。" name="4">开发中。。。</el-tab-pane>
+          <el-tab-pane label="开发中。。。" name="5">开发中。。。</el-tab-pane>
         </el-tabs>
       </el-card>
     </div>
