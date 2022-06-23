@@ -22,7 +22,7 @@
             v-model="query.region"
             size="mini"
             clearable
-            placeholder="请选择地区"
+            placeholder="请选择区域"
           >
             <el-option
               v-for="item in regionOptions"
@@ -33,15 +33,24 @@
           </el-select>
         </el-col>
         <el-col :span="5">
+          <el-input
+            v-model="query.name"
+            placeholder="输入RTU名或气站中文名进行搜索"
+            clearable
+            size="mini"
+            @keyup.enter.native="getItemList"
+          />
+        </el-col>
+        <el-col :span="5">
           <el-button size="mini" type="primary" @click="getItemList">搜索</el-button>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-button size="mini" type="primary" @click="exportData">导出Excel</el-button>
         </el-col>
       </el-row>
 
       <!-- 报表区 -->
-      <el-table :data="itemList" border stripe size="mini" empty-text="暂无数据，请添加条件后搜索">
+      <el-table v-loading="loading" :data="itemList" border stripe size="mini" empty-text="暂无数据，请添加条件后搜索">
         <el-table-column type="index" label="#" width="35" />
         <el-table-column
           label="结束日期"
@@ -166,7 +175,8 @@ export default {
         pagesize: 15,
         date: [],
         region: '',
-        usage: 'MONTHLY'
+        usage: 'MONTHLY',
+        name: ''
       },
       itemList: [],
       regionOptions: [
@@ -225,7 +235,8 @@ export default {
       originDiff: {
         start: 0,
         end: 0
-      }
+      },
+      loading: false
     }
   },
   methods: {
@@ -242,11 +253,15 @@ export default {
       if (this.query.date === '') {
         return Message.error('请选择日期')
       }
+      this.loading = true
       const res = await getInvoiceDiff(this.query).catch(() => {
         Message.error('获取数据失败')
+        this.loading = false
+        return
       })
       this.itemList = res.list
       this.total = res.total
+      this.loading = false
     },
     showEditDialog(item) {
       this.originDiff.start = item.start
@@ -303,14 +318,14 @@ export default {
 
       import('@/vendor/Export2Excel').then(async excel => {
         // 获取全部数据
-        const res = await getInvoiceDiff({ ...this.query, pagesize: this.total })
+        const res = await getInvoiceDiff({ ...this.query, page: 1, pagesize: this.total })
         // 转化Json数据至[[]]格式
         const data = this.formatJson(headers, res.list)
         // 导出
         excel.export_json_to_excel({
           header: Object.keys(headers),
           data: data,
-          filename: `开票变量_${this.query.date}_${this.query.region === '' ? '全部区域' : this.query.region}`,
+          filename: `月报变量_${this.query.date}_${this.query.region === '' ? '全部区域' : this.query.region}`,
           bookType: 'xlsx'
         })
       })

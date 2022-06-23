@@ -371,9 +371,6 @@ export default {
     'querryInfo.region': function() {
       this.getItemList()
     },
-    'querryInfo.name': function() {
-      this.getItemList()
-    },
     'querryInfo.usage': function() {
       this.getItemList()
     },

@@ -22,7 +22,7 @@
             v-model="query.region"
             size="mini"
             clearable
-            placeholder="请选择地区"
+            placeholder="请选择区域"
           >
             <el-option
               v-for="item in regionOptions"
@@ -33,15 +33,24 @@
           </el-select>
         </el-col>
         <el-col :span="5">
+          <el-input
+            v-model="query.name"
+            placeholder="输入RTU名或气站中文名进行搜索"
+            clearable
+            size="mini"
+            @keyup.enter.native="getItemList"
+          />
+        </el-col>
+        <el-col :span="5">
           <el-button size="mini" type="primary" @click="getItemList">搜索</el-button>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-button size="mini" type="primary" @click="exportData">导出Excel</el-button>
         </el-col>
       </el-row>
 
       <!-- 报表区 -->
-      <el-table :data="itemList" border stripe size="mini" empty-text="暂无数据，请添加条件后搜索">
+      <el-table v-loading="loading" :data="itemList" border stripe size="mini" empty-text="暂无数据，请添加条件后搜索">
         <el-table-column type="index" label="#" width="35" />
         <el-table-column
           label="结束日期"
@@ -156,7 +165,8 @@ export default {
         pagesize: 15,
         date: [],
         region: '',
-        usage: 'INVOICE'
+        usage: 'INVOICE',
+        name: ''
       },
       itemList: [],
       regionOptions: [
@@ -215,7 +225,13 @@ export default {
       originDiff: {
         start: 0,
         end: 0
-      }
+      },
+      loading: false
+    }
+  },
+  watch: {
+    'query.name': function() {
+      this.query.page = 1
     }
   },
   methods: {
@@ -229,14 +245,18 @@ export default {
       this.getItemList()
     },
     async getItemList() {
-      if (this.query.date === '') {
+      if (this.query.date.length !== 2) {
         return Message.error('请选择日期')
       }
+      this.loading = true
       const res = await getInvoiceDiff(this.query).catch(() => {
         Message.error('获取数据失败')
+        this.loading = false
+        return
       })
       this.itemList = res.list
       this.total = res.total
+      this.loading = false
     },
     showEditDialog(item) {
       this.originDiff.start = item.start
