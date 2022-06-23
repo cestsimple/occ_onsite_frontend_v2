@@ -78,6 +78,16 @@
             {{ scope.row.diff | twoDigits }}
           </template>
         </el-table-column>
+        <!-- <el-table-column label="修正" width="65" fixed="right">
+          <template slot-scope="scope">
+            <el-button
+              type="primary"
+              icon="el-icon-edit"
+              size="mini"
+              @click="showEditDialog(scope.row)"
+            />
+          </template>
+        </el-table-column> -->
       </el-table>
 
       <!-- 分页器 -->
@@ -156,7 +166,7 @@ export default {
         pagesize: 15,
         date: [],
         region: '',
-        usage: 'INVOICE'
+        usage: 'MONTHLY'
       },
       itemList: [],
       regionOptions: [

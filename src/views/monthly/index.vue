@@ -13,8 +13,11 @@
           <el-tab-pane label="充液汇总" name="1">
             <filling />
           </el-tab-pane>
-          <el-tab-pane label="变量数据" name="2">
+          <el-tab-pane label="开票变量" name="2">
             <invoice-diff />
+          </el-tab-pane>
+          <el-tab-pane label="月报变量" name="3">
+            <monthly-diff />
           </el-tab-pane>
           <el-tab-pane label="数据生成" name="4">
             <calculate-request />
@@ -29,9 +32,10 @@
 <script>
 import Filling from './monthly-filling'
 import InvoiceDiff from './monthly-invoice-diff'
+import MonthlyDiff from './monthly-monthly-diff'
 import CalculateRequest from './calculate-request'
 export default {
-  components: { Filling, InvoiceDiff, CalculateRequest },
+  components: { Filling, InvoiceDiff, MonthlyDiff, CalculateRequest },
   data() {
     return {
       activeName: '1'
