@@ -135,11 +135,11 @@ export default {
   },
   methods: {
     // 传入编辑值
-    getData(item) {
+    async getData(item) {
       this.editForm = JSON.parse(JSON.stringify(item))
       this.loading = true
-      this.getOrigin(item.id)
-      this.getModify(item.mod_id)
+      await this.getOrigin(item.id)
+      await this.getModify(item.mod_id)
       this.loading = false
     },
     btnCancel() {

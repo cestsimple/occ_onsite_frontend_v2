@@ -133,7 +133,8 @@
     </el-dialog>
     <el-dialog title="详情" :visible="showDialogDetail" width="85%" @close="btnCancelDetail">
       <el-table :data="detailList" border stripe size="mini">
-        <el-table-column type="index" label="#" width="35" />
+        <el-table-column type="index" label="#" />
+        <el-table-column label="区域" prop="region" />
         <el-table-column label="RTU Name" prop="rtu_name" />
         <el-table-column
           label="资产名"
@@ -163,6 +164,11 @@
         />
         <el-table-column
           label="充液量(M3)"
+          prop="filling"
+          align="right"
+        />
+        <el-table-column
+          label="消耗量(M3)"
           prop="quantity"
           align="right"
           width="100px"
@@ -357,10 +363,10 @@ export default {
       if (this.total === 0) {
         return Message.error('请先完成查询')
       }
-      const res = await getFilling({ date: this.query.date, region: this.query.region }).catch(() => {
+      const res = await getFilling({ ...this.query, aggr: 0 }).catch(() => {
         Message.error('获取数据失败')
       })
-      this.detailList = res
+      this.detailList = res.list
     },
     async showDetail() {
       await this.getDetail()

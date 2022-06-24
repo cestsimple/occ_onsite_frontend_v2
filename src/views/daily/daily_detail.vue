@@ -308,8 +308,8 @@ export default {
       this.loading = false
     },
     // 弹层控制
-    showEditDaily(item) {
-      this.$refs.editDaily.getData(item)
+    async showEditDaily(item) {
+      await this.$refs.editDaily.getData(item)
       this.showEditDialog = true
     },
     // 导出数据
