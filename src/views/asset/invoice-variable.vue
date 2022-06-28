@@ -448,7 +448,6 @@ export default {
     },
     // 删除功能
     async deleteVariable(item) {
-      console.log(item)
       try {
         await this.$confirm('是否删除该变量')
         await deleteInvoiceVariable(item.variable)
@@ -461,7 +460,7 @@ export default {
     // 添加功能
     async addVariable() {
       // 是否为空
-      if (this.addForm.apsa === null || this.addForm.variable === null || this.addForm.usage.length === 0) {
+      if (this.addForm.apsa === null || this.addForm.variable === null) {
         return Message.error('必填不能为空')
       }
       if (this.addForm.usage.some(x => x === 'INVOICE') && this.addForm.order_invoice === null) {
@@ -471,10 +470,10 @@ export default {
         return Message.error('顺序必填')
       }
       // 检查是否重复
-      const p = await this.addBeforeCheck()
-      if (p) {
-        return Message.error('该变量已存在,修改请先删除再添加')
-      }
+      // const p = await this.addBeforeCheck()
+      // if (p) {
+      //   return Message.error('该变量已存在,修改请先删除再添加')
+      // }
       try {
         await addInvoiceVariable(this.addForm)
         Message.success('新增成功')
@@ -505,7 +504,7 @@ export default {
     },
     // 添加前查询功能
     async addBeforeCheck() {
-      const res = await getInvoiceVariable({ ...this.querryInfo, pagesize: 999 }).catch(error => {
+      const res = await getInvoiceVariable({ ...this.querryInfo, pagesize: 2000 }).catch(error => {
         console.log(error)
         return this.$message.error('网络不佳，请稍后重试')
       })
