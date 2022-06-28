@@ -49,25 +49,15 @@
           width="100"
           :show-overflow-tooltip="true"
         />
+        <el-table-column label="区域" prop="region" />
         <el-table-column label="RTU Name" prop="rtu_name" align="center" />
         <el-table-column
           label="消耗量 (m³)"
-          prop="quantity"
+          prop="total"
           align="center"
         >
           <template slot-scope="scope">
-            {{ scope.row.quantity | twoDigits }}
-          </template>
-        </el-table-column>
-        <el-table-column label="修正" width="65" fixed="right">
-          <template slot-scope="scope">
-            <!-- 修改按钮 -->
-            <el-button
-              type="primary"
-              icon="el-icon-edit"
-              size="mini"
-              @click="showEditDialog(scope.row)"
-            />
+            {{ scope.row.total | twoDigits }}
           </template>
         </el-table-column>
       </el-table>
@@ -103,15 +93,6 @@
           <el-input
             v-model="editForm.end"
           />
-        </el-form-item>
-        <el-form-item label="消耗量" prop="quantity">
-          <el-input
-            v-model="editForm.quantity"
-            disabled
-          />
-        </el-form-item>
-        <el-form-item>
-          <el-button size="mini" @click="calQuantity">修正计算消耗量</el-button>
         </el-form-item>
       </el-form>
       <!-- 底部按钮 -->
@@ -164,15 +145,26 @@
         />
         <el-table-column
           label="充液量(M3)"
-          prop="filling"
+          prop="quantity"
           align="right"
         />
         <el-table-column
           label="消耗量(M3)"
-          prop="quantity"
+          prop="total"
           align="right"
           width="100px"
         />
+        <el-table-column label="修正" width="65" fixed="right">
+          <template slot-scope="scope">
+            <!-- 修改按钮 -->
+            <el-button
+              type="primary"
+              icon="el-icon-edit"
+              size="mini"
+              @click="showEditDialog(scope.row)"
+            />
+          </template>
+        </el-table-column>
       </el-table>
     </el-dialog>
   </div>
@@ -262,6 +254,14 @@ export default {
       showDialogDetail: false
     }
   },
+  watch: {
+    'query.region': function() {
+      this.query.page = 1
+    },
+    'query.name': function() {
+      this.query.page = 1
+    }
+  },
   methods: {
     handleSizeChange(newSize) {
       this.query.pagesize = newSize
@@ -288,13 +288,6 @@ export default {
       this.editForm = JSON.parse(JSON.stringify(item))
       this.showDialog = true
     },
-    calQuantity() {
-      const originQ = (this.originDiff.start - this.originDiff.end) * this.editForm.tank_size / 100
-      const nowQ = (this.editForm.start - this.editForm.end) * this.editForm.tank_size / 100
-      this.editForm.quantity -= originQ - nowQ
-      this.originDiff.start = this.editForm.start
-      this.originDiff.end = this.editForm.end
-    },
     btnCancel() {
       this.showDialog = false
       this.editForm = {
@@ -314,11 +307,11 @@ export default {
       }
     },
     async updateItem() {
-      this.calQuantity()
       await updateFilling(this.editForm).catch(() => {
         Message.error('更新失败')
       })
       Message.success('更新成功')
+      this.getDetail()
       this.getItemList()
       this.showDialog = false
     },
@@ -330,11 +323,9 @@ export default {
       // 定义表头对应json key
       const headers = {
         '日期': 'date',
+        '区域': 'region',
         'RTU名': 'rtu_name',
-        '资产名': 'asset_name',
-        '上月液位': 'start',
-        '本月液位': 'end',
-        '消耗量': 'quantity'
+        '消耗量': 'total'
       }
 
       import('@/vendor/Export2Excel').then(async excel => {

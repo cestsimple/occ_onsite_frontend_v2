@@ -230,6 +230,9 @@ export default {
     }
   },
   watch: {
+    'query.region': function() {
+      this.query.page = 1
+    },
     'query.name': function() {
       this.query.page = 1
     }
