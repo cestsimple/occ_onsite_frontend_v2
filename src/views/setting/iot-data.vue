@@ -61,7 +61,7 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="选择日期范围" prop="time_list">
+          <el-form-item label="日期范围(跨度≤6个月)" prop="time_list">
             <el-date-picker
               v-model="apsaRefresh.time_list"
               type="daterange"

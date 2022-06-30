@@ -600,6 +600,7 @@ export default {
     // 监听 页码 变化的函数
     handleSizeChange(newSize) {
       this.querryInfo.pagesize = newSize
+      this.querryInfo.page = 1
       this.getApsaList()
     },
     handleCurrentChange(newPage) {

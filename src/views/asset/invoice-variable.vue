@@ -369,10 +369,10 @@ export default {
   },
   watch: {
     'querryInfo.region': function() {
-      this.getItemList()
+      this.querryInfo.page = 1
     },
     'querryInfo.usage': function() {
-      this.getItemList()
+      this.querryInfo.page = 1
     },
     'addForm.apsa': function() {
       console.log('ssss')
@@ -391,6 +391,7 @@ export default {
   methods: {
     handleSizeChange(newSize) {
       this.querryInfo.pagesize = newSize
+      this.querryInfo.page = 1
       this.getItemList()
     },
     // 监听 页码 变化的函数

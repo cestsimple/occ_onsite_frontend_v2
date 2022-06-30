@@ -210,6 +210,7 @@ export default {
     // 分页器方法
     handleSizeChange(newSize) {
       this.query.pagesize = newSize
+      this.query.page = 1
       this.getDaily()
     },
     handleCurrentChange(newPage) {

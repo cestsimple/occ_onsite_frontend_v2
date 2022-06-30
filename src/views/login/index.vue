@@ -3,7 +3,7 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left" size="mini">
 
       <div class="title-container">
-        <h5 class="title">OCC在线平台登录系统</h5>
+        <h5 class="title">OCC在线平台V2</h5>
       </div>
 
       <el-form-item prop="username">

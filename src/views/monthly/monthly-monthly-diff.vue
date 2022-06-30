@@ -239,9 +239,18 @@ export default {
       loading: false
     }
   },
+  watch: {
+    'query.region': function() {
+      this.query.page = 1
+    },
+    'query.name': function() {
+      this.query.page = 1
+    }
+  },
   methods: {
     handleSizeChange(newSize) {
       this.query.pagesize = newSize
+      this.query.page = 1
       this.getItemList()
     },
     // 监听 页码 变化的函数

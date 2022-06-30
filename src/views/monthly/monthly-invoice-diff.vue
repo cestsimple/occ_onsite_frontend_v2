@@ -240,6 +240,7 @@ export default {
   methods: {
     handleSizeChange(newSize) {
       this.query.pagesize = newSize
+      this.query.page = 1
       this.getItemList()
     },
     // 监听 页码 变化的函数

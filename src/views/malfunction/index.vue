@@ -388,6 +388,7 @@ export default {
   },
   watch: {
     'query.reason': function() {
+      this.query.page = 1
       this.getMalfunction()
     }
   },
@@ -413,6 +414,7 @@ export default {
     // 分页器方法
     handleSizeChange(newSize) {
       this.query.pagesize = newSize
+      this.query.page = 1
       this.getMalfunction()
     },
     handleCurrentChange(newPage) {

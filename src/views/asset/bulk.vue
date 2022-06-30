@@ -379,6 +379,7 @@ export default {
   methods: {
     handleSizeChange(newSize) {
       this.querryInfo.pagesize = newSize
+      this.querryInfo.page = 1
       this.getBulkList()
     },
     // 监听 页码 变化的函数
