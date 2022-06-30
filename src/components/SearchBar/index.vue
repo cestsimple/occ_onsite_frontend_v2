@@ -54,7 +54,6 @@
         placeholder="输入RTU名或气站中文名进行搜索"
         clearable
         size="mini"
-        :disabled="userInfo.region.toUpperCase() !== 'OCC' && userInfo.group !== ''? true : false"
         @keyup.enter.native="getItemList"
       >
         <el-button

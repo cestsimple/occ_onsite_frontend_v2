@@ -11,6 +11,7 @@
         <!-- 搜索框 -->
         <search-bar @queryChanged="queryChanged">
           <el-button slot="before" type="primary" size="mini" :style="checkPermission('daily_detail')" @click="goDetailPage">详情页</el-button>
+          <el-button slot="before" type="primary" size="mini" :style="checkPermission('daily_export')" @click="exportSimple">导出</el-button>
         </search-bar>
 
         <!-- 表单区 -->
@@ -166,6 +167,7 @@
 </template>
 
 <script>
+import { Message } from 'element-ui'
 import { getDaily } from '@/api/daily'
 export default {
   filters: {
@@ -228,11 +230,54 @@ export default {
         this.$message.error('daily获取失败')
       }
       this.loading = false
+    },
+    // 导出简单页报表
+    exportSimple() {
+      // 验证有无数据
+      if (this.total === 0) {
+        return Message.error('请先刷新数据后再下载')
+      }
+      // 定义表头对应json key
+      const headers = {
+        '日期': 'date',
+        '区域': 'region',
+        '型号': 'series',
+        'RTU名称': 'rtu_name',
+        '合同量': 'norminal',
+        '平均产量': 'avg_prod',
+        '平均用量': 'avg_consume',
+        'Cooling': 'cooling',
+        'Vpeak-Peak': 'dif_peak',
+        '停机时长': 'h_stop',
+        '停机用液': 'lin_consume',
+        '汽化器能力': 'vap_max'
+      }
+
+      import('@/vendor/Export2Excel').then(async excel => {
+        // 获取全部数据
+        const res = await getDaily({ ...this.query, pagesize: this.total })
+        // 转化Json数据至[[]]格式
+        const data = this.formatJson(headers, res.list)
+        // 导出
+        excel.export_json_to_excel({
+          header: Object.keys(headers),
+          data: data,
+          filename: `日报表_${this.query.start}_${this.query.region === '' ? '全部区域' : this.query.region}`,
+          bookType: 'xlsx'
+        })
+      })
+    },
+    formatJson(headers, rows) {
+      return rows.map(item => {
+        // item是对象
+        return Object.keys(headers).map(key => {
+          return item[headers[key]]
+        })
+      })
     }
   }
 }
 </script>
 
 <style>
-
 </style>
