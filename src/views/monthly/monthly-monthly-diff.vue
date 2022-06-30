@@ -45,7 +45,7 @@
           <el-button size="mini" type="primary" @click="getItemList">搜索</el-button>
         </el-col>
         <el-col :span="6">
-          <el-button size="mini" type="primary" @click="exportData">导出Excel</el-button>
+          <el-button v-loading.fullscreen.lock="fullscreenLoading" size="mini" type="primary" @click="exportData">导出Excel</el-button>
         </el-col>
       </el-row>
 
@@ -236,7 +236,8 @@ export default {
         start: 0,
         end: 0
       },
-      loading: false
+      loading: false,
+      fullscreenLoading: false
     }
   },
   watch: {
@@ -324,7 +325,8 @@ export default {
         '本月数值': 'end',
         '差值': 'diff'
       }
-
+      // 全屏显示loading画面
+      this.fullscreenLoading = true
       import('@/vendor/Export2Excel').then(async excel => {
         // 获取全部数据
         const res = await getInvoiceDiff({ ...this.query, page: 1, pagesize: this.total })
@@ -337,6 +339,7 @@ export default {
           filename: `月报变量_${this.query.date}_${this.query.region === '' ? '全部区域' : this.query.region}`,
           bookType: 'xlsx'
         })
+        this.fullscreenLoading = false
       })
     },
     formatJson(headers, rows) {
