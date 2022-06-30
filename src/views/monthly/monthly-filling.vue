@@ -331,7 +331,7 @@ export default {
 
       import('@/vendor/Export2Excel').then(async excel => {
         // 获取全部数据
-        const res = await getFilling({ ...this.query, pagesize: this.total })
+        const res = await getFilling({ ...this.query, pagesize: this.total, page: 1 })
         // 转化Json数据至[[]]格式
         const data = this.formatJson(headers, res.list)
         // 导出

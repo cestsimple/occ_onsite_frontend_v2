@@ -19,7 +19,10 @@
           <el-tab-pane label="月报变量" name="3">
             <monthly-diff />
           </el-tab-pane>
-          <el-tab-pane label="数据生成" name="4">
+          <el-tab-pane label="停机汇总" name="4">
+            <monthly-malfunction />
+          </el-tab-pane>
+          <el-tab-pane label="数据生成" name="5">
             <calculate-request />
           </el-tab-pane>
           <el-tab-pane label="开发中。。。" name="5">开发中。。。</el-tab-pane>
@@ -33,9 +36,10 @@
 import Filling from './monthly-filling'
 import InvoiceDiff from './monthly-invoice-diff'
 import MonthlyDiff from './monthly-monthly-diff'
+import MonthlyMalfunction from './monthly-malfunction'
 import CalculateRequest from './calculate-request'
 export default {
-  components: { Filling, InvoiceDiff, MonthlyDiff, CalculateRequest },
+  components: { Filling, InvoiceDiff, MonthlyDiff, CalculateRequest, MonthlyMalfunction },
   data() {
     return {
       activeName: '1'
