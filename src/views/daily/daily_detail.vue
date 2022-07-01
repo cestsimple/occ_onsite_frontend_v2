@@ -54,6 +54,12 @@
             </template>
           </el-table-column>
           <el-table-column
+            label="Series"
+            prop="series"
+            width="58"
+            align="right"
+          />
+          <el-table-column
             label="Nornimal"
             prop="norminal"
             width="75"

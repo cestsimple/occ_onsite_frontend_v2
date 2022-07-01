@@ -25,7 +25,6 @@
           <el-tab-pane label="数据生成" name="5">
             <calculate-request />
           </el-tab-pane>
-          <el-tab-pane label="开发中。。。" name="5">开发中。。。</el-tab-pane>
         </el-tabs>
       </el-card>
     </div>

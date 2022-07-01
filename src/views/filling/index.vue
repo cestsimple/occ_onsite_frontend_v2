@@ -22,7 +22,7 @@
           <el-table-column
             label="资产名"
             prop="asset_name"
-            width="150"
+            width="130"
           />
           <el-table-column
             label="储罐容积"
@@ -32,12 +32,12 @@
           <el-table-column
             label="开始时间"
             prop="time_1"
-            width="135"
+            width="130"
           />
           <el-table-column
             label="结束时间"
             prop="time_2"
-            width="135"
+            width="130"
           />
           <el-table-column
             label="开始液位"
@@ -52,7 +52,10 @@
           <el-table-column
             label="充液量(升L)"
             prop="quantity"
-            width="100"
+          />
+          <el-table-column
+            label="充液量(标立NM3)"
+            prop="nm3"
           />
           <el-table-column label="操作" width="173">
             <template slot-scope="scope">

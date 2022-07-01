@@ -51,48 +51,28 @@
 
       <!-- 报表区 -->
       <el-table v-loading="loading" :data="itemList" border stripe size="mini" empty-text="暂无数据，请添加条件后搜索">
-        <el-table-column type="index" label="#" width="35" />
         <el-table-column
           label="结束日期"
           prop="date"
           width="100"
           :show-overflow-tooltip="true"
         />
-        <el-table-column label="RTU Name" prop="rtu_name" />
-        <el-table-column label="变量名" prop="variable_name" />
+        <el-table-column label="RTU Name" prop="rtu_name" width="150px" />
         <el-table-column
-          label="开始数值"
-          prop="start"
-          align="right"
-        >
-          <template slot-scope="scope">
-            <div :style="scope.row.start === 0 ? {'color': 'red'} : ''">{{ scope.row.start }}</div>
-          </template>
-        </el-table-column>
+          label="统计项名称"
+          prop="item"
+        />
         <el-table-column
-          label="结束数值"
-          prop="end"
-          align="right"
-        >
-          <template slot-scope="scope">
-            <div :style="scope.row.end === 0 ? {'color': 'red'} : ''">{{ scope.row.end }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="差值"
-          prop="diff"
-          align="right"
-        >
-          <template slot-scope="scope">
-            {{ scope.row.diff | twoDigits }}
-          </template>
-        </el-table-column>
+          label="数值"
+          prop="value"
+          width="150px"
+        />
       </el-table>
 
       <!-- 分页器 -->
       <el-pagination
         :current-page="query.page"
-        :page-sizes="[15, 20, 50, 100, 999]"
+        :page-sizes="[10, 15, 20, 50, 100]"
         :page-size="query.pagesize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -100,56 +80,11 @@
         @current-change="handleCurrentChange"
       />
     </div>
-    <!-- 弹层 -->
-    <el-dialog :title="`${editForm.rtu_name} ${editForm.variable_name}`" :visible="showDialog" width="20%" :close-on-click-modal="false" @close="btnCancel">
-      <!-- 表单区 -->
-      <el-form
-        ref="editFormRef"
-        :model="editForm"
-        :rules="editFormRule"
-        label-width="80px"
-        label-position="left"
-        size="mini"
-      >
-        <el-form-item label="上月数值" prop="start">
-          <el-input
-            v-model="editForm.start"
-          />
-        </el-form-item>
-        <el-form-item label="本月数值" prop="end">
-          <el-input
-            v-model="editForm.end"
-          />
-        </el-form-item>
-        <el-form-item label="差值(自动计算)" prop="quantity">
-          <el-input
-            v-model="editForm.diff"
-            disabled
-          />
-        </el-form-item>
-      </el-form>
-      <!-- 底部按钮 -->
-      <el-row slot="footer" type="flex" justify="center">
-        <el-col>
-          <el-button
-            type="danger"
-            size="mini"
-            class="btnAdd"
-            @click="btnCancel"
-          >取消</el-button><el-button
-            type="primary"
-            size="mini"
-            class="btnAdd"
-            @click="updateItem"
-          >提交修改</el-button>
-        </el-col>
-      </el-row>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getInvoiceDiff, updateInvoiceDiff } from '@/api/invoice-diff'
+import { getMontlyMalfunction } from '@/api/monthly'
 import { Message } from 'element-ui'
 export default {
   filters: {
@@ -165,7 +100,6 @@ export default {
         pagesize: 15,
         date: [],
         region: '',
-        usage: 'INVOICE',
         name: ''
       },
       itemList: [],
@@ -211,21 +145,6 @@ export default {
           label: '广东'
         }
       ],
-      editForm: {
-        id: 0,
-        date: '',
-        rtu_name: '',
-        start: 0.0,
-        end: 0.0,
-        diff: 0.0,
-        confirm: 0
-      },
-      editFormRule: {},
-      showDialog: false,
-      originDiff: {
-        start: 0,
-        end: 0
-      },
       loading: false,
       fullscreenLoading: false
     }
@@ -254,7 +173,7 @@ export default {
         return Message.error('请选择日期')
       }
       this.loading = true
-      const res = await getInvoiceDiff(this.query).catch(() => {
+      const res = await getMontlyMalfunction(this.query).catch(() => {
         Message.error('获取数据失败')
         this.loading = false
         return
@@ -263,44 +182,6 @@ export default {
       this.total = res.total
       this.loading = false
     },
-    showEditDialog(item) {
-      this.originDiff.start = item.start
-      this.originDiff.end = item.end
-      this.editForm = item
-      this.showDialog = true
-    },
-    btnCancel() {
-      this.showDialog = false
-      this.editForm = {
-        id: 0,
-        date: '',
-        rtu_name: '',
-        start: 0.0,
-        end: 0.0,
-        diff: 0.0,
-        confirm: 0
-      }
-      this.originDiff = {
-        start: 0,
-        end: 0
-      }
-    },
-    calDiff() {
-      const originD = (this.originDiff.start - this.originDiff.end) * this.editForm.tank_size / 100
-      const nowD = (this.editForm.start - this.editForm.end) * this.editForm.tank_size / 100
-      this.editForm.quantity -= originD - nowD
-      this.originDiff.start = this.editForm.start
-      this.originDiff.end = this.editForm.end
-    },
-    async updateItem() {
-      this.calDiff()
-      await updateInvoiceDiff(this.editForm).catch(() => {
-        Message.error('更新失败')
-      })
-      Message.success('更新成功')
-      this.getItemList()
-      this.showDialog = false
-    },
     exportData() {
       // 验证有无数据
       if (this.total === 0) {
@@ -308,25 +189,22 @@ export default {
       }
       // 定义表头对应json key
       const headers = {
-        '日期': 'date',
         'RTU名': 'rtu_name',
-        '变量名': 'variable_name',
-        '上月数值': 'start',
-        '本月数值': 'end',
-        '差值': 'diff'
+        '统计项名称': 'item',
+        '数值': 'value'
       }
       // 全屏显示loading画面
       this.fullscreenLoading = true
       import('@/vendor/Export2Excel').then(async excel => {
         // 获取全部数据
-        const res = await getInvoiceDiff({ ...this.query, pagesize: this.total, page: 1 })
+        const res = await getMontlyMalfunction({ ...this.query, pagesize: this.total, page: 1 })
         // 转化Json数据至[[]]格式
         const data = this.formatJson(headers, res.list)
         // 导出
         excel.export_json_to_excel({
           header: Object.keys(headers),
           data: data,
-          filename: `开票变量_${this.query.date}_${this.query.region === '' ? '全部区域' : this.query.region}`,
+          filename: `停机月度汇总_${this.query.date}_${this.query.region === '' ? '全部区域' : this.query.region}`,
           bookType: 'xlsx'
         })
         // 关闭loading
