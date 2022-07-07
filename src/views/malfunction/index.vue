@@ -11,9 +11,18 @@
       <el-card>
         <!-- 搜索框 -->
         <search-bar @queryChanged="queryChanged">
-          <el-button slot="before" size="mini" type="primary" @click="exportData">导出Excel</el-button>
+          <el-button slot="before" size="mini" type="primary" @click="exportData">导出</el-button>
           <el-button slot="before" type="primary" size="mini" :style="checkPermission('malfunction_add')" @click="goAddPage">
             新增
+          </el-button>
+          <el-button slot="before" size="mini" type="primary" :style="{display: checkPermBool('malfunction_merge', 'malfunction_lock') ? '' : 'none'}" @click="showSelectBox">
+            {{ selectButtonMsg }}
+          </el-button>
+          <el-button slot="before" size="mini" :disabled="!showSelect" :style="checkPermission('malfunction_merge')" @click="showMergeDialog">
+            合并
+          </el-button>
+          <el-button slot="before" size="mini" :disabled="!showSelect" :style="checkPermission('malfunction_lock')" @click="adminConfirm">
+            锁定
           </el-button>
         </search-bar>
         <el-row>
@@ -27,25 +36,13 @@
               placeholder="请选择"
             >
               <el-option
-                v-for="item in mainReasonOptions"
+                v-for="item in [...mainReasonOptions, {value: '',label: '未填写'}]"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
               />
             </el-select>
           </el-col>
-          <el-col :span="2">
-            <el-button size="mini" :style="checkPermission('malfunction_merge')" @click="showSelectBox">
-              {{ selectButtonMsg }}
-            </el-button>
-          </el-col>
-          <div v-if="showSelect">
-            <el-col :span="14">
-              <el-button size="mini" type="primary" @click="showMergeDialog">
-                合并
-              </el-button>
-            </el-col>
-          </div>
 
         </el-row>
 
@@ -72,16 +69,19 @@
             width="130"
             :show-overflow-tooltip="true"
             fixed="left"
+            sortable
           />
           <el-table-column
             label="开始时间"
             prop="t_start"
             width="125"
+            sortable
           />
           <el-table-column
             label="结束时间"
             prop="t_end"
             width="125"
+            sortable
           />
           <el-table-column
             label="停机次数"
@@ -147,7 +147,7 @@
               <!-- OCC修改按钮 -->
               <el-button
                 :type="scope.row.confirm === 0? 'primary' : 'success'"
-                icon="el-icon-edit"
+                :icon="needLock(scope.row)? 'el-icon-lock' : 'el-icon-edit'"
                 size="mini"
                 :style="checkPermission('malfunction_occ')"
                 @click="editMalfunctionOcc(scope.row)"
@@ -155,7 +155,7 @@
               <!-- Maint修改按钮 -->
               <el-button
                 :type="scope.row.reason_main === ''? 'warning' : 'success'"
-                icon="el-icon-setting"
+                :icon="needLock(scope.row)? 'el-icon-lock' : 'el-icon-setting'"
                 size="mini"
                 :style="checkPermission('malfunction_maint')"
                 @click="editMalfunctionMaint(scope.row)"
@@ -270,7 +270,7 @@
 </template>
 
 <script>
-import { addMalfunction, getMalfunction, deleteMalfunction, getReason } from '@/api/malfunction'
+import { addMalfunction, getMalfunction, deleteMalfunction, lockMalfunction, getReason } from '@/api/malfunction'
 import { Message } from 'element-ui'
 import AddMalfunction from './add-malfunction'
 import EditOcc from './edit-occ'
@@ -331,7 +331,7 @@ export default {
       showMergeForm: false,
       showSelect: false,
       selectedRows: [],
-      selectButtonMsg: '合并停机',
+      selectButtonMsg: '多选',
       addForm: {
         name: '',
         apsa_id: null,
@@ -453,10 +453,16 @@ export default {
       }
     },
     editMalfunctionOcc(item) {
+      if (this.needLock(item)) {
+        return Message.error('该记录已被锁定,如需修改请联系缪姐')
+      }
       this.$refs.editOcc.getData(item)
       this.showEditOcc = true
     },
     async editMalfunctionMaint(item) {
+      if (this.needLock(item)) {
+        return Message.error('该记录已被锁定,如需修改请联系OCC')
+      }
       await this.$refs.editMaint.getData(item)
       this.showEditMaint = true
     },
@@ -537,13 +543,13 @@ export default {
     showSelectBox() {
       if (this.showSelect) {
         this.showSelect = false
-        this.selectButtonMsg = '合并停机'
+        this.selectButtonMsg = '多选'
         this.selectedRows = []
         this.$refs.multipleTable.clearSelection()
         return
       }
       this.showSelect = true
-      this.selectButtonMsg = '取消合并'
+      this.selectButtonMsg = '取消'
     },
     handleSelectionChange(val) {
       this.selectedRows = val
@@ -638,7 +644,53 @@ export default {
         console.log(error.message)
         Message.error('添加合并失败' + error.response.data)
       }
+    },
+    // 提交管理员确认
+    async adminConfirm() {
+      try {
+        let confirm_level = 0
+        const id_list = []
+        if (this.userInfo.userInfo === 'admin') {
+          await this.$confirm('锁定后,除了admin外的所有用户将无法再对这些记录进行修改')
+          confirm_level = 3
+        } else {
+          await this.$confirm('锁定后,除了您和admin外的所有用户将无法再对这些记录进行修改')
+          confirm_level = 2
+        }
+        for (const item of this.selectedRows) {
+          if (item.id === 0) {
+            this.closeMergeDialog()
+            return Message.error('选择的记录中还有未确认的，请先确认再锁定')
+          }
+          id_list.push(item.id)
+        }
+        await lockMalfunction({ id_list: id_list, confirm: confirm_level })
+        Message.success('添加合并成功')
+        this.closeMergeDialog()
+      } catch (error) {
+        console.log(error)
+        Message.error('多选确认失败' + error.response.data)
+      }
+    },
+    // 判断按钮图标是否需要变成锁
+    needLock(item) {
+      if (item.confirm === 2) {
+        if (this.userInfo.points.some(x => x === 'malfunction_lock')) {
+          return false
+        } else {
+          return true
+        }
+      }
+      if (item.confirm === 3) {
+        if (this.userInfo.username === 'admin') {
+          return false
+        } else {
+          return true
+        }
+      }
+      return false
     }
+
   }
 }
 </script>

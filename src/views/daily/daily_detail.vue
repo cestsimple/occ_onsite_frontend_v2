@@ -91,7 +91,7 @@
             align="right"
           >
             <template slot-scope="scope">
-              {{ scope.row.h_missing | twoDigits }}
+              <div :style="Math.abs(scope.row.h_missing) > 0.01 ? {'color': 'red'} : ''">{{ scope.row.h_missing | twoDigits }}</div>
             </template>
           </el-table-column>
           <el-table-column

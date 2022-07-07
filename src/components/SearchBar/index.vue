@@ -1,7 +1,7 @@
 <template>
   <!-- 搜索与添加 -->
-  <el-row :gutter="20" :style="{'margin-bottom': '15px'}">
-    <el-col :span="6">
+  <el-row :style="{'margin-bottom': '15px'}">
+    <el-col :span="7">
       <!-- 插槽 -->
       <slot name="before" /></el-col>
     <el-col :span="5">
@@ -18,7 +18,7 @@
         :style="{'width': '260px'}"
       />
     </el-col>
-    <el-col :span="3">
+    <el-col :span="2">
       <el-select
         v-model="query.region"
         size="mini"
@@ -48,10 +48,10 @@
         :label="item.group + ' ' + item.first_name"
         :value="item.group"
       /> </el-select></el-col>
-    <el-col :span="6">
+    <el-col :span="4">
       <el-input
         v-model="query.name"
-        placeholder="输入RTU名或气站中文名进行搜索"
+        placeholder="RTU名或中文名"
         clearable
         size="mini"
         @keyup.enter.native="getItemList"

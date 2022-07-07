@@ -83,7 +83,8 @@ export default {
       value2: '',
       date_list: [],
       apsa_list: [],
-      serchItemList: []
+      serchItemList: [],
+      loading: false
     }
   },
   created() {

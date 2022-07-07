@@ -52,3 +52,11 @@ export function getReasonDetail(params) {
     params
   })
 }
+
+export function lockMalfunction(data) {
+  return request({
+    url: '/malfunction/lock/',
+    method: 'post',
+    data
+  })
+}
