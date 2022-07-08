@@ -604,7 +604,7 @@ export default {
       this.selectedRows = []
       this.$refs.multipleTable.clearSelection()
       this.showSelect = false
-      this.selectButtonMsg = '合并停机'
+      this.selectButtonMsg = '多选'
       this.addForm = {
         name: '',
         apsa_id: null,
@@ -647,25 +647,32 @@ export default {
     },
     // 提交管理员确认
     async adminConfirm() {
+      let confirm_level = 0
+      const id_list = []
+      // 循环遍历所有item, 判断是否有权限锁定
+      for (const item of this.selectedRows) {
+        const c = item.confirm
+        if (c === 0 || c === '0') {
+          return Message.error('包含未确认的记录，请先确认再锁定')
+        }
+        if (c === 3 && this.userInfo.username !== 'admin') {
+          return Message.error('包含已被管理员确认过的记录，您无权限锁定')
+        }
+        id_list.push(item.id)
+      }
+
+      // 确认提示
+      if (this.userInfo.username === 'admin') {
+        await this.$confirm('锁定后,除了admin外的所有用户将无法再对这些记录进行修改')
+        confirm_level = 3
+      } else {
+        await this.$confirm('锁定后,除了您和admin外的所有用户将无法再对这些记录进行修改')
+        confirm_level = 2
+      }
+      // 提交请求
       try {
-        let confirm_level = 0
-        const id_list = []
-        if (this.userInfo.userInfo === 'admin') {
-          await this.$confirm('锁定后,除了admin外的所有用户将无法再对这些记录进行修改')
-          confirm_level = 3
-        } else {
-          await this.$confirm('锁定后,除了您和admin外的所有用户将无法再对这些记录进行修改')
-          confirm_level = 2
-        }
-        for (const item of this.selectedRows) {
-          if (item.id === 0) {
-            this.closeMergeDialog()
-            return Message.error('选择的记录中还有未确认的，请先确认再锁定')
-          }
-          id_list.push(item.id)
-        }
         await lockMalfunction({ id_list: id_list, confirm: confirm_level })
-        Message.success('添加合并成功')
+        Message.success('锁定成功')
         this.closeMergeDialog()
       } catch (error) {
         console.log(error)
