@@ -10,6 +10,7 @@ import dailySimplegRouter from './modules/daily'
 import dailyDetailgRouter from './modules/daily_detail'
 import monthlyRouter from './modules/monthly'
 import assetRouter from './modules/asset'
+import ludanRouter from './modules/ludan'
 Vue.use(Router)
 
 /* Layout */
@@ -18,7 +19,7 @@ import Layout from '@/layout'
 // 定义动态路由变量
 export const asyncRoutes = [
   fillingRouter, dailySimplegRouter, dailyDetailgRouter, malfunctionRouter, monthlyRouter, assetRouter,
-  userRouter, permissionRouter, settingRouter
+  userRouter, permissionRouter, settingRouter, ludanRouter
 ]
 
 // 静态路由（无需权限）

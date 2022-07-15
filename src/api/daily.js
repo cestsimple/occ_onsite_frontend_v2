@@ -25,6 +25,14 @@ export function getOrigin(pk) {
   })
 }
 
+export function getLintotDetail(pk) {
+  // 返回promise对象
+  return request({
+    url: `/daily/lintot/${pk}/`,
+    method: 'get'
+  })
+}
+
 export function updateModify(data) {
   // 返回promise对象
   return request({

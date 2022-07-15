@@ -147,7 +147,7 @@
               <!-- OCC修改按钮 -->
               <el-button
                 :type="scope.row.confirm === 0? 'primary' : 'success'"
-                :icon="needLock(scope.row)? 'el-icon-lock' : 'el-icon-edit'"
+                icon="el-icon-edit"
                 size="mini"
                 :style="checkPermission('malfunction_occ')"
                 @click="editMalfunctionOcc(scope.row)"
@@ -155,7 +155,7 @@
               <!-- Maint修改按钮 -->
               <el-button
                 :type="scope.row.reason_main === ''? 'warning' : 'success'"
-                :icon="needLock(scope.row)? 'el-icon-lock' : 'el-icon-setting'"
+                icon="el-icon-setting"
                 size="mini"
                 :style="checkPermission('malfunction_maint')"
                 @click="editMalfunctionMaint(scope.row)"
@@ -168,6 +168,8 @@
                 :style="checkPermission('malfunction_del')"
                 @click="deleteMalfunction(scope.row)"
               />
+              <i class="el-icon-lock" :style="scope.row.confirm >= 2? '' : 'display:none'" />
+              <i class="el-icon-lock" :style="scope.row.confirm === 3? '' : 'display:none'" />
             </template>
           </el-table-column>
         </el-table>
@@ -298,7 +300,7 @@ export default {
         group: '',
         reason: []
       },
-      rowWidth: '173px',
+      rowWidth: '198px',
       loading: false,
       showAddDialog: false,
       showEditOcc: false,
@@ -424,10 +426,10 @@ export default {
     // 计算操作栏宽度
     computeWidth() {
       if (this.checkPermission('malfunction_occ').display === 'none') {
-        this.rowWidth = '133px'
+        this.rowWidth = '158px'
       }
       if (this.checkPermission('malfunction_del').display === 'none') {
-        this.rowWidth = '82px'
+        this.rowWidth = '108px'
       }
     },
     // Malfunction方法
@@ -443,6 +445,11 @@ export default {
       this.loading = false
     },
     async deleteMalfunction(item) {
+      // 判断记录是否被锁定
+      console.log(item.confirm)
+      if (item.confirm > 1 && this.userInfo.username !== 'admin') {
+        return Message.error('已锁定的记录无法删除，请联系管理员')
+      }
       try {
         await this.$confirm('确定删除该记录')
         await deleteMalfunction(item.id)
@@ -454,14 +461,14 @@ export default {
     },
     editMalfunctionOcc(item) {
       if (this.needLock(item)) {
-        return Message.error('该记录已被锁定,如需修改请联系缪姐')
+        return Message.error('该记录已被锁定,如需修改请联系管理员')
       }
       this.$refs.editOcc.getData(item)
       this.showEditOcc = true
     },
     async editMalfunctionMaint(item) {
       if (this.needLock(item)) {
-        return Message.error('该记录已被锁定,如需修改请联系OCC')
+        return Message.error('该记录已被锁定,如需修改请联系管理员')
       }
       await this.$refs.editMaint.getData(item)
       this.showEditMaint = true
