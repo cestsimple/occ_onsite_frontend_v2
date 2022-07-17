@@ -1,73 +1,106 @@
 <template>
   <div>
     <el-card v-loading="loading">
-      <el-form
-        ref="apsaFormRef"
-        :model="apsaRefresh"
-        :rules="apsaFormRules"
-        label-width="160px"
-        size="mini"
-      >
-        <el-form-item>
-          <el-form-item label="部分刷新气站原始数据" prop="apsa_list">
-            <el-select
-              v-model="apsaRefresh.apsa_list"
-              filterable
-              remote
-              multiple
-              placeholder="输入气站中文或RTU名"
-              :remote-method="getSeatchItem"
-              :loading="loading"
-              size="mini"
-            >
+      <h3>成功车辆信息登记</h3>
+      <div v-for="(item) in carsOwned" :key="item.plate" class="ludanForm">
+        <el-form label-width="120px" :model="item.form" size="mini">
+          <el-form-item label="车牌号" prop="plate">
+            <el-input v-model="item.plate" disabled />
+          </el-form-item>
+          <el-form-item label="计划类型" prop="plan_type">
+            <el-select v-model="item.form.plan_type">
               <el-option
-                v-for="item in serchItemList"
-                :key="item.id"
-                :label="item.site_name + '-' + item.asset_name"
-                :value="item.id"
+                v-for="op in planTypeList"
+                :key="op.value"
+                :label="op.label"
+                :value="op.value"
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="日期范围(跨度≤6个月)" prop="time_list">
-            <el-date-picker
-              v-model="apsaRefresh.time_list"
-              type="daterange"
-              align="right"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              format="yyyy-MM-dd"
-              value-format="yyyy-MM-dd"
-              size="mini"
-              :style="{'width': '260px'}"
-            />
-          </el-form-item>
-        </el-form-item>
-        <span class="dialog-footer">
-          <el-button size="mini" @click="clearSelect">清空</el-button>
-          <el-button
-            type="primary"
-            size="mini"
-            @click="getRecord({...apsaRefresh})"
-          >提交请求</el-button>
-        </span>
-      </el-form>
+          <div v-show="item.form.plan_type === 'working'">
+            <el-form-item label="驾驶员" prop="driver">
+              <el-input v-model="item.form.driver" />
+            </el-form-item>
+            <el-form-item label="押运员" prop="super">
+              <el-input v-model="item.form.super" />
+            </el-form-item>
+            <el-form-item label="客户" prop="addrs">
+              <el-input v-model="item.form.addrs" type="textarea" :rows="10" placeholder="可多行粘贴excel中的客户信息,自动识别" />
+            </el-form-item>
+          </div>
+          <div v-show="item.form.plan_type === 'maint'">
+            <el-form-item label="维修时间备注" prop="plate">
+              <el-input v-model="item.form.comment" placeholder="请填写24小时制信息(例如: 默认6:00-23:00)" />
+            </el-form-item>
+          </div>
+        </el-form>
+        <el-button type="primary" size="mini">提交</el-button>
+      </div>
     </el-card>
   </div>
 </template>
 
-import { Message } from 'element-ui'
+<script>
 export default {
   data() {
     return {
-      car: [],
-      apsaRefresh: {
-        apsa_list: [],
-        time_list: []
-      },
-      intervalJob: null,
+      carsOwned: [
+        { plate: '1019', form: {
+          plan_type: '',
+          driver: '',
+          super: '',
+          addrs: '',
+          comment: ''
+        }},
+        { plate: '1022', form: {
+          plan_type: '',
+          driver: '',
+          super: '',
+          addrs: '',
+          comment: ''
+        }},
+        { plate: '1032', form: {
+          plan_type: '',
+          driver: '',
+          super: '',
+          addrs: '',
+          comment: ''
+        }}
+      ],
       loading: false,
-      serchItemList: [],
-      apsaFormRules: {}
+      planTypeList: [
+        {
+          value: 'working',
+          label: '正常出车'
+        },
+        {
+          value: 'idle',
+          label: '无业务停驶'
+        },
+        {
+          value: 'maint',
+          label: '计划(继续)维修'
+        }
+      ]
     }
   }
 }
+</script>
+<style scoped>
+  ::v-deep .ludanForm {
+    padding-left: 5%;
+    padding-right: 5%;
+    margin-top: 50px;
+  }
+  ::v-deep .ludanForm input {
+    margin-left: 35px;
+    margin-right: 35px;
+    width: 65%;
+  }
+  ::v-deep .ludanForm textarea {
+    margin-left: 35px;
+    margin-right: 35px;
+    width: 65%;
+  }
+</style>
+

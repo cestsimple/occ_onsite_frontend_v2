@@ -12,13 +12,38 @@
         <!-- 标签页 -->
         <el-tabs v-model="activeName">
           <el-tab-pane label="信息登记" name="1">
-            信息登记
+            <data-input />
           </el-tab-pane>
           <el-tab-pane label="信息统计" name="2">
-            信息统计
+            <data-display />
           </el-tab-pane>
         </el-tabs>
       </el-card>
     </div>
   </div>
 </template>
+
+<script>
+import DataInput from './components/data_input.vue'
+import DataDisplay from './components/data_display.vue'
+export default {
+  components: { DataInput, DataDisplay },
+  data() {
+    return {
+      activeName: '1'
+    }
+  }
+}
+</script>
+
+<style scoped>
+  ::v-deep .el-row {
+    margin: 10px 10px;
+  }
+  ::v-deep .el-card__body {
+    padding-top: 5px;
+  }
+  .el-tabs__nav-scroll {
+      font-size: 75%;
+  }
+</style>

@@ -133,12 +133,12 @@
             width="105px"
           />
           <el-table-column
-            label="Δ液体容积(液L)"
+            label="库存差(NM)"
             prop="lin_bulk"
             width="105px"
           />
           <el-table-column
-            label="充液量(液L)"
+            label="充液量(NM)"
             prop="filling_quantity"
             width="105px"
           />
