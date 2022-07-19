@@ -10,7 +10,7 @@
         <el-row>
           <el-col :span="8">
             <el-date-picker
-              v-model="fillingQuery.date"
+              v-model="fillingQuery.start"
               type="month"
               placeholder="选择月份"
               size="mini"
@@ -85,7 +85,7 @@ export default {
   data() {
     return {
       fillingQuery: {
-        date: '',
+        start: '',
         region: ''
       },
       invoiceQuery: {

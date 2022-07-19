@@ -23,6 +23,7 @@
             label="资产名"
             prop="asset_name"
             width="130"
+            sortable
           />
           <el-table-column
             label="储罐容积"
