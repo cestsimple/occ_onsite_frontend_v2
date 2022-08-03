@@ -75,6 +75,7 @@ import { getJobs } from '@/api/job'
 import { getApsa } from '@/api/apsa'
 import { calculateFilling, calculateDaily } from '@/api/manuel'
 import { Message } from 'element-ui'
+import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
@@ -87,6 +88,11 @@ export default {
       loading: false
     }
   },
+  computed: {
+    ...mapGetters([
+      'userInfo'
+    ])
+  },
   created() {
     this.getJobs()
     this.intervalJob = setInterval(this.getJobs, 10000)
@@ -96,14 +102,14 @@ export default {
   },
   methods: {
     async calculateFilling() {
-      await calculateFilling({ date_list: this.date_list, apsa_list: this.apsa_list }).catch(() => {
+      await calculateFilling({ date_list: this.date_list, apsa_list: this.apsa_list, user: this.userInfo.username }).catch(() => {
         Message.error('刷新失败')
       })
       Message.success('刷新成功，请等待完成')
       this.getJobs()
     },
     async calculateDaily() {
-      await calculateDaily({ date_list: this.date_list, apsa_list: this.apsa_list }).catch(() => {
+      await calculateDaily({ date_list: this.date_list, apsa_list: this.apsa_list, user: this.userInfo.username }).catch(() => {
         Message.error('刷新失败')
       })
       Message.success('刷新成功，请等待完成')

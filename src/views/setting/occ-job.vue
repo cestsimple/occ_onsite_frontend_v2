@@ -58,19 +58,21 @@
 
       <!-- 表单区 -->
       <el-table border stripe size="mini" :data="jobList">
-        <el-table-column type="index" label="#" />
+        <el-table-column type="index" label="#" width="45px" />
         <el-table-column label="任务名" prop="name" />
         <el-table-column label="状态" prop="result">
           <template slot-scope="scope">
             {{ scope.row.result === '' ? '进行中' : scope.row.result }}
           </template>
         </el-table-column>
-        <el-table-column label="开始时间" prop="start_time" />
-        <el-table-column label="结束时间" prop="finish_time">
+        <el-table-column label="开始时间" prop="start_time" width="130px" />
+        <el-table-column label="结束时间" prop="finish_time" width="130px">
           <template slot-scope="scope">
             {{ scope.row.finish_time === null ? '未完成' : scope.row.finish_time }}
           </template>
         </el-table-column>
+        <el-table-column label="请求用户" prop="user" width="110px" />
+        <el-table-column label="请求参数" prop="params" />
         <el-table-column label="操作" width="65px">
           <template slot-scope="scope">
             <!-- 修改按钮 -->

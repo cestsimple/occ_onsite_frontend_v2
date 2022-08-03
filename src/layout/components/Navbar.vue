@@ -3,7 +3,7 @@
     <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
     <div class="app-breadcrumb">
       IMOCC在线平台V2
-      <span class="breadBtn">Public Beta</span>
+      <span class="breadBtn" @click="showVersionDialog">Version 1.1.0</span>
     </div>
     <!-- <breadcrumb class="breadcrumb-container" /> -->
 
@@ -55,6 +55,17 @@
         <el-button type="primary" size="mini" @click="updatePassword">确 定</el-button>
       </span>
     </el-dialog>
+    <el-dialog title="版本详情 - 当前版本为V1.1.0" :visible="versionDetailDialog" @close="hideVersionDialog">
+      <div>
+        <span>1.1.0</span>
+        新增job详情,可以记录job请求的用户和参数
+        <el-divider />
+      </div>
+      <div>
+        <span>1.0.0</span>
+        正式版上线
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -76,7 +87,8 @@ export default {
         old_password: ''
       },
       auth: false,
-      auth_msg: '提交'
+      auth_msg: '提交',
+      versionDetailDialog: false
     }
   },
   computed: {
@@ -133,6 +145,12 @@ export default {
       this.showEditPassword = false
       this.auth = false
       this.auth_msg = '提交'
+    },
+    showVersionDialog() {
+      this.versionDetailDialog = true
+    },
+    hideVersionDialog() {
+      this.versionDetailDialog = false
     }
   }
 }

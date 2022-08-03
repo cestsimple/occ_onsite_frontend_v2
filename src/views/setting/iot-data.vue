@@ -93,6 +93,7 @@ import { getJobs } from '@/api/job'
 import { getApsa } from '@/api/apsa'
 import { getRecord, getIotAll } from '@/api/manuel'
 import { Message } from 'element-ui'
+import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
@@ -107,6 +108,11 @@ export default {
       apsaFormRules: {}
     }
   },
+  computed: {
+    ...mapGetters([
+      'userInfo'
+    ])
+  },
   created() {
     this.getJobs()
     this.intervalJob = setInterval(this.getJobs, 10000)
@@ -117,6 +123,7 @@ export default {
   methods: {
     async getRecord(params) {
       this.loading = true
+      params.user = this.userInfo.username
       try {
         if (params === {}) {
           await this.$confirm('刷新全部数据耗时较长,请确认继续')
@@ -132,10 +139,14 @@ export default {
       }
     },
     async getIotAll() {
+      this.loading = true
+      const params = {
+        user: this.userInfo.username,
+        params: 'refresh all'
+      }
       try {
-        this.loading = true
         await this.$confirm('刷新气站信息会花费较久时间，请确认继续')
-        await getIotAll()
+        await getIotAll(params)
         Message.success('刷新成功，请等待完成')
         this.getJobs()
         this.loading = false

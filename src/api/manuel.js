@@ -45,10 +45,11 @@ export function calculateInvoiceDiff(params) {
   })
 }
 
-export function getIotAll() {
+export function getIotAll(params) {
   // 返回promise对象
   return request({
     url: '/iot/all/',
-    method: 'get'
+    method: 'get',
+    params
   })
 }
