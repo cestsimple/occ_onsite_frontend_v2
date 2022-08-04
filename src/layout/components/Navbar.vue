@@ -3,7 +3,7 @@
     <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
     <div class="app-breadcrumb">
       IMOCC在线平台V2
-      <span class="breadBtn" @click="showVersionDialog">Version 1.1.0</span>
+      <span class="breadBtn" @click="showVersionDialog">Version 1.1.1</span>
     </div>
     <!-- <breadcrumb class="breadcrumb-container" /> -->
 
@@ -55,7 +55,12 @@
         <el-button type="primary" size="mini" @click="updatePassword">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="版本详情 - 当前版本为V1.1.0" :visible="versionDetailDialog" @close="hideVersionDialog">
+    <el-dialog title="版本详情 - 当前版本为V1.1.1" :visible="versionDetailDialog" @close="hideVersionDialog">
+      <div>
+        <span>1.1.1</span>
+        修复一个api请求刷新数据失败的问题
+        <el-divider />
+      </div>
       <div>
         <span>1.1.0</span>
         新增job详情,可以记录job请求的用户和参数

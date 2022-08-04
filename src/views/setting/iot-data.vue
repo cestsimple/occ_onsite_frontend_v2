@@ -13,9 +13,9 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-button type="primary" :disabled="jobList.some(x => x.name === 'IOT_RECORD')" size="mini" @click="getRecord({})"> 抓取所有气站数据 </el-button>
+          <el-button type="primary" :disabled="jobList.some(x => x.name === 'IOT_RECORD')" size="mini" @click="getRecord({})"> 抓取昨日原始数据 </el-button>
           <el-button type="primary" :disabled="jobList.some(x => x.name === 'IOT_ALL')" size="mini" @click="getIotAll">
-            从IOT更新气站&资产&变量数据
+            从IOT更新site,asset,variable信息
           </el-button>
         </el-col>
       </el-row>
