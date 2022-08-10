@@ -81,6 +81,7 @@
 <script>
 import { calculateFillingMonthly, calculateInvoiceDiff } from '@/api/manuel'
 import { Message } from 'element-ui'
+import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
@@ -136,6 +137,11 @@ export default {
       ]
     }
   },
+  computed: {
+    ...mapGetters([
+      'userInfo'
+    ])
+  },
   methods: {
     checkDate(date, day_limit) {
       if (date === '') {
@@ -154,7 +160,7 @@ export default {
         return Message.error('日期为空或未达到计算日期')
       }
       try {
-        await calculateFillingMonthly(this.fillingQuery)
+        await calculateFillingMonthly({ ...this.fillingQuery, user: this.userInfo.username })
         Message.success('请求成功')
       } catch (error) {
         Message.error('请求失败')
@@ -166,7 +172,7 @@ export default {
         return Message.error('日期为空或未达到计算日期')
       }
       try {
-        await calculateInvoiceDiff(this.invoiceQuery)
+        await calculateInvoiceDiff({ ...this.invoiceQuery, user: this.userInfo.username })
         Message.success('请求成功')
       } catch (error) {
         Message.error('请求失败')
