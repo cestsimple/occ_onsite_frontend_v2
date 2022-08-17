@@ -31,7 +31,19 @@ service.interceptors.response.use(response => {
   // axios默认加了一层data
   const data = response.data
   //   要根据success的成功与否决定下面的操作
-  return data
+  if (data.status === undefined) {
+    console.log('status:undefined')
+    console.log(data)
+    return data
+  } else {
+    if (data.status === 200) {
+      console.log('status:200')
+      console.log(data)
+      return data.data
+    } else {
+      return Message.error(`请求失败，${data.msg}`)
+    }
+  }
 }, error => {
   if (error.response.status === 401) {
     Message.error('登陆超时，请重新登录')

@@ -203,21 +203,13 @@ export default {
       const res = await getModify(pk).catch(() => {
         return Message.error('获取modify数据失败, 可能是网络问题，请稍后重试')
       })
-      if (res.status === 200) {
-        this.modForm = res.data
-      } else {
-        return Message.error(`获取modify数据失败, ${res.msg}`)
-      }
+      this.modForm = res
     },
     async getOrigin(pk) {
       const res = await getOrigin(pk).catch(() => {
         return Message.error('获取日报原始数据失败, 可能是网络问题，请稍后重试')
       })
-      if (res.status === 200) {
-        this.originDaily = res.data
-      } else {
-        return Message.error(`获取日报原始数据失败, ${res.msg}`)
-      }
+      this.originDaily = res
     },
     async updateDaily() {
       try {
@@ -233,11 +225,7 @@ export default {
     async showLintot() {
       try {
         const res = await getLintotDetail(this.editForm.id)
-        if (res.status === 200) {
-          this.LintotDetailList = res.data
-        } else {
-          return Message.error(`获取lintot详情失败, ${res.msg}`)
-        }
+        this.LintotDetailList = res
       } catch (error) {
         return Message.error('获取lintot详情失败, 可能是网络问题，请稍后重试')
       }

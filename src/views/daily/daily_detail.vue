@@ -306,13 +306,8 @@ export default {
       this.loading = true
       try {
         const res = await getDaily(this.query)
-        if (res.status === 200) {
-          this.list = res.data.list
-          this.total = res.data.total
-        } else {
-          this.loading = false
-          return this.$message.error(`查询失败，${res.msg}`)
-        }
+        this.list = res.list
+        this.total = res.total
       } catch (error) {
         this.loading = false
         return this.$message.error('请求失败，可能网络不佳，请稍后重试')
@@ -359,11 +354,6 @@ export default {
         let res = null
         try {
           res = await getDaily({ ...this.query, pagesize: this.total, page: 1 })
-          if (res.status === 200) {
-            res = res.data
-          } else {
-            return this.$message.error(`查询失败，${res.msg}`)
-          }
         } catch (error) {
           return this.$message.error('请求失败，可能网络不佳，请稍后重试')
         }
