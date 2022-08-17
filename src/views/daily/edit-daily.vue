@@ -200,16 +200,24 @@ export default {
       this.btnLintotCancel()
     },
     async getModify(pk) {
-      const res = await getModify(pk).catch(error => {
-        Message.error('获取modify数据失败' + error)
+      const res = await getModify(pk).catch(() => {
+        return Message.error('获取modify数据失败, 可能是网络问题，请稍后重试')
       })
-      this.modForm = res
+      if (res.status === 200) {
+        this.modForm = res.data
+      } else {
+        return Message.error(`获取modify数据失败, ${res.msg}`)
+      }
     },
     async getOrigin(pk) {
-      const res = await getOrigin(pk).catch(error => {
-        Message.error('获取原始数据失败' + error)
+      const res = await getOrigin(pk).catch(() => {
+        return Message.error('获取日报原始数据失败, 可能是网络问题，请稍后重试')
       })
-      this.originDaily = res
+      if (res.status === 200) {
+        this.originDaily = res.data
+      } else {
+        return Message.error(`获取日报原始数据失败, ${res.msg}`)
+      }
     },
     async updateDaily() {
       try {
@@ -219,15 +227,19 @@ export default {
         this.$parent.getDaily()
         this.btnCancel()
       } catch (error) {
-        console.log(error.response)
-        Message.error('更新失败')
+        Message.error('更新失败, 可能是网络问题，请稍后重试')
       }
     },
     async showLintot() {
       try {
-        this.LintotDetailList = await getLintotDetail(this.editForm.id)
+        const res = await getLintotDetail(this.editForm.id)
+        if (res.status === 200) {
+          this.LintotDetailList = res.data
+        } else {
+          return Message.error(`获取lintot详情失败, ${res.msg}`)
+        }
       } catch (error) {
-        return Message.error('获取lintot详情失败')
+        return Message.error('获取lintot详情失败, 可能是网络问题，请稍后重试')
       }
       this.showLintotDialog = true
     },

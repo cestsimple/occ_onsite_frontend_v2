@@ -224,10 +224,16 @@ export default {
       this.loading = true
       try {
         const res = await getDaily(this.query)
-        this.list = res.list
-        this.total = res.total
+        if (res.status === 200) {
+          this.list = res.data.list
+          this.total = res.data.total
+        } else {
+          this.loading = false
+          return this.$message.error(`查询失败，${res.msg}`)
+        }
       } catch (error) {
-        this.$message.error('daily获取失败')
+        this.loading = false
+        return this.$message.error('请求失败，可能网络不佳，请稍后重试')
       }
       this.loading = false
     },
@@ -255,7 +261,17 @@ export default {
 
       import('@/vendor/Export2Excel').then(async excel => {
         // 获取全部数据
-        const res = await getDaily({ ...this.query, pagesize: this.total, page: 1 })
+        let res = null
+        try {
+          res = await getDaily({ ...this.query, pagesize: this.total, page: 1 })
+          if (res.status === 200) {
+            res = res.data
+          } else {
+            return this.$message.error(`查询失败，${res.msg}`)
+          }
+        } catch (error) {
+          return this.$message.error('请求失败，可能网络不佳，请稍后重试')
+        }
         // 转化Json数据至[[]]格式
         const data = this.formatJson(headers, res.list)
         // 导出

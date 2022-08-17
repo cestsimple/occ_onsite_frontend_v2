@@ -3,7 +3,7 @@
     <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
     <div class="app-breadcrumb">
       IMOCC在线平台V2
-      <span class="breadBtn" @click="showVersionDialog">Version 1.1.2</span>
+      <span class="breadBtn" @click="showVersionDialog">Version {{ version }}</span>
     </div>
     <!-- <breadcrumb class="breadcrumb-container" /> -->
 
@@ -55,7 +55,13 @@
         <el-button type="primary" size="mini" @click="updatePassword">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="版本详情 - 当前版本为V1.1.2" :visible="versionDetailDialog" @close="hideVersionDialog">
+    <el-dialog :title="`版本详情 - 当前版本为V${version}`" :visible="versionDetailDialog" @close="hideVersionDialog">
+      <div>
+        <span>1.2.0</span>
+        规范化Daily相关API接口<br>
+        搜索功能支持使用CN_开头的全称进行精确搜索
+        <el-divider />
+      </div>
       <div>
         <span>1.1.2</span>
         停机报表导出具体原因字段由中文改为英文
@@ -98,7 +104,8 @@ export default {
       },
       auth: false,
       auth_msg: '提交',
-      versionDetailDialog: false
+      versionDetailDialog: false,
+      version: '1.2.0'
     }
   },
   computed: {
