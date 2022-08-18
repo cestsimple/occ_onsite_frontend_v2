@@ -216,6 +216,7 @@ export default {
         await updateModify({ ...this.modForm, 'user': this.userInfo.username })
         await updateDaily(this.editForm)
         // 通知父组件刷新数据
+        Message.success('更新数据成功')
         this.$parent.getDaily()
         this.btnCancel()
       } catch (error) {
