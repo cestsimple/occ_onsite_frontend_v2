@@ -117,7 +117,7 @@ export default {
     },
     async getJobs() {
       const res = await getJobs({ finish: 0 }).catch(() => {
-        Message.error('获取Job失败')
+        Message.error('获取Job失败,请求超时,请稍后再试')
       })
       this.jobList = res
     },
@@ -127,8 +127,7 @@ export default {
         return
       }
       this.loading = true
-      const res = await getApsa({ 'name': query }).catch((error) => {
-        console.log(error)
+      const res = await getApsa({ 'name': query }).catch(() => {
         this.loading = false
         this.$message.error('无法获取资产列表')
       })

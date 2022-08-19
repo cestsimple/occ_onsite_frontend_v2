@@ -126,7 +126,7 @@ export default {
         this.jobList = res
         this.loading = false
       } catch (error) {
-        Message.error('获取Job失败')
+        Message.error('获取Job失败,请求超时,请稍后再试')
         this.loading = false
       }
     },
