@@ -35,9 +35,13 @@ service.interceptors.response.use(response => {
     return data
   } else {
     if (data.status === 200) {
+      if (data.data === null) {
+        data.data = 0
+      }
       return data.data
     } else {
-      return Message.error(`请求失败，${data.msg}`)
+      Message.error(`请求失败，${data.msg}`)
+      return null
     }
   }
 }, error => {

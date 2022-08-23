@@ -20,68 +20,68 @@
             <td>H_PROD</td>
             <td>{{ originDaily['h_prod'] }}</td>
             <td width="250px">
-              <el-input v-model.number="modForm.h_prod_mod" type="number" />
+              <el-input v-model="modForm.h_prod_mod" type="number" />
             </td>
           </tr>
           <tr>
             <td>M3_PROD</td>
             <td>{{ originDaily['m3_prod'] }}</td>
-            <td><el-input v-model.number="modForm.m3_prod_mod" type="number" /></td>
+            <td><el-input v-model="modForm.m3_prod_mod" type="number" /></td>
           </tr>
           <tr>
             <td>M3_TOT</td>
             <td>{{ originDaily['m3_tot'] }}</td>
-            <td><el-input v-model.number="modForm.m3_tot_mod" type="number" /></td>
+            <td><el-input v-model="modForm.m3_tot_mod" type="number" /></td>
           </tr>
           <tr>
             <td>M3_Q1</td>
             <td>{{ originDaily['m3_q1'] }}</td>
-            <td><el-input v-model.number="modForm.m3_q1_mod" type="number" /></td>
+            <td><el-input v-model="modForm.m3_q1_mod" type="number" /></td>
           </tr>
           <tr>
             <td>M3_Q5</td>
             <td>{{ originDaily['m3_q5'] }}</td>
-            <td><el-input v-model.number="modForm.m3_q5_mod" type="number" /></td>
+            <td><el-input v-model="modForm.m3_q5_mod" type="number" /></td>
           </tr>
           <tr>
             <td>M3_PEAK</td>
             <td>{{ originDaily['m3_peak'] }}</td>
-            <td><el-input v-model.number="modForm.m3_peak_mod" type="number" /></td>
+            <td><el-input v-model="modForm.m3_peak_mod" type="number" /></td>
           </tr>
           <tr>
             <td>H_STPAL</td>
             <td>{{ originDaily['h_stpal'] }}</td>
-            <td><el-input v-model.number="modForm.h_stpal_mod" type="number" /></td>
+            <td><el-input v-model="modForm.h_stpal_mod" type="number" /></td>
           </tr>
           <tr>
             <td>H_STPDFT</td>
             <td>{{ originDaily['h_stpdft'] }}</td>
-            <td><el-input v-model.number="modForm.h_stpdft_mod" type="number" /></td>
+            <td><el-input v-model="modForm.h_stpdft_mod" type="number" /></td>
           </tr>
           <tr>
             <td>H_STP400V</td>
             <td>{{ originDaily['h_stp400v'] }}</td>
-            <td><el-input v-model.number="modForm.h_stp400v_mod" type="number" /></td>
+            <td><el-input v-model="modForm.h_stp400v_mod" type="number" /></td>
           </tr>
           <tr>
             <td>M3_Q6</td>
             <td>{{ originDaily['m3_q6'] }}</td>
-            <td><el-input v-model.number="modForm.m3_q6_mod" type="number" /></td>
+            <td><el-input v-model="modForm.m3_q6_mod" type="number" /></td>
           </tr>
           <tr>
             <td>M3_Q7</td>
             <td>{{ originDaily['m3_q7'] }}</td>
-            <td><el-input v-model.number="modForm.m3_q7_mod" type="number" /></td>
+            <td><el-input v-model="modForm.m3_q7_mod" type="number" /></td>
           </tr>
           <tr>
             <td><el-button type="text" size="small" @click="showLintot">LIN_TOT</el-button></td>
             <td>{{ originDaily['lin_tot'] }}</td>
-            <td><el-input v-model.number="modForm.lin_tot_mod" type="number" /></td>
+            <td><el-input v-model="modForm.lin_tot_mod" type="number" /></td>
           </tr>
           <tr>
             <td>FLOW_METER</td>
             <td>{{ originDaily['flow_meter'] }}</td>
-            <td><el-input v-model.number="modForm.flow_meter_mod" type="number" /></td>
+            <td><el-input v-model="modForm.flow_meter_mod" type="number" /></td>
           </tr>
         </thead>
       </table>
@@ -213,13 +213,19 @@ export default {
     },
     async updateDaily() {
       try {
-        await updateModify({ ...this.modForm, 'user': this.userInfo.username })
-        await updateDaily(this.editForm)
-        // 通知父组件刷新数据
-        Message.success('更新数据成功')
-        this.$parent.getDaily()
-        this.btnCancel()
+        const res1 = await updateModify({ ...this.modForm, 'user': this.userInfo.username })
+        console.log(res1)
+        if (res1 !== null) {
+          const res2 = await updateDaily(this.editForm)
+          if (res2 !== null) {
+            // 通知父组件刷新数据
+            this.$parent.getDaily()
+            this.btnCancel()
+            return Message.success('更新数据成功')
+          }
+        }
       } catch (error) {
+        console.log(error)
         Message.error('更新失败, 可能是网络问题，请稍后重试')
       }
     },

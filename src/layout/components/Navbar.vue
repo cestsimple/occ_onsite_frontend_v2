@@ -58,7 +58,8 @@
     <el-dialog :title="`版本详情 - 当前版本为V${version}`" :visible="versionDetailDialog" @close="hideVersionDialog">
       <div>
         <span>1.2.1</span>
-        修复记录总数限制导致的报表导出缺失问题
+        修复记录总数限制导致的报表导出缺失问题<br>
+        修复daily修改页面无法输入?.0?格式数字的问题
         <el-divider />
       </div>
       <div>
