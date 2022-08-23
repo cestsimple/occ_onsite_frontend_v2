@@ -57,6 +57,11 @@
     </el-dialog>
     <el-dialog :title="`版本详情 - 当前版本为V${version}`" :visible="versionDetailDialog" @close="hideVersionDialog">
       <div>
+        <span>1.2.1</span>
+        修复记录总数限制导致的报表导出缺失问题
+        <el-divider />
+      </div>
+      <div>
         <span>1.2.0</span>
         规范化Daily相关API接口<br>
         优化交互反馈<br>
@@ -106,7 +111,7 @@ export default {
       auth: false,
       auth_msg: '提交',
       versionDetailDialog: false,
-      version: '1.2.0'
+      version: '1.2.1'
     }
   },
   computed: {
