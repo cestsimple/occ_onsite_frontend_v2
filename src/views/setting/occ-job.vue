@@ -28,28 +28,24 @@
           </el-select>
         </el-col>
         <el-col :span="16">
-          <el-select
-            v-model="query.success"
-            size="mini"
-            clearable
-            placeholder="是否成功"
-          >
+          <el-select v-model="day" size="mini">
             <el-option
-              :key="2"
-              label="所有"
-              :value="null"
+              :key="3"
+              label="3天前"
+              :value="3"
             />
             <el-option
-              :key="1"
-              label="失败"
-              :value="0"
+              :key="5"
+              label="5天前"
+              :value="5"
             />
             <el-option
-              :key="0"
-              label="成功"
-              :value="1"
+              :key="7"
+              label="7天前"
+              :value="7"
             />
           </el-select>
+          <el-button size="mini" @click="deleteOldJob">删除job</el-button>
         </el-col>
         <el-col :span="2">
           <el-button size="mini" @click="getJobs">刷新</el-button>
@@ -90,7 +86,7 @@
 </template>
 
 <script>
-import { getJobs, deleteJob } from '@/api/job'
+import { getJobs, deleteJob, clearJob } from '@/api/job'
 import { Message } from 'element-ui'
 export default {
   data() {
@@ -107,7 +103,8 @@ export default {
         apsa_list: []
       },
       intervalJob: null,
-      loading: false
+      loading: false,
+      day: 3
     }
   },
   created() {
@@ -141,6 +138,15 @@ export default {
       } catch (error) {
         Message.error('删除Job失败')
         this.loading = false
+      }
+    },
+    async deleteOldJob() {
+      try {
+        await clearJob({ day: this.day })
+        Message.success('删除成功')
+        this.getJobs()
+      } catch (error) {
+        Message.error('失败，网络问题')
       }
     }
   }

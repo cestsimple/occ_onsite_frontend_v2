@@ -50,3 +50,11 @@ export function updateDaily(data) {
     data
   })
 }
+
+export function addRecord(data) {
+  return request({
+    url: '/iot/record/add/',
+    method: 'post',
+    data
+  })
+}

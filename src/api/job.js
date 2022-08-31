@@ -16,3 +16,11 @@ export function deleteJob(id) {
     method: 'delete'
   })
 }
+
+export function clearJob(params) {
+  return request({
+    url: '/asyncjob/clear/',
+    method: 'get',
+    params
+  })
+}

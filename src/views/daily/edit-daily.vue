@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog :title="`${editForm.rtu_name} - Daily数据修改`" :visible="showDialog" width="550px" :close-on-click-modal="false" @close="btnCancel">
+    <el-dialog :title="`${editForm.date}  ${editForm.rtu_name} - Daily数据修改`" :visible="showDialog" width="550px" :close-on-click-modal="false" @close="btnCancel">
       <!-- 表单 -->
       <el-alert
         :title="`当前用户:${userInfo.username}，上次编辑者: ${modForm.user}`"
@@ -147,15 +147,53 @@
             prop="lin_tot"
             width="105px"
           />
+          <el-table-column
+            label="添加记录"
+            width="55px"
+          >
+            <template slot-scope="scope">
+              <el-button type="text" size="mini" @click="showAddRecord(scope.row)">+</el-button>
+            </template>
+          </el-table-column>
         </el-table>
       </div>
 
+    </el-dialog>
+    <el-dialog title="添加原始记录 Record" :visible="showAddRecordDialog" :close-on-click-modal="false" @close="btnAddRecordCancel">
+      <el-alert
+        title="手动添加变量历史记录"
+        type="info"
+        center
+        show-icon
+        :closable="false"
+      />
+      <el-form :model="addRecordForm" label-width="80px" size="mini">
+        <el-form-item label="记录时间">
+          <el-date-picker
+            v-model="addRecordForm.dt"
+            type="datetime"
+            placeholder="选择日期时间"
+            format="yyyy-MM-dd HH:mm"
+            value-format="yyyy-MM-dd HH:mm"
+          />
+        </el-form-item>
+        <el-form-item label="记录数值">
+          <el-input v-model="addRecordForm.value" type="number" />
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button
+          type="primary"
+          size="mini"
+          @click="addRecord"
+        >添加</el-button>
+      </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { getModify, getOrigin, getLintotDetail, updateModify, updateDaily } from '@/api/daily'
+import { getModify, getOrigin, getLintotDetail, updateModify, updateDaily, addRecord } from '@/api/daily'
 import { Message } from 'element-ui'
 import { mapGetters } from 'vuex'
 export default {
@@ -173,9 +211,15 @@ export default {
       originDaily: {},
       loading: false,
       showLintotDialog: false,
+      showAddRecordDialog: false,
       LintotDetailList: [{
         error: 0
-      }]
+      }],
+      addRecordForm: {
+        variable_id: 0,
+        dt: '',
+        value: 0
+      }
     }
   },
   computed: {
@@ -243,8 +287,31 @@ export default {
         error: 0
       }]
       this.showLintotDialog = false
+    },
+    showAddRecord(row) {
+      this.addRecordForm.variable_id = row.variable_id
+      this.showAddRecordDialog = true
+    },
+    btnAddRecordCancel() {
+      this.showAddRecordDialog = false
+      this.addRecordForm = {
+        variable_id: 0,
+        dt: '',
+        value: 0 }
+    },
+    async addRecord() {
+      try {
+        const res = await addRecord(this.addRecordForm)
+        if (res !== null) {
+          Message.success('添加成功')
+          this.showLintot()
+          this.showAddRecordDialog = false
+        }
+      } catch (e) {
+        console.log(e)
+        Message.error('请求失败，可能是网络问题，请稍后重试')
+      }
     }
-
   }
 }
 </script>

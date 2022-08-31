@@ -57,25 +57,38 @@
     </el-dialog>
     <el-dialog :title="`版本详情 - 当前版本为V${version}`" :visible="versionDetailDialog" @close="hideVersionDialog">
       <div>
-        <span>1.2.1</span>
+        <span>1.3.1</span><br>
+        优化性能<br>
+        增加daily编辑弹窗日期显示<br>
+        导入历史停机数据
+        <el-divider />
+      </div>
+      <div>
+        <span>1.3.0</span><br>
+        新增daily报表bulk相关原始记录添加功能<br>
+        新增job手动清理功能
+        <el-divider />
+      </div>
+      <div>
+        <span>1.2.1</span><br>
         修复记录总数限制导致的报表导出缺失问题<br>
         修复daily修改页面无法输入?.0?格式数字的问题
         <el-divider />
       </div>
       <div>
-        <span>1.2.0</span>
+        <span>1.2.0</span><br>
         规范化Daily相关API接口<br>
         优化交互反馈<br>
         搜索功能支持使用CN_(支持大小写)开头的全称进行精确搜索
         <el-divider />
       </div>
       <div>
-        <span>1.1.2</span>
+        <span>1.1.2</span><br>
         停机报表导出具体原因字段由中文改为英文
         <el-divider />
       </div>
       <div>
-        <span>1.1.1</span>
+        <span>1.1.1</span><br>
         修复一个api请求刷新数据失败的问题
         <el-divider />
       </div>
@@ -85,7 +98,7 @@
         <el-divider />
       </div>
       <div>
-        <span>1.0.0</span>
+        <span>1.0.0</span><br>
         正式版上线
       </div>
     </el-dialog>
@@ -103,6 +116,7 @@ export default {
   },
   data() {
     return {
+      version: '1.3.1',
       showEditPassword: false,
       editForm: {
         new_password_1: '',
@@ -111,8 +125,7 @@ export default {
       },
       auth: false,
       auth_msg: '提交',
-      versionDetailDialog: false,
-      version: '1.2.1'
+      versionDetailDialog: false
     }
   },
   computed: {
