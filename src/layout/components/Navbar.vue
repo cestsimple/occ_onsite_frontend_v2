@@ -57,6 +57,12 @@
     </el-dialog>
     <el-dialog :title="`版本详情 - 当前版本为V${version}`" :visible="versionDetailDialog" @close="hideVersionDialog">
       <div>
+        <span>1.4.0</span><br>
+        更换手动抓取apsa/bulk资产方式<br>
+        优化后台操作页面布局流程
+        <el-divider />
+      </div>
+      <div>
         <span>1.3.1</span><br>
         优化性能<br>
         增加daily编辑弹窗日期显示<br>
@@ -116,7 +122,7 @@ export default {
   },
   data() {
     return {
-      version: '1.3.1',
+      version: '1.4.0',
       showEditPassword: false,
       editForm: {
         new_password_1: '',

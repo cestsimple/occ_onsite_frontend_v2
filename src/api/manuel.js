@@ -53,3 +53,11 @@ export function getIotAll(params) {
     params
   })
 }
+
+export function manuelCreateAsset(params) {
+  return request({
+    url: '/iot/asset/manuel/',
+    method: 'get',
+    params
+  })
+}

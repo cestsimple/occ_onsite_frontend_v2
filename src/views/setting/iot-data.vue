@@ -2,24 +2,6 @@
   <div>
     <el-card v-loading="loading">
       <el-row>
-        <el-col :span="24">
-          刷新数据： 抓取数据->抓取过去一天的所有数据，可以更新计算每日的报表
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="24">
-          刷新气站信息: 从IOT抓取所有site,asset,variable,tag等数据，更新内容包括：IOT上新资产/变量会出现，IOT上删除的会被隐藏，已有资产会更新中文名，维修等字段
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="24">
-          <el-button type="primary" :disabled="jobList.some(x => x.name === 'IOT_RECORD')" size="mini" @click="getRecord({})"> 抓取昨日原始数据 </el-button>
-          <el-button type="primary" :disabled="jobList.some(x => x.name === 'IOT_ALL')" size="mini" @click="getIotAll">
-            从IOT更新site,asset,variable信息
-          </el-button>
-        </el-col>
-      </el-row>
-      <el-row>
         <el-col :span="2">
           进行中任务:
         </el-col>
@@ -85,13 +67,40 @@
         </span>
       </el-form>
     </el-card>
+    <el-card v-loading="loading">
+      <el-form
+        :model="newAssetRequest"
+        size="mini"
+      >
+        <el-form-item>
+          <el-form-item label="手动添加资产: 输入iot资产页面上方地址栏asset后类似a3c42fda-607f-49a9-bbcc-bc2ab8d542fb的id即可">
+            <el-input v-model="newAssetRequest.uuid" />
+          </el-form-item>
+        </el-form-item>
+        <el-form-item>
+          <el-radio v-model="newAssetRequest.is_apsa" label="1">Apsa资产</el-radio>
+          <el-radio v-model="newAssetRequest.is_apsa" label="0">Bulk资产</el-radio>
+        </el-form-item>
+        <span class="dialog-footer">
+          <el-button
+            type="primary"
+            size="mini"
+            :disabled="jobList.some(x => x.name === 'IOT_ASSET_MANUEL')"
+            @click="mauelAsset"
+          >提交请求</el-button>
+        </span>
+      </el-form>
+      <el-row>
+        *请求后去job记录页面查看抓取结果
+      </el-row>
+    </el-card>
   </div>
 </template>
 
 <script>
 import { getJobs } from '@/api/job'
 import { getApsa } from '@/api/apsa'
-import { getRecord, getIotAll } from '@/api/manuel'
+import { getRecord, getIotAll, manuelCreateAsset } from '@/api/manuel'
 import { Message } from 'element-ui'
 import { mapGetters } from 'vuex'
 export default {
@@ -105,7 +114,11 @@ export default {
       intervalJob: null,
       loading: false,
       serchItemList: [],
-      apsaFormRules: {}
+      apsaFormRules: {},
+      newAssetRequest: {
+        uuid: '',
+        is_apsa: '1'
+      }
     }
   },
   computed: {
@@ -182,6 +195,19 @@ export default {
     },
     clearSelect() {
       this.apsaRefresh.apsa_list = []
+    },
+    // 手动添加资产
+    async mauelAsset() {
+      if (this.newAssetRequest.uuid === '') {
+        return Message.error('uuid不能为空')
+      }
+      try {
+        this.newAssetRequest.user = this.userInfo.username
+        await manuelCreateAsset(this.newAssetRequest)
+        return Message.success('请求成功')
+      } catch (error) {
+        return Message.error('请求失败，与服务器连接失败')
+      }
     }
   }
 }
