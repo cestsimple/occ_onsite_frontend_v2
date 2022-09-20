@@ -26,7 +26,7 @@
           </el-button>
         </search-bar>
         <el-row>
-          <el-col :span="8">
+          <el-col :span="8" :style="{'font-size': '15px'}">
             停机原因过滤:
             <el-select
               v-model="query.reason"
@@ -184,6 +184,10 @@
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
         />
+        <el-divider />
+        <el-row class="raw-text">
+          当前页停机时长：{{ stop_statics.time }} ；用液消耗：{{ stop_statics.consumption }}
+        </el-row>
       </el-card>
     </div>
     <!-- 编辑，新增弹层 -->
@@ -380,6 +384,11 @@ export default {
         stop_consumption: [{ required: true, message: '停机用液消耗不能为空', trigger: 'bulr' },
           { type: 'number', min: 0, message: '停机时长必须是数字且大于等于0', trigger: 'bulr' }],
         stop_label: [{ required: true, message: '停机标志位不能为空', trigger: 'bulr' }]
+      },
+      // 停机页尾数据统计
+      stop_statics: {
+        time: 0,
+        consumption: 0
       }
     }
   },
@@ -439,6 +448,15 @@ export default {
         const res = await getMalfunction(this.query)
         this.list = res.list
         this.total = res.total
+        // 统计当前分页的停机时长和用液消耗
+        this.stop_statics.time = 0
+        this.stop_statics.consumption = 0
+        for (const m of this.list) {
+          this.stop_statics.time += m.stop_hour
+          this.stop_statics.consumption += m.stop_consumption
+        }
+        this.stop_statics.time = this.stop_statics.time.toFixed(2)
+        this.stop_statics.consumption = this.stop_statics.consumption.toFixed(2)
       } catch (error) {
         Message.error('获取停机列表失败')
       }
@@ -723,5 +741,9 @@ export default {
     margin-bottom: 0;
     width: 30%;
     height: 32px;
+  }
+  .raw-text {
+    font-family: "PingFang SC";
+    font-size: 12px;
   }
 </style>

@@ -203,8 +203,10 @@ export default {
       }
       try {
         this.newAssetRequest.user = this.userInfo.username
-        await manuelCreateAsset(this.newAssetRequest)
-        return Message.success('请求成功')
+        const res = await manuelCreateAsset(this.newAssetRequest)
+        if (res !== null) {
+          return Message.success('请求成功, 可在job记录页查看详情')
+        }
       } catch (error) {
         return Message.error('请求失败，与服务器连接失败')
       }

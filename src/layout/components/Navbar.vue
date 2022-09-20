@@ -57,6 +57,11 @@
     </el-dialog>
     <el-dialog :title="`版本详情 - 当前版本为V${version}`" :visible="versionDetailDialog" @close="hideVersionDialog">
       <div>
+        <span>1.4.1</span><br>
+        新增停机页面下方当前搜索记录的停机时间和用液消耗统计
+        <el-divider />
+      </div>
+      <div>
         <span>1.4.0</span><br>
         更换手动抓取apsa/bulk资产方式<br>
         优化后台操作页面布局流程
@@ -122,7 +127,7 @@ export default {
   },
   data() {
     return {
-      version: '1.4.0',
+      version: '1.4.1',
       showEditPassword: false,
       editForm: {
         new_password_1: '',
