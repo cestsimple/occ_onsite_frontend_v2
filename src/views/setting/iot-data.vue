@@ -205,6 +205,7 @@ export default {
         this.newAssetRequest.user = this.userInfo.username
         const res = await manuelCreateAsset(this.newAssetRequest)
         if (res !== null) {
+          this.newAssetRequest.uuid = ''
           return Message.success('请求成功, 可在job记录页查看详情')
         }
       } catch (error) {

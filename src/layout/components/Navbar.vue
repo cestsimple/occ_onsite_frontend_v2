@@ -55,7 +55,18 @@
         <el-button type="primary" size="mini" @click="updatePassword">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog :title="`版本详情 - 当前版本为V${version}`" :visible="versionDetailDialog" @close="hideVersionDialog">
+    <el-dialog :title="`版本详情 - 当前版本为V${version}`" width="500px" :visible="versionDetailDialog" class="version-div" @close="hideVersionDialog">
+      <div>
+        <span>1.4.3</span><br>
+        修复apsa从机无法更新daily数据的问题<br>
+        <el-divider />
+      </div>
+      <div>
+        <span>1.4.2</span><br>
+        修复手动添加资产缺少标志位的问题<br>
+        优化手动添加资产页面反馈
+        <el-divider />
+      </div>
       <div>
         <span>1.4.1</span><br>
         新增停机页面下方当前搜索记录的停机时间和用液消耗统计
@@ -127,7 +138,7 @@ export default {
   },
   data() {
     return {
-      version: '1.4.1',
+      version: '1.4.3',
       showEditPassword: false,
       editForm: {
         new_password_1: '',
@@ -308,6 +319,11 @@ export default {
           color: #fff;
         }
       }
+    }
+
+    .version-div div {
+      font-size: 12px;
+      transform: scale(0.8);
     }
   }
 }
