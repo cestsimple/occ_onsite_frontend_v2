@@ -57,6 +57,11 @@
     </el-dialog>
     <el-dialog :title="`版本详情 - 当前版本为V${version}`" width="500px" :visible="versionDetailDialog" class="version-div" @close="hideVersionDialog">
       <div>
+        <span>1.4.4</span><br>
+        修复daily详情页lintot详情中手动添加数据点失败的问题<br>
+        <el-divider />
+      </div>
+      <div>
         <span>1.4.3</span><br>
         修复apsa从机无法更新daily数据的问题<br>
         <el-divider />
@@ -138,7 +143,7 @@ export default {
   },
   data() {
     return {
-      version: '1.4.3',
+      version: '1.4.4',
       showEditPassword: false,
       editForm: {
         new_password_1: '',
