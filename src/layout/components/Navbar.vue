@@ -59,6 +59,8 @@
       <div>
         <span>1.4.4</span><br>
         修复daily详情页lintot详情中手动添加数据点失败的问题<br>
+        修复停机修改时间格式错误导致无法提交的问题<br>
+        优化对于浏览器的适配<br>
         <el-divider />
       </div>
       <div>

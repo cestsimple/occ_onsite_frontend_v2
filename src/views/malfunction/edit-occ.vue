@@ -198,7 +198,15 @@ export default {
           is_occ = 0
         }
         await this.$refs.editFormRef.validate()
-        await updateMalfunction({ ... this.editForm, confirm: is_occ, change_date: new Date().toLocaleString().replaceAll('/', '-'), change_user: this.userInfo.username })
+        const dt = new Date()
+        const year = dt.getFullYear()
+        const month = dt.getMonth() + 1
+        const day = dt.getDate()
+        const hh = dt.getHours()
+        const mm = dt.getMinutes()
+        const ss = dt.getSeconds()
+        const formattedDate = `${year}-${month}-${day} ${hh}:${mm}:${ss}`
+        await updateMalfunction({ ... this.editForm, confirm: is_occ, change_date: formattedDate, change_user: this.userInfo.username })
         // 通知父组件刷新数据
         this.$parent.getMalfunction()
         this.btnCancel()
