@@ -57,6 +57,16 @@
     </el-dialog>
     <el-dialog :title="`版本详情 - 当前版本为V${version}`" width="500px" :visible="versionDetailDialog" class="version-div" @close="hideVersionDialog">
       <div>
+        <span>1.5.1</span><br>
+        修复因IOT SSL证书验证导致无法抓取刷新资产的问题<br>
+        <el-divider />
+      </div>
+      <div>
+        <span>1.5.0</span><br>
+        新增资产及其变量刷新功能，适用于类似iot更换设备后日报计算变量报错的情况<br>
+        <el-divider />
+      </div>
+      <div>
         <span>1.4.5</span><br>
         导入daily历史数据<br>
         优化数据库查询性能<br>
@@ -151,7 +161,7 @@ export default {
   },
   data() {
     return {
-      version: '1.4.5',
+      version: '1.5.1',
       showEditPassword: false,
       editForm: {
         new_password_1: '',

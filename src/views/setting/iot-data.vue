@@ -73,7 +73,7 @@
         size="mini"
       >
         <el-form-item>
-          <el-form-item label="手动添加资产: 输入iot资产页面上方地址栏asset后类似a3c42fda-607f-49a9-bbcc-bc2ab8d542fb的id即可">
+          <el-form-item label="手动刷新/添加资产(及其变量): 输入iot资产页面上方地址栏asset后类似a3c42fda-607f-49a9-bbcc-bc2ab8d542fb的id即可">
             <el-input v-model="newAssetRequest.uuid" />
           </el-form-item>
         </el-form-item>
@@ -91,6 +91,7 @@
         </span>
       </el-form>
       <el-row>
+        *刷新资产(及其变量)时,apsa/bulk选项会被忽略<br><br>
         *请求后去job记录页面查看抓取结果
       </el-row>
     </el-card>
