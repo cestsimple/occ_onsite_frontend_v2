@@ -91,37 +91,6 @@
         </template>
 
         <div class="app-container">
-          <!-- 搜索框 -->
-          <el-row class="search-bar">
-            <el-col :span="22">
-              任务状态:
-              <el-select
-                v-model="todo_query.status"
-                size="mini"
-                placeholder="是否完成"
-              >
-                <el-option
-                  :key="0"
-                  label="所有"
-                  :value="0"
-                />
-                <el-option
-                  :key="1"
-                  label="进行中"
-                  :value="1"
-                  selected
-                />
-                <el-option
-                  :key="9"
-                  label="已完成"
-                  :value="9"
-                />
-              </el-select>
-            </el-col>
-            <el-col :span="2">
-              <el-button size="mini" @click="getMyTodoTask">刷新</el-button>
-            </el-col>
-          </el-row>
 
           <!-- 表格 -->
           <div class="task-list-table">
@@ -134,11 +103,6 @@
               <el-table-column label="下一环节负责人" prop="next_charge" />
               <el-table-column label="创建时间" prop="created_at" width="115px" />
               <el-table-column label="最后更新时间" prop="updated_at" width="115px" />
-              <el-table-column label="任务状态" prop="status" width="70px">
-                <template slot-scope="scope">
-                  {{ scope.row.status === 1 ? '进行中' : '已结束' }}
-                </template>
-              </el-table-column>
               <el-table-column label="操作" width="65px">
                 <template slot-scope="scope">
                   <!-- 修改按钮 -->
